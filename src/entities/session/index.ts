@@ -4,4 +4,4 @@ export {
   AuthProvider,
   useAuth,
   type AuthStatus,
-} from "@/entities/session";
+} from "./model/auth-provider";

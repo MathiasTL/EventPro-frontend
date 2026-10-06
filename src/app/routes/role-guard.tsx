@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
 import { HOME_BY_ROLE } from "@/shared/config";
 import type { Role } from "@/shared/types";
+import { AuthShell } from "./auth-shell";
 
 interface RoleGuardProps {
   roles: readonly Role[];
@@ -39,7 +40,7 @@ export function RoleGuard({ roles, children }: RoleGuardProps) {
   }
 
   if (!authorized) return null;
-  return children;
+  return <AuthShell>{children}</AuthShell>;
 }
 
 export function PanelGuard({ children }: { children: ReactNode }) {
