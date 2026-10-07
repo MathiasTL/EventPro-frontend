@@ -1,19 +1,81 @@
 @import "tailwindcss";
 
+/*
+ * Línea gráfica EventPro (compartida por landing, login y panel):
+ * violeta-700 como acento, neutros zinc, tipografía Geist, esquinas
+ * rounded-lg/xl y solo tema claro.
+ */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --ink: var(--color-zinc-900);
+  --muted: var(--color-zinc-500);
+  --line: var(--color-zinc-200);
+  --surface: var(--color-zinc-50);
+  --brand: var(--color-violet-700);
+  --brand-hover: var(--color-violet-800);
+  --brand-tint: var(--color-violet-50);
+  --whatsapp: #25d366;
+  --whatsapp-ink: #052e16;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-tint: var(--brand-tint);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-ink: var(--whatsapp-ink);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --text-hero: clamp(2.5rem, 7vw, 4.25rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.035em;
+
+  --text-title: clamp(1.75rem, 4vw, 2.25rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.025em;
+
+  --text-lead: clamp(1rem, 1.4vw, 1.125rem);
+  --text-lead--line-height: 1.65;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.5;
+  --text-eyebrow--letter-spacing: 0.14em;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.chat-in {
+  animation: chat-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-in {
+    animation: none;
+  }
 }

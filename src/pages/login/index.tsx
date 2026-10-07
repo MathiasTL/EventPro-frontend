@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -36,8 +37,8 @@ export function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm"
       >
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">EventPro</h1>
-        <p className="mt-1 mb-6 text-sm text-zinc-500">Panel del encargado</p>
+        <h1 className="text-2xl font-bold tracking-tight text-ink">EventPro</h1>
+        <p className="mt-1 mb-6 text-sm text-muted">Panel del encargado</p>
 
         <div className="flex flex-col gap-4">
           <Field label="Correo">
@@ -64,6 +65,12 @@ export function LoginPage() {
             {loading ? "Ingresando…" : "Ingresar"}
           </Button>
         </div>
+        <Link
+          href="/"
+          className="mt-6 block text-center text-sm text-muted transition hover:text-ink"
+        >
+          ← Volver al inicio
+        </Link>
       </form>
     </main>
   );

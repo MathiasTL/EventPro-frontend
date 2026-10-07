@@ -42,3 +42,5 @@ demo-artifacts/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+!.env.example
