@@ -18,11 +18,12 @@ export function LoginPage() {
   }, [status, user, router]);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center p-6">
-      <div className="w-full max-w-sm space-y-6">
+    <main className="flex flex-1 flex-col items-center justify-center bg-surface p-6 dark:bg-[#020617]">
+      <div className="w-full max-w-sm space-y-6 rounded-2xl bg-white p-6 shadow-sm dark:bg-white/5">
         <div className="space-y-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">EventPro</h1>
-          <p className="text-sm text-zinc-500">Inicia sesión para continuar</p>
+          <p className="font-label text-xs uppercase tracking-widest text-secondary">EventPro Wireframe Engine</p>
+          <h1 className="font-headline text-3xl font-bold tracking-tight text-primary dark:text-white">EventPro</h1>
+          <p className="font-body text-sm text-neutral">Inicia sesión para continuar</p>
         </div>
         <LoginForm />
       </div>

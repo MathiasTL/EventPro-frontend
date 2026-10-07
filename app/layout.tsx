@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Hanken_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 
 import { AppProviders } from "@/app/providers";
 import "@/app/styles/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const headline = Hanken_Grotesk({
+  variable: "--font-headline",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const body = Inter({
+  variable: "--font-body",
+  subsets: ["latin"],
+});
+
+const label = JetBrains_Mono({
+  variable: "--font-label",
   subsets: ["latin"],
 });
 
@@ -26,8 +31,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${headline.variable} ${body.variable} ${label.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <AppProviders>{children}</AppProviders>

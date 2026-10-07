@@ -13,15 +13,15 @@ export function Input({ label, error, className, id, ...rest }: InputProps) {
     <div className="space-y-1">
       <label
         htmlFor={inputId}
-        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        className="block font-label text-xs font-medium uppercase tracking-wide text-neutral"
       >
         {label}
       </label>
       <input
         id={inputId}
         aria-invalid={error ? true : undefined}
-        className={`w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:ring-2 focus:ring-zinc-900/30 dark:bg-zinc-900 dark:text-zinc-100 ${
-          error ? "border-red-400" : "border-zinc-300 dark:border-zinc-700"
+        className={`w-full rounded-lg border bg-surface px-3 py-2 font-body text-sm text-primary outline-none placeholder:text-neutral/60 focus:border-secondary focus:ring-2 focus:ring-secondary/30 dark:bg-white/5 dark:text-white ${
+          error ? "border-red-400" : "border-neutral/25 dark:border-white/15"
         } ${className ?? ""}`}
         {...rest}
       />
