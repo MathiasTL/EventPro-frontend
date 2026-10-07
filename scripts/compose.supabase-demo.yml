@@ -1,0 +1,17 @@
+services:
+  redis:
+    ports: !override
+      - "127.0.0.1:56379:6379"
+  api:
+    environment:
+      CORS_ORIGINS: "http://localhost:3002,http://127.0.0.1:3002"
+      REDIS_PASSWORD: ""
+    depends_on: !override
+      redis:
+        condition: service_healthy
+  worker:
+    environment:
+      REDIS_PASSWORD: ""
+    depends_on: !override
+      redis:
+        condition: service_healthy

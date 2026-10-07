@@ -1,0 +1,13 @@
+services:
+  db:
+    ports: !override
+      - "127.0.0.1:55432:5432"
+  redis:
+    ports: !override
+      - "127.0.0.1:56379:6379"
+  api:
+    environment:
+      CORS_ORIGINS: "http://localhost:3002,http://127.0.0.1:3002"
+      REDIS_PASSWORD: ""
+      SUPERADMIN_EMAIL: admin@eventpro.pe
+      SUPERADMIN_PASSWORD: "${EVENTPRO_DEMO_PASSWORD:?Define EVENTPRO_DEMO_PASSWORD}"
