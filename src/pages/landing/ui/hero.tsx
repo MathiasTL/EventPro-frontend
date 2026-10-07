@@ -9,7 +9,7 @@ export function Hero() {
           <p className="font-mono text-eyebrow text-brand uppercase">
             Lima, Perú · Eventos sociales y corporativos
           </p>
-          <h1 className="mt-5 font-display text-hero text-ink">
+          <h1 className="mt-5 font-semibold text-hero text-ink">
             Tu evento empieza con un mensaje.
           </h1>
           <p className="mt-6 text-lead text-muted">

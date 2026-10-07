@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-
-import { AppProviders } from "@/app/providers";
 import "@/app/styles/globals.css";
+import { AuthProvider } from "@/app/providers/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,19 +18,13 @@ export const metadata: Metadata = {
   description: "Plataforma de gestión de eventos",
 };
 
-const THEME_INIT = `(function(){try{var t=localStorage.getItem("eventpro.theme")||"system";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
-        <AppProviders>{children}</AppProviders>
-      </body>
+      <body className="min-h-full flex flex-col"><AuthProvider>{children}</AuthProvider></body>
     </html>
   );
 }

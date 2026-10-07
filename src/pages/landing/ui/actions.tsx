@@ -1,4 +1,4 @@
-import { ButtonLink } from "@/shared/ui";
+import { ButtonLink } from "@/shared/ui/button-link";
 import { LOGIN_URL, buildWhatsAppUrl } from "@/shared/config";
 
 interface IngresarActionProps {

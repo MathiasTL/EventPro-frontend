@@ -20,13 +20,13 @@ export function HowItWorks() {
   return (
     <section
       id="como-funciona"
-      className="border-t border-line bg-background"
+      className="border-t border-line bg-white"
     >
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
         <p className="font-mono text-eyebrow text-brand uppercase">
           Cómo funciona
         </p>
-        <h2 className="mt-4 max-w-2xl font-display text-title text-ink">
+        <h2 className="mt-4 max-w-2xl font-semibold text-title text-ink">
           De un mensaje a un contrato firmado
         </h2>
 

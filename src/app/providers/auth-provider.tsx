@@ -1,7 +1,0 @@
-"use client";
-
-export {
-  AuthProvider,
-  useAuth,
-  type AuthStatus,
-} from "@/entities/session";

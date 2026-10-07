@@ -4,7 +4,7 @@ import { LOGIN_URL } from "@/shared/config";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-background">
+    <footer className="border-t border-line bg-white">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p className="text-sm text-muted">
           © {new Date().getFullYear()} EventPro · Lima, Perú

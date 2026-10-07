@@ -1,31 +1,77 @@
 "use client";
 
-import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { useAuth } from "@/entities/session";
-import { LoginForm } from "@/features/auth-login";
-import { HOME_BY_ROLE } from "@/shared/config";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { login as loginRequest } from "@/entities/auth/api";
+import { Button, ErrorBanner, Field, Input } from "@/shared/ui";
 
 export function LoginPage() {
-  const { status, user } = useAuth();
   const router = useRouter();
+  const { startSession } = useAuth();
+  const [email, setEmail] = useState("admin@eventpro.pe");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (status === "authenticated" && user) {
-      router.replace(HOME_BY_ROLE[user.role] ?? "/panel");
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const session = await loginRequest(email, password);
+      startSession(session.access_token, session.user ?? null);
+      router.replace("/panel/catalog");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "No se pudo iniciar sesión.");
+    } finally {
+      setLoading(false);
     }
-  }, [status, user, router]);
+  }
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="space-y-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">EventPro</h1>
-          <p className="text-sm text-zinc-500">Inicia sesión para continuar</p>
+    <main className="flex flex-1 items-center justify-center p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm"
+      >
+        <h1 className="text-2xl font-bold tracking-tight text-ink">EventPro</h1>
+        <p className="mt-1 mb-6 text-sm text-muted">Panel del encargado</p>
+
+        <div className="flex flex-col gap-4">
+          <Field label="Correo">
+            <Input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              autoComplete="username"
+            />
+          </Field>
+          <Field label="Contraseña">
+            <Input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              minLength={8}
+              autoComplete="current-password"
+            />
+          </Field>
+          <ErrorBanner message={error} />
+          <Button type="submit" disabled={loading}>
+            {loading ? "Ingresando…" : "Ingresar"}
+          </Button>
         </div>
-        <LoginForm />
-      </div>
+        <Link
+          href="/"
+          className="mt-6 block text-center text-sm text-muted transition hover:text-ink"
+        >
+          ← Volver al inicio
+        </Link>
+      </form>
     </main>
   );
 }

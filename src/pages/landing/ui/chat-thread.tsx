@@ -29,7 +29,7 @@ export function ChatThread() {
   return (
     <section
       aria-label="Ejemplo de conversación con el bot de EventPro"
-      className="rounded-3xl border border-line bg-white/70 p-4 shadow-lg shadow-black/5 dark:bg-white/[0.04] dark:shadow-none sm:p-5"
+      className="rounded-2xl border border-line bg-white p-4 shadow-sm sm:p-5"
     >
       <div className="flex items-center gap-2 border-b border-line pb-3">
         <span

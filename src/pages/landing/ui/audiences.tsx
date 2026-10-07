@@ -23,7 +23,7 @@ export function Audiences() {
         <p className="font-mono text-eyebrow text-brand uppercase">
           Para quién es
         </p>
-        <h2 className="mt-4 max-w-2xl font-display text-title text-ink">
+        <h2 className="mt-4 max-w-2xl font-semibold text-title text-ink">
           Tres formas de vivir EventPro
         </h2>
 
@@ -31,7 +31,7 @@ export function Audiences() {
           {AUDIENCES.map((audience) => (
             <li
               key={audience.label}
-              className="rounded-2xl border border-line bg-background p-6"
+              className="rounded-xl border border-line bg-white p-6"
             >
               <p className="font-mono text-eyebrow text-brand uppercase">
                 {audience.label}

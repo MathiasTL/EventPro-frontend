@@ -1,83 +1,64 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { API_URL } from "@/shared/config/env";
+import { clearSession, getToken } from "@/shared/lib/auth-storage";
 
-import { API_URL, AUTH_ENDPOINTS } from "@/shared/config";
-import type { RefreshResponse } from "@/shared/types";
-import { ApiError, toApiError } from "./errors";
-import { tokenStore } from "./token-store";
+export class ApiRequestError extends Error {
+  status: number;
+  code: string;
 
-type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean };
+  constructor(status: number, detail: string, code: string) {
+    super(detail);
+    this.name = "ApiRequestError";
+    this.status = status;
+    this.code = code;
+  }
+}
 
-const NON_REFRESHABLE_PATHS = new Set<string>([
-  AUTH_ENDPOINTS.login,
-  AUTH_ENDPOINTS.refresh,
-]);
+type RequestOptions = {
+  method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+  body?: unknown;
+};
 
-export const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: { "Content-Type": "application/json" },
-});
+function problemCode(problemType: string | undefined): string {
+  if (!problemType) return "request-failed";
+  const parts = problemType.split("/");
+  return parts[parts.length - 1] || "request-failed";
+}
 
-apiClient.interceptors.request.use((config) => {
-  const token = tokenStore.getAccess();
-  if (token) config.headers.set("Authorization", `Bearer ${token}`);
-  return config;
-});
+export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const token = getToken();
+  const multipart = options.body instanceof FormData;
+  const headers: Record<string, string> = multipart ? {} : { "Content-Type": "application/json" };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
-let refreshPromise: Promise<string> | null = null;
+  let response: Response;
+  try { response = await fetch(`${API_URL}${path}`, {
+    method: options.method ?? "GET",
+    headers,
+    body: multipart ? options.body as FormData : options.body === undefined ? undefined : JSON.stringify(options.body),
+    cache: "no-store",
+  }); } catch { throw new ApiRequestError(0, "No se pudo conectar con EventPro. Comprueba que el backend esté disponible.", "network-error"); }
 
-export function refreshSession(): Promise<string> {
-  if (refreshPromise) return refreshPromise;
+  if (response.status === 204) {
+    return undefined as T;
+  }
 
-  const refreshToken = tokenStore.getRefresh();
-  if (!refreshToken) {
-    return Promise.reject(
-      new ApiError({
-        type: "https://errors.eventpro.pe/invalid-credentials",
-        title: "No autorizado",
-        status: 401,
-        detail: "Tu sesión expiró. Inicia sesión nuevamente.",
-      }),
+  const raw = await response.text();
+  let data: unknown = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch { if (response.ok) throw new ApiRequestError(response.status, "El servidor devolvió una respuesta inválida.", "invalid-response"); }
+
+  if (!response.ok) {
+    const problem = (data ?? {}) as { detail?: string | { msg: string; loc: string[] }[]; type?: string };
+    if (response.status === 401) {
+      clearSession();
+    }
+    throw new ApiRequestError(
+      response.status,
+      typeof problem.detail === "string" ? problem.detail : Array.isArray(problem.detail) ? problem.detail.map(item => `${item.loc.slice(1).join(".")}: ${item.msg}`).join(" · ") : ({ 401: "Tu sesión venció. Inicia sesión otra vez.", 403: "No tienes permiso para esta acción.", 404: "El registro no existe.", 409: "No se puede realizar la acción por un conflicto.", 429: "Demasiados intentos. Espera un minuto y vuelve a intentar." } as Record<number, string>)[response.status] ?? "Error inesperado del servidor.",
+      problemCode(problem.type),
     );
   }
 
-  refreshPromise = axios
-    .post<RefreshResponse>(`${API_URL}${AUTH_ENDPOINTS.refresh}`, {
-      refresh_token: refreshToken,
-    })
-    .then(({ data }) => {
-      tokenStore.setAccess(data.access_token);
-      tokenStore.setRefresh(data.refresh_token);
-      return data.access_token;
-    })
-    .finally(() => {
-      refreshPromise = null;
-    });
-
-  return refreshPromise;
+  return data as T;
 }
-
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const config = error.config as RetriableConfig | undefined;
-    const canRetryWithRefresh =
-      error.response?.status === 401 &&
-      config !== undefined &&
-      config._retry !== true &&
-      config.url !== undefined &&
-      !NON_REFRESHABLE_PATHS.has(config.url);
-
-    if (canRetryWithRefresh && config) {
-      config._retry = true;
-      try {
-        await refreshSession();
-        return apiClient(config);
-      } catch (refreshError) {
-        tokenStore.clear();
-        throw toApiError(refreshError);
-      }
-    }
-
-    throw toApiError(error);
-  },
-);
