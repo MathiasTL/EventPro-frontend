@@ -1,1 +1,5 @@
-export { PanelPage as default } from "@/pages/panel";
+import { redirect } from "next/navigation";
+
+export default function PanelIndex() {
+  redirect("/panel/catalog");
+}
