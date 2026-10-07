@@ -3,24 +3,97 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #17121c;
+
+  --ink: #17121c;
+  --bone: #fafaf9;
+  --brand: #6d28d9;
+  --brand-solid: #6d28d9;
+  --brand-tint: #ede9fe;
+  --whatsapp: #25d366;
+  --whatsapp-ink: #052e16;
+  --muted: #625b6e;
+  --line: #e4dfee;
+}
+
+.dark {
+  --background: #100d16;
+  --foreground: #eceaf2;
+
+  --ink: #eceaf2;
+  --bone: #100d16;
+  --brand: #a78bfa;
+  --brand-solid: #43207d;
+  --brand-tint: #241a3d;
+  --whatsapp: #25d366;
+  --whatsapp-ink: #052e16;
+  --muted: #a49dae;
+  --line: #2b2439;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-bone: var(--bone);
+  --color-brand: var(--brand);
+  --color-brand-solid: var(--brand-solid);
+  --color-brand-tint: var(--brand-tint);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-ink: var(--whatsapp-ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --text-hero: clamp(2.5rem, 7.5vw, 4.5rem);
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.035em;
+
+  --text-title: clamp(1.75rem, 4vw, 2.5rem);
+  --text-title--line-height: 1.1;
+  --text-title--letter-spacing: -0.02em;
+
+  --text-lead: clamp(1.0625rem, 1.4vw, 1.25rem);
+  --text-lead--line-height: 1.65;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.5;
+  --text-eyebrow--letter-spacing: 0.16em;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family:
+    var(--font-display), "Bricolage Grotesque", ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+.chat-in {
+  animation: chat-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-in {
+    animation: none;
+  }
 }
