@@ -10,7 +10,7 @@ import io
 import json
 import os
 from datetime import date, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 import urllib.error
 import urllib.request
@@ -58,15 +58,18 @@ payload = {
     "package_id": package["id"], "theme_id": None,
     "extra_ids": [extras[0]["id"]] if extras else [], "client_provides_transport": True,
 }
-budget = request("/budgets/prepare", payload)
-subtotal = Decimal(str(package["base_price"])) + (Decimal(str(extras[0]["sale_price"])) if extras else 0)
-assert Decimal(budget["services_subtotal"]) == subtotal
-assert Decimal(budget["advance_amount"]) == (subtotal * Decimal("0.10")).quantize(Decimal("0.01"))
-assert base64.b64decode(budget["pdf_base64"]).startswith(b"%PDF")
 assert request("/manual-bookings") is not None
-print("OK: login, CORS, catálogo real, disponibilidad, cálculo financiero y presupuesto PDF.")
+print("OK: login, CORS y lectura del catálogo y solicitudes. No crea documentos ni reservas.")
 
 if args.create_demo_booking:
+    budget = request("/budgets/prepare", payload)
+    subtotal = Decimal(str(package["base_price"])) + (Decimal(str(extras[0]["sale_price"])) if extras else 0)
+    assert Decimal(budget["services_subtotal"]) == subtotal
+    assert Decimal(budget["advance_amount"]) == (subtotal * Decimal(settings.get("ADVANCE_PERCENT", "10")) / Decimal(100)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    assert base64.b64decode(budget["pdf_base64"]).startswith(b"%PDF")
+    assert request("/manual-bookings") is not None
+    print("OK: presupuesto persistido, disponibilidad y cálculo financiero.")
+
     from PIL import Image, ImageDraw
 
     assert budget["availability_status"] == "AVAILABLE", "Escoge otra fecha de demo disponible"
@@ -85,11 +88,11 @@ if args.create_demo_booking:
     ).encode() + buffer.getvalue() + f"\r\n--{boundary}--\r\n".encode()
     booking = request("/manual-bookings", raw=multipart, content_type="multipart/form-data; boundary=" + boundary)
     assert booking["payment_status"] == "PENDING_VERIFICATION" and booking["event_id"] is None
-    confirmed = request(f"/manual-bookings/{quote_id}/confirm", {"receipt_verified": True})
+    confirmed = request(f"/manual-bookings/{quote_id}/confirm", {"receipt_verified": True, "override_reason": "Demostración sintética supervisada; no representa un pago real"})
     assert confirmed["payment_status"] == "VERIFIED"
     assert confirmed["quote_status"] == "CONVERTED"
     assert confirmed["event_id"] and confirmed["contract_id"]
-    repeated = request(f"/manual-bookings/{quote_id}/confirm", {"receipt_verified": True})
+    repeated = request(f"/manual-bookings/{quote_id}/confirm", {"receipt_verified": True, "override_reason": "Demostración sintética supervisada; no representa un pago real"})
     assert repeated["event_id"] == confirmed["event_id"]
     assert repeated["contract_id"] == confirmed["contract_id"]
     document = request(f"/manual-bookings/{quote_id}/contract")

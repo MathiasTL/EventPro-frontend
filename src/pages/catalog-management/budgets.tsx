@@ -5,7 +5,7 @@ import { listResources } from "@/entities/catalog/api";
 import type { Resource } from "@/entities/catalog/types";
 import { apiFetch } from "@/shared/api/client";
 import { formatSoles } from "@/shared/lib/format";
-import { Badge, Button, ErrorBanner, Field, Input, Select } from "@/shared/ui";
+import { Badge, Button, ErrorBanner, Field, Input, Select, Textarea } from "@/shared/ui";
 import { ManualBookingFlow, type BookingInput } from "./bookings";
 
 type Budget = {
@@ -32,6 +32,7 @@ const statuses = {
 };
 
 export function BudgetProcess() {
+  const [clientProvidesTransport, setClientProvidesTransport] = useState(true);
   const [packages, setPackages] = useState<Resource[]>([]);
   const [extras, setExtras] = useState<Resource[]>([]);
   const [packageId, setPackageId] = useState("");
@@ -67,7 +68,9 @@ export function BudgetProcess() {
         package_id: selectedPackage.id,
         theme_id: themeId || null,
         extra_ids: selectedExtras,
-        client_provides_transport: data.get("transport") === "on",
+        client_provides_transport: clientProvidesTransport,
+        manual_mobility_amount: clientProvidesTransport ? "0.00" : String(data.get("manual_mobility_amount")),
+        mobility_override_reason: clientProvidesTransport ? null : String(data.get("mobility_override_reason")).trim(),
       };
       const result = await apiFetch<Budget>("/budgets/prepare", { method: "POST", body });
       setPreparedRequest({ ...body, phone: String(data.get("phone")).trim(), district: String(data.get("district")).trim() });
@@ -101,17 +104,18 @@ export function BudgetProcess() {
         <Field label="Temática compatible"><Select value={themeId} onChange={event => setThemeId(event.target.value)}><option value="">Sin temática</option>{selectedPackage?.compatible_themes?.filter(item => item.is_active !== false).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</Select></Field>
       </fieldset>
       <fieldset disabled={busy}><legend className="mb-2 text-sm font-medium">Extras</legend><div className="grid gap-2 sm:grid-cols-2">{extras.map(item => <label key={item.id} className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm"><input type="checkbox" checked={selectedExtras.includes(item.id)} onChange={event => setSelectedExtras(event.target.checked ? [...selectedExtras, item.id] : selectedExtras.filter(id => id !== item.id))} />{item.name} · {formatSoles(item.sale_price)}</label>)}</div></fieldset>
-      <label className="flex items-start gap-2 rounded-lg bg-zinc-50 p-4 text-sm"><input className="mt-1" name="transport" type="checkbox" required disabled={busy} /><span>El cliente proporcionará transporte de ida y vuelta para personal y equipos. La movilidad se exonera (S/ 0). Este flujo inicial requiere esta modalidad.</span></label>
+      <label className="flex items-start gap-2 rounded-lg bg-zinc-50 p-4 text-sm"><input className="mt-1" name="transport" type="checkbox" checked={clientProvidesTransport} onChange={event => setClientProvidesTransport(event.target.checked)} disabled={busy} /><span>El cliente proporcionará transporte de ida y vuelta para personal y equipos. La movilidad se exonera (S/ 0). Si no aporta transporte, registra la movilidad acordada y su motivo.</span></label>
+      {!clientProvidesTransport && <div className="space-y-4"><Field label="Movilidad acordada (S/)"><Input name="manual_mobility_amount" type="number" min="0.01" step="0.01" required disabled={busy} /></Field><Field label="Motivo de tarifa manual de movilidad"><Textarea name="mobility_override_reason" required minLength={10} maxLength={500} disabled={busy} /></Field></div>}
       <Button type="submit" disabled={busy}>{busy ? "Consultando disponibilidad y generando PDF…" : "Generar presupuesto"}</Button>
     </form>}
     {budget && <section aria-live="polite" className="space-y-4 rounded-xl border border-violet-200 bg-violet-50/50 p-5">
       <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="text-lg font-semibold">Presupuesto generado</h3><Badge tone={budget.availability_status === "AVAILABLE" ? "success" : "warning"}>{statuses[budget.availability_status]}</Badge></div>
       <p className="text-sm text-zinc-600">{budget.package_name} · {budget.duration_minutes} minutos{budget.theme_name && ` · ${budget.theme_name}`}</p>
-      <dl className="space-y-2 text-sm">{budget.lines.map((line, index) => <div key={index} className="flex justify-between gap-4"><dt>{line.name}</dt><dd>{formatSoles(line.amount)}</dd></div>)}{[["Subtotal servicios", budget.services_subtotal], ["Movilidad (transporte del cliente)", budget.mobility_amount], ["Total", budget.total_amount], ["Adelanto requerido (10%)", budget.advance_amount], ["Saldo previsto", budget.pending_balance]].map(([label, amount]) => <div key={label} className="flex justify-between gap-4 border-t border-violet-100 pt-2"><dt className="font-medium">{label}</dt><dd>{formatSoles(amount)}</dd></div>)}</dl>
+      <dl className="space-y-2 text-sm">{budget.lines.map((line, index) => <div key={index} className="flex justify-between gap-4"><dt>{line.name}</dt><dd>{formatSoles(line.amount)}</dd></div>)}{[["Subtotal servicios", budget.services_subtotal], ["Movilidad acordada", budget.mobility_amount], ["Total", budget.total_amount], ["Adelanto requerido", budget.advance_amount], ["Saldo previsto", budget.pending_balance]].map(([label, amount]) => <div key={label} className="flex justify-between gap-4 border-t border-violet-100 pt-2"><dt className="font-medium">{label}</dt><dd>{formatSoles(amount)}</dd></div>)}</dl>
       <p className="text-sm text-zinc-600">Este presupuesto no reserva la fecha ni acredita un pago. {budget.availability_status !== "AVAILABLE" ? "Resuelve el conflicto o el sobrecupo antes de confirmar el servicio." : "La disponibilidad se revalida al confirmar el adelanto."}</p>
       <Button onClick={download}>Descargar presupuesto PDF</Button>
       <p className="text-xs text-zinc-500">Referencia: {budget.budget_id}</p>
     </section>}
-    <ManualBookingFlow key={budget?.budget_id ?? "recent"} request={budget ? preparedRequest : null} advance={budget?.advance_amount} canRegister={budget?.availability_status === "AVAILABLE"} />
+    <ManualBookingFlow key={budget?.budget_id ?? "recent"} request={budget ? preparedRequest : null} advance={budget?.advance_amount} canRegister={!!budget} />
   </div>;
 }

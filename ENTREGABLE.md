@@ -57,7 +57,7 @@ Es un proceso completo de registro y confirmación manual de una reserva hasta e
 - El contrato queda emitido y pendiente de firma. No se simulan firma, OTP ni sello PAdES, y el evento no pasa a agendado por una firma inexistente.
 - La movilidad se exonera cuando el cliente provee transporte; Google Maps queda fuera de este flujo.
 - Se reserva la fecha del evento y el inventario requerido; la asignación específica de un elenco es posterior.
-- PDFs y comprobantes quedan en `uploads` del backend local. Sus registros y rutas están en Supabase. Respalda esa carpeta y usa almacenamiento compartido antes de desplegar varios servidores.
+- Documentos nuevos se guardan de forma privada y compartida en PostgreSQL/Supabase, dentro de `booking_documents`. Los documentos anteriores siguen requiriendo su carpeta local hasta una migración operativa coordinada.
 - Los precios se congelan al registrar la cotización; duración y recursos del paquete se consultan nuevamente al confirmar.
 
 ## Verificaciones
@@ -69,8 +69,19 @@ npm run build
 node scripts\verify-ui.mjs
 ```
 
-El primer comprobador verifica catálogo, cálculos y PDF sin crear registros de negocio. El segundo requiere Playwright y Chrome/Edge; verifica login, formulario, descargas, modal, vista móvil y cierre de sesión sin registrar pagos.
+El primer comprobador verifica login, catálogo y solicitudes sin crear documentos ni reservas. La generación y recuperación del presupuesto persistido se verifica con las pruebas aisladas del backend o al elegir expresamente la opción de demo. El segundo requiere Playwright y Chrome/Edge; verifica login, formulario, descargas, modal, vista móvil y cierre de sesión sin registrar pagos.
 
 `verify-supabase.py --create-demo-booking` crea y conserva una solicitud sintética completa; úsalo únicamente para una demostración explícita. `verify-persisted-booking.py` comprueba sus estados e inventario con consultas de solo lectura. Los artefactos quedan en `demo-artifacts/`, ignorado por Git.
 
 Para la base aislada anterior usa `scripts/start-demo.ps1 -LocalDatabase` y [DEMO.md](DEMO.md). `verify-demo.py` se bloquea si detecta una base distinta del contenedor local `db`. Los tests de integración nunca deben apuntar a Supabase compartido.
+
+
+## Cambios tras la auditoría del backend #22
+
+- El despliegue requiere Alembic `0003_manual_booking_documents`, revisado y aplicado por el equipo. El script de arranque no migra la base compartida automáticamente.
+- Un segundo encargado verifica el pago. Si el superadministrador registró el comprobante, debe escribir un motivo para autorizar una excepción de verificación propia; queda auditado.
+- Si falta capacidad, el comprobante se conserva en revisión. El panel permite aprobar un sobrecupo coordinado o solicitar devolución, sin simular stock ni transferir dinero.
+- Registrar devolución realizada exige confirmar que se efectuó el pago al cliente y guardar la referencia.
+- Movilidad puede ser exonerada por transporte del cliente o registrada con tarifa manual y motivo. El adelanto usa la configuración del backend, únicamente sobre servicios.
+- Solicitudes tienen navegación por páginas. Un reintento de registro no duplica pago; una confirmación repetida conserva evento y contrato.
+- El arreglo previo de escritura de catálogo se revisa en una rama y PR separados del proceso manual.
