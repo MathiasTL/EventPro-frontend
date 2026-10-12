@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { login as loginRequest } from "@/entities/auth/api";
 import { Button, ErrorBanner, Field, Input } from "@/shared/ui";
 

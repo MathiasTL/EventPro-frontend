@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { Button } from "@/shared/ui";
 import { OperatorAgenda } from "@/widgets/operator-agenda/OperatorAgenda";
 

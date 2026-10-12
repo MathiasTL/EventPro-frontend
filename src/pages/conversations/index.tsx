@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { canAccessConversations } from "@/app/routes/roles";
 import { activeManagersOptions } from "@/entities/user";
 import { useConversationStream } from "@/features/conversation-stream";

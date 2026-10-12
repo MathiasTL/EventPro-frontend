@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/entities/auth/context";
 import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "@/shared/api/client";
 import { downloadBase64Pdf, triggerBlobDownload } from "@/shared/lib/download";

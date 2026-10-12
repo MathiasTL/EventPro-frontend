@@ -1,1 +1,1 @@
-export { SchedulePage as default } from "@/pages/schedule";
+export { SchedulePage as default } from "@/pages/panel-cronograma";

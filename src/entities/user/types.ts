@@ -1,5 +1,11 @@
 export type UserRole = "SUPERADMIN" | "ENCARGADO" | "OPERADOR";
 
+export const ROLE_LABELS: Record<UserRole, string> = {
+  SUPERADMIN: "Superadministrador",
+  ENCARGADO: "Encargado",
+  OPERADOR: "Operador",
+};
+
 /** Active manager as returned by `GET /users` (`UserReadResponse`), reduced to what the UI needs. */
 export type UserOption = { id: string; name: string };
 

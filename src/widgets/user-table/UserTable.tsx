@@ -2,15 +2,9 @@
 
 import { useState } from "react";
 import { createUser, updateUser } from "@/entities/user/api";
-import type { PanelUser, UserRole } from "@/entities/user/types";
+import { ROLE_LABELS, type PanelUser, type UserRole } from "@/entities/user/types";
 import { formatLimaDateTime } from "@/shared/lib/date";
 import { Badge, Button, ErrorBanner, Field, Input, Modal, Select, Table } from "@/shared/ui";
-
-const ROLE_LABELS: Record<UserRole, string> = {
-  SUPERADMIN: "Superadministrador",
-  ENCARGADO: "Encargado",
-  OPERADOR: "Operador",
-};
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_PATTERN = /^\+?\d{7,20}$/;
@@ -124,9 +118,7 @@ function UserFormModal({
           </Field>
           <Field label="Rol">
             <Select value={role} onChange={event => setRole(event.target.value as UserRole)} disabled={isSelf}>
-              <option value="SUPERADMIN">Superadministrador</option>
-              <option value="ENCARGADO">Encargado</option>
-              <option value="OPERADOR">Operador</option>
+              {Object.entries(ROLE_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </Select>
           </Field>
           {user && (

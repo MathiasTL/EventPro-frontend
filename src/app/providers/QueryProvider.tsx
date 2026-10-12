@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/reac
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { ApiRequestError } from "@/shared/api/client";
 
 const NO_RETRY_STATUSES = [401, 403, 404];
