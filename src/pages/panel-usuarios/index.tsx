@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { listUsers } from "@/entities/user/api";
-import type { PanelUser, UserRole } from "@/entities/user/types";
+import { ROLE_LABELS, type PanelUser, type UserRole } from "@/entities/user/types";
 import { UserTable } from "@/widgets/user-table/UserTable";
 import { Button, EmptyState, ErrorBanner, Field, Input, Select } from "@/shared/ui";
 
@@ -97,9 +97,7 @@ function UsuariosPageContent({ currentUserId }: { currentUserId: string }) {
         <Field label="Rol">
           <Select value={draft.role} onChange={event => setDraft({ ...draft, role: event.target.value as UserRole | "" })} className="w-44">
             <option value="">Todos los roles</option>
-            <option value="SUPERADMIN">Superadministrador</option>
-            <option value="ENCARGADO">Encargado</option>
-            <option value="OPERADOR">Operador</option>
+            {Object.entries(ROLE_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </Select>
         </Field>
         <Field label="Estado">

@@ -5,7 +5,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
+import { ROLE_LABELS, type UserRole } from "@/entities/user/types";
 import { Button } from "@/shared/ui";
 
 type NavItem = { href: string; label: string; roles: string[] };
@@ -20,11 +21,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/panel/usuarios", label: "Usuarios", roles: ["SUPERADMIN"] },
   { href: "/panel/auditoria", label: "Auditoría", roles: ["ENCARGADO", "SUPERADMIN"] },
 ];
-
-const roleLabels: Record<string, string> = {
-  SUPERADMIN: "Superadministrador",
-  ENCARGADO: "Encargado",
-};
 
 export function PanelShell({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
@@ -80,7 +76,7 @@ export function PanelShell({ children }: { children: ReactNode }) {
         </div>
         <div className="hidden border-t border-zinc-200 px-6 py-4 sm:block">
           <p className="text-sm font-medium">{user?.full_name}</p>
-          <p className="text-xs text-zinc-500">{user ? roleLabels[user.role] ?? user.role : ""}</p>
+          <p className="text-xs text-zinc-500">{user ? ROLE_LABELS[user.role as UserRole] ?? user.role : ""}</p>
           <Button variant="ghost" className="mt-3 w-full" onClick={logout}>Salir</Button>
         </div>
       </aside>
@@ -88,7 +84,7 @@ export function PanelShell({ children }: { children: ReactNode }) {
         <header className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-white px-6 py-4 sm:hidden">
           <div className="text-sm">
             <p className="font-medium">{user?.full_name}</p>
-            <p className="text-xs text-zinc-500">{user ? roleLabels[user.role] ?? user.role : ""}</p>
+            <p className="text-xs text-zinc-500">{user ? ROLE_LABELS[user.role as UserRole] ?? user.role : ""}</p>
           </div>
           <Button variant="ghost" onClick={logout}>Salir</Button>
         </header>

@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 
 import { logout as logoutRequest, refresh as refreshRequest } from "@/entities/auth/api";
+import { AuthContext, type Session } from "@/entities/auth/context";
 import { registerUnauthorizedHandler } from "@/shared/api/client";
 import {
   clearSession,
@@ -13,20 +14,6 @@ import {
   type SessionUser,
 } from "@/shared/lib/auth-storage";
 
-type Session = {
-  access_token: string;
-  refresh_token: string;
-  user: SessionUser | null;
-};
-
-type AuthContextValue = {
-  user: SessionUser | null;
-  ready: boolean;
-  startSession: (session: Session) => void;
-  logout: () => Promise<void>;
-};
-
-const AuthContext = createContext<AuthContextValue | null>(null);
 const subscribeReady = () => () => {};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -78,12 +65,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
-  return context;
 }
