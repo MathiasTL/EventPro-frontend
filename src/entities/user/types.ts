@@ -1,3 +1,5 @@
+export type UserRole = "SUPERADMIN" | "ENCARGADO" | "OPERADOR";
+
 /** Active manager as returned by `GET /users` (`UserReadResponse`), reduced to what the UI needs. */
 export type UserOption = { id: string; name: string };
 
@@ -10,3 +12,6 @@ export type UserReadResponse = {
   is_active: boolean;
   created_at: string;
 };
+
+/** Exact shape of UserReadResponse (GET/POST/PATCH /users) with a typed role. The password never travels here. */
+export type PanelUser = Omit<UserReadResponse, "role"> & { role: UserRole };
