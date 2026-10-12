@@ -11,6 +11,11 @@ const links = [
   { href: "/panel/solicitudes", label: "Solicitudes", visible: () => true },
   { href: "/panel/catalogo", label: "Catálogo", visible: () => true },
   { href: "/panel/sobrecupo", label: "Sobrecupo", visible: () => true },
+  { href: "/panel/cronograma", label: "Cronograma", visible: () => true },
+  { href: "/panel/pagos", label: "Pagos", visible: () => true },
+  { href: "/panel/finanzas", label: "Finanzas", visible: () => true },
+  { href: "/panel/usuarios", label: "Usuarios", visible: (role: string) => role === "SUPERADMIN" },
+  { href: "/panel/auditoria", label: "Auditoría", visible: () => true },
   { href: "/panel/conversations", label: "Conversaciones", visible: canAccessConversations },
   { href: "/panel/quotes", label: "Cotizaciones", visible: canAccessConversations },
 ];
