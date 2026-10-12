@@ -8,7 +8,9 @@ import { canAccessConversations } from "@/app/routes/roles";
 import { Button } from "@/shared/ui";
 
 const links = [
-  { href: "/panel/catalog", label: "Catálogo", visible: () => true },
+  { href: "/panel/solicitudes", label: "Solicitudes", visible: () => true },
+  { href: "/panel/catalogo", label: "Catálogo", visible: () => true },
+  { href: "/panel/sobrecupo", label: "Sobrecupo", visible: () => true },
   { href: "/panel/conversations", label: "Conversaciones", visible: canAccessConversations },
   { href: "/panel/quotes", label: "Cotizaciones", visible: canAccessConversations },
 ];
