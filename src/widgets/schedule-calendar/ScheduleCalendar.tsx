@@ -6,7 +6,7 @@ import { EVENT_STATUS_LABELS } from "@/entities/event/EventCard";
 import type { EventStatus, ScheduleEvent } from "@/entities/event/types";
 import { Button, EmptyState, ErrorBanner, Select } from "@/shared/ui";
 import { EventCardWithObservations } from "@/widgets/event-card-with-observations/EventCardWithObservations";
-import { addDays, formatLongDate, formatShortDate, limaToday, startOfWeek } from "./date-utils";
+import { addDays, formatLongDate, formatShortDate, limaToday, startOfWeek } from "@/shared/lib/date";
 
 type ViewMode = "day" | "week";
 
