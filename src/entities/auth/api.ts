@@ -15,3 +15,17 @@ export function login(email: string, password: string): Promise<LoginResponse> {
     body: { email, password },
   });
 }
+
+export function refresh(refreshToken: string): Promise<LoginResponse> {
+  return apiFetch<LoginResponse>("/auth/refresh", {
+    method: "POST",
+    body: { refresh_token: refreshToken },
+  });
+}
+
+export function logout(refreshToken: string): Promise<void> {
+  return apiFetch<void>("/auth/logout", {
+    method: "POST",
+    body: { refresh_token: refreshToken },
+  });
+}
