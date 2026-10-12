@@ -33,3 +33,18 @@ export function formatLongDate(value: string): string {
 export function formatShortDate(value: string): string {
   return new Intl.DateTimeFormat("es-PE", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(parseDateOnly(value));
 }
+
+/** Formatea un instante ISO (con offset) como fecha y hora de Lima, p. ej. para `created_at`. */
+export function formatLimaDateTime(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return new Intl.DateTimeFormat("es-PE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Lima",
+  }).format(date);
+}
