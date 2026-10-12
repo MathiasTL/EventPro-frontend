@@ -137,3 +137,13 @@ export function ErrorBanner({ message }: { message: string | null }) {
 export function EmptyState({ message }: { message: string }) {
   return <p className="rounded-xl border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">{message}</p>;
 }
+
+export function ComingSoon({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center">
+      <h2 className="text-lg font-semibold text-zinc-900">{title}</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm text-zinc-500">{description}</p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-violet-600">Próximamente</p>
+    </div>
+  );
+}
