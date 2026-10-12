@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { listResources } from "@/entities/catalog/api";
 import type { Resource } from "@/entities/catalog/types";
 import { apiFetch } from "@/shared/api/client";
+import { downloadBase64Pdf } from "@/shared/lib/download";
 import { formatSoles } from "@/shared/lib/format";
 import { Badge, Button, ErrorBanner, Field, Input, Select, Textarea } from "@/shared/ui";
 import { ManualBookingFlow, type BookingInput } from "./bookings";
@@ -81,10 +82,7 @@ export function BudgetProcess() {
 
   function download() {
     if (!budget) return;
-    const bytes = Uint8Array.from(atob(budget.pdf_base64), char => char.charCodeAt(0));
-    const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
-    const link = document.createElement("a"); link.href = url; link.download = `EventPro-presupuesto-${budget.budget_id}.pdf`; link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadBase64Pdf(budget.pdf_base64, `EventPro-presupuesto-${budget.budget_id}.pdf`);
   }
 
   return <div className="space-y-6">
