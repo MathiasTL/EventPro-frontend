@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "@/shared/api/client";
+import { downloadBase64Pdf, triggerBlobDownload } from "@/shared/lib/download";
 import { formatSoles } from "@/shared/lib/format";
 import { Badge, Button, ErrorBanner, Field, Input, Modal, Select } from "@/shared/ui";
 
@@ -35,12 +36,6 @@ type Booking = {
   contract_number: string | null;
 };
 
-function downloadPdf(encoded: string, filename: string) {
-  const bytes = Uint8Array.from(atob(encoded), char => char.charCodeAt(0));
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
-  const link = document.createElement("a"); link.href = url; link.download = filename; link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 
 export function ManualBookingFlow({ request, advance, canRegister = false }: { request: BookingInput | null; advance?: string; canRegister?: boolean }) {
   const [items, setItems] = useState<Booking[]>([]);
@@ -83,15 +78,16 @@ export function ManualBookingFlow({ request, advance, canRegister = false }: { r
       const { getToken, clearSession } = await import("@/shared/lib/auth-storage");
       const response = await fetch(`${API_URL}/payments/${booking.payment_id}/evidence`, { headers: { Authorization: `Bearer ${getToken()}` } });
       if (!response.ok) { if (response.status === 401) clearSession(); throw new Error("No se pudo descargar el comprobante."); }
-      const blob = await response.blob(); const url = URL.createObjectURL(blob);
-      const link = document.createElement("a"); link.href = url; link.download = `comprobante-${booking.payment_id}.${blob.type === "application/pdf" ? "pdf" : blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+      const blob = await response.blob();
+      const extension = blob.type === "application/pdf" ? "pdf" : blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg";
+      triggerBlobDownload(blob, `comprobante-${booking.payment_id}.${extension}`);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "No se pudo abrir el comprobante."); }
     finally { setBusy(false); }
   }
 
   async function contract(booking: Booking) {
     setBusy(true); setError(null);
-    try { const result = await apiFetch<{ filename: string; pdf_base64: string }>(`/manual-bookings/${booking.quote_id}/contract`); downloadPdf(result.pdf_base64, result.filename); }
+    try { const result = await apiFetch<{ filename: string; pdf_base64: string }>(`/manual-bookings/${booking.quote_id}/contract`); downloadBase64Pdf(result.pdf_base64, result.filename); }
     catch (caught) { setError(caught instanceof Error ? caught.message : "No se pudo descargar el contrato."); }
     finally { setBusy(false); }
   }
