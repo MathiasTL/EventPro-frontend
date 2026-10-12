@@ -22,7 +22,7 @@ async function main() {
     await page.getByLabel("Correo").fill(env.SUPERADMIN_EMAIL || "admin@eventpro.pe");
     await page.getByLabel("Contraseña").fill(env.SUPERADMIN_PASSWORD);
     await page.getByRole("button", { name: "Ingresar", exact: true }).click();
-    await page.waitForURL("**/panel/catalog");
+    await page.waitForURL("**/panel/solicitudes");
     await page.getByText("Solicitudes y contratos recientes", { exact: true }).waitFor();
     await page.getByLabel("Nombre del cliente", { exact: true }).fill("DEMO comprobación visual");
     await page.getByLabel("Teléfono del cliente", { exact: true }).fill("+51900000001");
@@ -47,6 +47,7 @@ async function main() {
     const storedContract = page.getByRole("button", { name: "Descargar contrato", exact: true }).first();
     const contractPromise = page.waitForEvent("download"); await storedContract.click();
     assert((await contractPromise).suggestedFilename().endsWith(".pdf"));
+    await page.goto("http://localhost:3002/panel/catalogo");
     await page.getByRole("button", { name: "Paquetes", exact: true }).click();
     await page.getByRole("button", { name: "+ Nuevo registro", exact: true }).waitFor();
     await page.getByRole("button", { name: "+ Nuevo registro", exact: true }).click();
