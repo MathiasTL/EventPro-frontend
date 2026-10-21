@@ -1,5 +1,5 @@
 import { API_URL } from "@/shared/config/env";
-import { clearSession, getRefreshToken, setTokens } from "@/shared/lib/auth-storage";
+import { clearSession, getRefreshToken, getToken, setTokens } from "@/shared/lib/auth-storage";
 
 type TokenPair = {
   access_token: string;
@@ -7,11 +7,19 @@ type TokenPair = {
   expires_in: number;
 };
 
+/** The session cannot be renewed (no, invalid, revoked or expired refresh token). Any other refresh failure is transient. */
+export class SessionRejectedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SessionRejectedError";
+  }
+}
+
 let inFlight: Promise<string> | null = null;
 
 async function requestRefresh(): Promise<string> {
   const refreshToken = getRefreshToken();
-  if (!refreshToken) throw new Error("No refresh token available");
+  if (!refreshToken) throw new SessionRejectedError("No refresh token available");
 
   const response = await fetch(`${API_URL}/auth/refresh`, {
     method: "POST",
@@ -20,8 +28,15 @@ async function requestRefresh(): Promise<string> {
     cache: "no-store",
   });
   if (!response.ok) {
-    // The refresh token is invalid, revoked or expired: the session cannot be renewed.
-    if (response.status === 401 || response.status === 403) clearSession();
+    if (response.status === 401 || response.status === 403) {
+      // Refresh tokens are single-use: if the stored one changed, another tab already rotated it and its pair is valid.
+      const stored = getRefreshToken();
+      const accessToken = getToken();
+      if (stored && stored !== refreshToken && accessToken) return accessToken;
+      // The refresh token is invalid, revoked or expired: the session cannot be renewed.
+      clearSession();
+      throw new SessionRejectedError(`Session refresh rejected (${response.status})`);
+    }
     throw new Error(`Session refresh failed (${response.status})`);
   }
   const pair = (await response.json()) as TokenPair;

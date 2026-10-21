@@ -1,6 +1,6 @@
 import { API_URL } from "@/shared/config/env";
 import { clearSession, getToken } from "@/shared/lib/auth-storage";
-import { refreshSession } from "@/shared/api/session";
+import { refreshSession, SessionRejectedError } from "@/shared/api/session";
 
 export class ApiRequestError extends Error {
   status: number;
@@ -60,10 +60,17 @@ async function apiFetchInner<T>(path: string, options: RequestOptions, retried: 
   if (!response.ok) {
     const problem = (data ?? {}) as { detail?: string | { msg: string; loc: string[] }[]; type?: string };
     if (response.status === 401) {
-      if (token && !retried && !options.skipRefresh && (await refreshSession().catch(() => null))) {
-        return apiFetchInner<T>(path, options, true);
+      // A transient refresh failure (network, 5xx) keeps the session so the user can retry.
+      let keepSession = false;
+      if (token && !retried && !options.skipRefresh) {
+        try {
+          await refreshSession();
+          return apiFetchInner<T>(path, options, true);
+        } catch (error) {
+          if (!(error instanceof SessionRejectedError)) keepSession = true;
+        }
       }
-      clearSession();
+      if (!keepSession) clearSession();
     }
     throw new ApiRequestError(
       response.status,
