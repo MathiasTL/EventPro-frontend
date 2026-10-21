@@ -19,6 +19,8 @@ type RequestOptions = {
   body?: unknown;
   /** Skip the 401 -> refresh -> retry flow (login and similar credential calls). */
   skipRefresh?: boolean;
+  /** Read a successful response as binary instead of JSON (attachments). Errors stay JSON problems. */
+  responseType?: "json" | "blob";
 };
 
 function problemCode(problemType: string | undefined): string {
@@ -47,6 +49,10 @@ async function apiFetchInner<T>(path: string, options: RequestOptions, retried: 
     return undefined as T;
   }
 
+  if (response.ok && options.responseType === "blob") {
+    return (await response.blob()) as T;
+  }
+
   const raw = await response.text();
   let data: unknown = null;
   try { data = raw ? JSON.parse(raw) : null; } catch { if (response.ok) throw new ApiRequestError(response.status, "El servidor devolvió una respuesta inválida.", "invalid-response"); }
@@ -71,4 +77,9 @@ async function apiFetchInner<T>(path: string, options: RequestOptions, retried: 
 
 export function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
   return apiFetchInner<T>(path, options, false);
+}
+
+/** Authenticated binary download sharing the refresh-once-and-retry flow of `apiFetch`. */
+export function apiFetchBlob(path: string): Promise<Blob> {
+  return apiFetchInner<Blob>(path, { responseType: "blob" }, false);
 }
