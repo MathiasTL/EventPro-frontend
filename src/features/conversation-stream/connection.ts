@@ -95,6 +95,8 @@ export function createConversationStreamConnection(
   };
 
   const scheduleRenewal = (gen: number, token: string) => {
+    // onopen fires again on every browser auto-reconnect: drop the previous timer so none is orphaned.
+    if (renewTimer) clearTimeout(renewTimer);
     const delayMs = Math.max(0, tokenSecondsLeft(token) - RENEW_BEFORE_EXPIRY_SECONDS) * 1000;
     renewTimer = setTimeout(() => {
       if (gen !== generation) return;

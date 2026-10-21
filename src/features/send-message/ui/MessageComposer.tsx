@@ -36,9 +36,11 @@ export function MessageComposer({ conversationId, authorName, blocked = null }: 
     const message = file
       ? ({ kind: "attachment", file, caption: trimmed || undefined } as const)
       : ({ kind: "text", content: trimmed } as const);
+    const sentText = text;
     mutation.mutate(message, {
       onSuccess: () => {
-        setText("");
+        // Keep anything typed while the send was pending.
+        setText(current => (current === sentText ? "" : current));
         setFile(null);
         if (fileInput.current) fileInput.current.value = "";
         textarea.current?.focus();
