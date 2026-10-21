@@ -20,9 +20,11 @@ export type ConversationInboxProps = {
   onSelect: (conversationId: number) => void;
   /** Connection status of the stream, owned by the page. */
   streamStatus?: ConversationStreamStatus;
+  /** Restarts the stream after it gave up (status `error`). */
+  onStreamRetry?: () => void;
 };
 
-export function ConversationInbox({ role, assigneeOptions, selectedId, onSelect, streamStatus }: ConversationInboxProps) {
+export function ConversationInbox({ role, assigneeOptions, selectedId, onSelect, streamStatus, onStreamRetry }: ConversationInboxProps) {
   const canPickAssignee = role === "SUPERADMIN";
   const [state, setState] = useState<InboxFilterState>(initialFilterState);
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -58,6 +60,7 @@ export function ConversationInbox({ role, assigneeOptions, selectedId, onSelect,
       loadingMore={query.isFetchingNextPage}
       onLoadMore={() => void query.fetchNextPage()}
       streamStatus={streamStatus}
+      onStreamRetry={onStreamRetry}
     />
   );
 }

@@ -15,6 +15,8 @@ const MIN_TOKEN_LIFE_SECONDS = 120;
 const RENEW_BEFORE_EXPIRY_SECONDS = 60;
 const BACKOFF_MIN_MS = 1_000;
 const BACKOFF_MAX_MS = 30_000;
+/** Consecutive failed attempts (without a successful open) before giving up with the terminal `error` status. */
+const MAX_FAILED_ATTEMPTS = 6;
 
 export type ConversationStreamConnectionOptions = {
   onEvent: (event: ConversationStreamEvent) => void;
@@ -26,6 +28,8 @@ export type ConversationStreamConnectionOptions = {
 export type ConversationStreamConnection = {
   start: () => void;
   stop: () => void;
+  /** Restarts after the terminal `error` status; keeps `hasOpened` so the next open resyncs the cache. */
+  retry: () => void;
 };
 
 /** Exponential backoff from 1 s to 30 s with jitter (rule 3). */
@@ -63,6 +67,8 @@ export function createConversationStreamConnection(
   let retryTimer: ReturnType<typeof setTimeout> | null = null;
   let renewTimer: ReturnType<typeof setTimeout> | null = null;
   let attempt = 0;
+  /** Generation of the `connect` call currently running (token check, refresh or opening), if any. */
+  let connectingGen: number | null = null;
   let hasOpened = false;
   let status: ConversationStreamStatus = "closed";
 
@@ -88,10 +94,20 @@ export function createConversationStreamConnection(
   };
 
   const scheduleRetry = (gen: number) => {
+    if (attempt >= MAX_FAILED_ATTEMPTS) {
+      // Not recoverable by retrying (e.g. a role the stream rejects with 403): stop and let the user restart.
+      clearTimers();
+      closeSource();
+      setStatus("error");
+      return;
+    }
     setStatus("reconnecting");
     const delay = backoffDelay(attempt);
     attempt += 1;
-    retryTimer = setTimeout(() => void connect(gen, true, false), delay);
+    retryTimer = setTimeout(() => {
+      retryTimer = null;
+      void connect(gen, true, false);
+    }, delay);
   };
 
   const scheduleRenewal = (gen: number, token: string) => {
@@ -148,6 +164,15 @@ export function createConversationStreamConnection(
    */
   async function connect(gen: number, forceRefresh: boolean, quiet: boolean): Promise<void> {
     if (gen !== generation) return;
+    connectingGen = gen;
+    try {
+      await runConnect(gen, forceRefresh, quiet);
+    } finally {
+      if (connectingGen === gen) connectingGen = null;
+    }
+  }
+
+  async function runConnect(gen: number, forceRefresh: boolean, quiet: boolean): Promise<void> {
     if (!quiet) setStatus(hasOpened ? "reconnecting" : "connecting");
 
     let token = getToken();
@@ -174,7 +199,7 @@ export function createConversationStreamConnection(
   }
 
   const onOnline = () => {
-    if (status !== "reconnecting" || !retryTimer) return;
+    if (status !== "reconnecting" || !retryTimer || connectingGen === generation) return;
     clearTimeout(retryTimer);
     retryTimer = null;
     void connect(generation, true, false);
@@ -189,6 +214,13 @@ export function createConversationStreamConnection(
     void connect(generation, false, false);
   }
 
+  function retry(): void {
+    if (status !== "error") return;
+    generation += 1;
+    attempt = 0;
+    void connect(generation, true, false);
+  }
+
   function stop(): void {
     generation += 1;
     clearTimers();
@@ -197,5 +229,5 @@ export function createConversationStreamConnection(
     setStatus("closed");
   }
 
-  return { start, stop };
+  return { start, stop, retry };
 }

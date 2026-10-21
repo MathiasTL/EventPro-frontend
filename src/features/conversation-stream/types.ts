@@ -66,7 +66,8 @@ export type ConversationStreamEvent =
   | { name: "message.updated"; data: MessageUpdatedData }
   | { name: "handoff.requested"; data: HandoffRequestedData };
 
-export type ConversationStreamStatus = "connecting" | "open" | "reconnecting" | "closed";
+/** `error` is terminal: the connection gave up after repeated failures and only `retry` restarts it. */
+export type ConversationStreamStatus = "connecting" | "open" | "reconnecting" | "closed" | "error";
 
 /** Partial change applied to a cached conversation; `undefined` fields are left untouched. */
 export type ConversationPatch = Partial<Omit<Conversation, "chatwoot_conversation_id" | "client">> & {

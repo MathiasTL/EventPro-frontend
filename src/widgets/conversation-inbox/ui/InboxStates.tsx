@@ -41,14 +41,22 @@ const streamLabels: Partial<Record<ConversationStreamStatus, string>> = {
   connecting: "Conectando…",
   reconnecting: "Reconectando…",
   closed: "Sin conexión en tiempo real",
+  error: "No se pudo restablecer la conexión en tiempo real.",
 };
 
 /** The live region stays mounted so screen readers announce the change of state. */
-export function StreamIndicator({ status }: { status?: ConversationStreamStatus }) {
+export function StreamIndicator({ status, onRetry }: { status?: ConversationStreamStatus; onRetry?: () => void }) {
   const label = status ? streamLabels[status] : undefined;
   return (
-    <p aria-live="polite" role="status" className={label ? "border-b border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-medium text-amber-900" : "sr-only"}>
-      {label ?? ""}
-    </p>
+    <div className={label ? "flex items-center justify-between gap-2 border-b border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-medium text-amber-900" : undefined}>
+      <p aria-live="polite" role="status" className={label ? undefined : "sr-only"}>
+        {label ?? ""}
+      </p>
+      {status === "error" && onRetry && (
+        <button type="button" onClick={onRetry} className="rounded-md border border-amber-300 bg-white px-2 py-0.5 font-semibold text-amber-900 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-amber-700">
+          Reintentar
+        </button>
+      )}
+    </div>
   );
 }

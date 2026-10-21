@@ -24,6 +24,8 @@ export type ConversationInboxViewProps = {
   loadingMore: boolean;
   onLoadMore: () => void;
   streamStatus?: ConversationStreamStatus;
+  /** Restarts the stream after it gave up (status `error`). */
+  onStreamRetry?: () => void;
 };
 
 /** Presentational inbox: no queries, everything arrives through props. */
@@ -33,7 +35,7 @@ export function ConversationInboxView(props: ConversationInboxViewProps) {
   return (
     <section aria-label="Bandeja de conversaciones" className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white">
       <InboxToolbar state={props.filterState} onChange={props.onFilterChange} assigneeOptions={props.assigneeOptions} />
-      <StreamIndicator status={props.streamStatus} />
+      <StreamIndicator status={props.streamStatus} onRetry={props.onStreamRetry} />
       <p aria-live="polite" className={pending > 0 ? "border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900" : "sr-only"}>
         {pending > 0 ? `${pending} ${pending === 1 ? "derivación pendiente" : "derivaciones pendientes"} de atención` : ""}
       </p>

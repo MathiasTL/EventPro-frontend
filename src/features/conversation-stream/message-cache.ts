@@ -28,7 +28,7 @@ function findUnsent(data: ThreadData, outboxId: string | null): UnsentMessage | 
 }
 
 /**
- * `message.created`: upserts by id. A new message goes to the top of the first page and replaces the
+ * `message.created`: upserts by id; an existing message keeps its cached delivery fields. A new message goes to the top of the first page and replaces the
  * unsent row with the same `outbox_id`. The event carries no `author_name`: it is taken from the unsent
  * row when there is one, otherwise an `AGENT` message asks for a refetch.
  */
@@ -40,7 +40,16 @@ export function insertMessage(data: ThreadData, message: StreamMessage): ThreadP
       ...page,
       items: page.items.map(item =>
         sameId(item.id, message.id)
-          ? { ...item, ...message, author_name: message.author_name ?? item.author_name }
+          ? {
+              ...item,
+              ...message,
+              author_name: message.author_name ?? item.author_name,
+              // Keep the delivery state already cached: a late `message.created` (always SENT for outgoing) must not regress it.
+              delivery_status: item.delivery_status,
+              failure_reason: item.failure_reason,
+              failure_code: item.failure_code,
+              retryable: item.retryable,
+            }
           : item,
       ),
     }));

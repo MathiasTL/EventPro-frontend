@@ -50,7 +50,7 @@ function ConversationsWorkspace({ userId, userName, role }: { userId: string; us
   const previousSelected = useRef(selectedId);
 
   const { notices, push, dismiss } = useHandoffNotices();
-  const streamStatus = useConversationStream({ enabled: true, onHandoffRequested: push });
+  const { status: streamStatus, retry: retryStream } = useConversationStream({ enabled: true, onHandoffRequested: push });
 
   const managers = useQuery({ ...activeManagersOptions(), enabled: role === "SUPERADMIN" });
 
@@ -75,7 +75,7 @@ function ConversationsWorkspace({ userId, userName, role }: { userId: string; us
       <h1 className="text-xl font-bold tracking-tight">Conversaciones</h1>
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(20rem,26rem)_1fr]">
         <div ref={listPane} tabIndex={-1} className={`${selectedId ? "hidden lg:block" : "block"} min-h-0 outline-none`}>
-          <ConversationInbox role={role} assigneeOptions={managers.data} selectedId={selectedId} onSelect={select} streamStatus={streamStatus} />
+          <ConversationInbox role={role} assigneeOptions={managers.data} selectedId={selectedId} onSelect={select} streamStatus={streamStatus} onStreamRetry={retryStream} />
         </div>
         <div ref={threadPane} tabIndex={-1} className={`${selectedId ? "block" : "hidden lg:block"} min-h-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white outline-none`}>
           {selectedId ? (
