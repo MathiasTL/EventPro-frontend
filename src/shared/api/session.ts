@@ -1,5 +1,6 @@
 import { API_URL } from "@/shared/config/env";
 import { clearSession, getRefreshToken, getToken, setTokens } from "@/shared/lib/auth-storage";
+import { tokenSecondsLeft } from "@/shared/lib/jwt";
 
 type TokenPair = {
   access_token: string;
@@ -59,16 +60,55 @@ export function refreshSession(): Promise<string> {
   return inFlight;
 }
 
-/** Best-effort server-side logout; never throws. Tokens are passed in because local storage is cleared right after. */
-export async function logoutRemote(accessToken: string | null, refreshToken: string | null): Promise<void> {
-  if (!accessToken || !refreshToken) return;
+/**
+ * Rotates the pair for the logout call only. It does not go through `refreshSession` because that one stores the
+ * new pair, and the local session is cleared right after logout starts: storing would resurrect it.
+ */
+async function renewForLogout(refreshToken: string): Promise<TokenPair | null> {
   try {
-    await fetch(`${API_URL}/auth/logout`, {
+    const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token: refreshToken }),
       cache: "no-store",
     });
+    return response.ok ? ((await response.json()) as TokenPair) : null;
+  } catch {
+    return null;
+  }
+}
+
+const postLogout = (accessToken: string, refreshToken: string) =>
+  fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ refresh_token: refreshToken }),
+    cache: "no-store",
+  });
+
+/**
+ * Best-effort server-side logout; never throws. Tokens are passed in because local storage is cleared right after.
+ * The endpoint needs a valid access token: when it is expired (or answers 401) the pair is renewed once and the
+ * call is retried once. Any failure is ignored, the local session is cleared anyway.
+ */
+export async function logoutRemote(accessToken: string | null, refreshToken: string | null): Promise<void> {
+  if (!accessToken || !refreshToken) return;
+  try {
+    let access = accessToken;
+    let refresh = refreshToken;
+    let renewed = false;
+    const renew = async () => {
+      renewed = true;
+      const pair = await renewForLogout(refresh);
+      if (!pair) return false;
+      access = pair.access_token;
+      refresh = pair.refresh_token;
+      return true;
+    };
+
+    if (tokenSecondsLeft(access) === 0 && !(await renew())) return;
+    const response = await postLogout(access, refresh);
+    if (response.status === 401 && !renewed && (await renew())) await postLogout(access, refresh);
   } catch {
     // Offline or backend down: the local session is cleared anyway.
   }

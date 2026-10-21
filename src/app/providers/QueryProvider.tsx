@@ -1,9 +1,10 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiRequestError } from "@/shared/api/client";
 
 const NO_RETRY_STATUSES = [401, 403, 404];
@@ -23,7 +24,30 @@ function createQueryClient(): QueryClient {
   });
 }
 
+/** Cached data is per user: drop it on logout and when another user signs in, so it never leaks across sessions. */
+function SessionCacheReset() {
+  const queryClient = useQueryClient();
+  const userId = useAuth().user?.id ?? null;
+  const previous = useRef(userId);
+
+  useEffect(() => {
+    const before = previous.current;
+    previous.current = userId;
+    if (before === userId) return;
+    if (userId === null) queryClient.clear();
+    // Another user without a logout in between (e.g. a login in another tab): mounted queries must refetch.
+    else if (before !== null) void queryClient.resetQueries();
+  }, [userId, queryClient]);
+
+  return null;
+}
+
 export function QueryProvider({ children }: { children: ReactNode }) {
   const [client] = useState(createQueryClient);
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      <SessionCacheReset />
+      {children}
+    </QueryClientProvider>
+  );
 }
