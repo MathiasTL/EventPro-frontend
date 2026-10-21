@@ -7,8 +7,9 @@ import { quoteStatusLabels, type QuoteStatus } from "@/entities/quote/types";
 import { Button } from "@/shared/ui";
 
 export function QuoteShell({ children }: { children: ReactNode }) {
-  const { user, logout } = useAuth();
-  if (!user) return <p role="status" className="p-8">Cargando sesión…</p>;
+  const { user, ready, logout } = useAuth();
+  if (!ready) return <p role="status" className="p-8">Cargando sesión…</p>;
+  if (!user) return <main className="p-8"><h1 className="text-2xl font-semibold">Inicia sesión</h1><Link className="mt-4 inline-block text-violet-700 underline" href="/login">Ir al inicio de sesión</Link></main>;
   if (!["ENCARGADO", "SUPERADMIN"].includes(user.role)) return (
     <main className="p-8"><h1 className="text-2xl font-semibold">Acceso restringido</h1>
       <p className="my-4">Las cotizaciones requieren una cuenta de encargado o superadministrador.</p>

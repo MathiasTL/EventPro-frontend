@@ -10,6 +10,8 @@ export const quoteStatusLabels: Record<QuoteStatus, string> = {
 
 // Pydantic serializa Decimal como cadena para conservar la precisión monetaria.
 export type QuoteMoney = string;
+export type QuotePaymentConcept = "ADVANCE" | "BALANCE" | "EXTENSION";
+export type QuotePaymentStatus = "PENDING_VERIFICATION" | "REQUIRES_MANUAL_APPROVAL" | "VERIFIED" | "REJECTED" | "REFUND_PENDING" | "REFUNDED";
 export type QuoteClient = { id: string; full_name: string; phone: string };
 export type QuoteListItem = {
   quote_id: string;
@@ -50,6 +52,6 @@ export type QuoteDetail = {
   sent_at: string;
   expires_at: string;
   observations: string | null;
-  payments: { payment_id: string; concept: string; validation_status: string }[];
+  payments: { payment_id: string; concept: QuotePaymentConcept; validation_status: QuotePaymentStatus }[];
   event_id: string | null;
 };

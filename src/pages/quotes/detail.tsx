@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/app/providers/AuthProvider";
 import { getQuote } from "@/entities/quote/api";
 import type { QuoteDetail } from "@/entities/quote/types";
 import { ApiRequestError } from "@/shared/api/client";
@@ -12,22 +11,23 @@ import { QuoteShell, QuoteStatusBadge, eventDate, instant, money } from "./ui";
 const paymentLabels: Record<string, string> = { ADVANCE: "Adelanto", BALANCE: "Saldo", EXTENSION: "Extensión", PENDING_VERIFICATION: "Pendiente de verificación", REQUIRES_MANUAL_APPROVAL: "Requiere aprobación manual", VERIFIED: "Verificado", REJECTED: "Rechazado", REFUND_PENDING: "Reembolso pendiente", REFUNDED: "Reembolsado" };
 
 export function QuoteDetailPage({ quoteId }: { quoteId: string }) {
-  const { user } = useAuth();
-  const allowed = !!user && ["ENCARGADO", "SUPERADMIN"].includes(user.role);
+  return <QuoteShell><QuoteDetailContent key={quoteId} quoteId={quoteId} /></QuoteShell>;
+}
+
+function QuoteDetailContent({ quoteId }: { quoteId: string }) {
   const [quote, setQuote] = useState<QuoteDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(0);
   useEffect(() => {
-    if (!allowed) return;
     let cancelled = false;
     getQuote(quoteId).then(result => { if (!cancelled) { setQuote(result); setError(null); } }).catch(caught => {
       if (!cancelled) { setQuote(null); setError(caught instanceof ApiRequestError && caught.status === 404 ? "La cotización solicitada no existe." : caught instanceof Error ? caught.message : "No se pudo cargar la cotización."); }
     }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [allowed, quoteId, refresh]);
+  }, [quoteId, refresh]);
 
-  return <QuoteShell>
+  return <>
     <Link href="/panel/quotes" className="mb-6 inline-block text-sm font-medium text-violet-700 hover:underline">← Volver a cotizaciones</Link>
     <h1 className="mb-6 text-3xl font-bold tracking-tight">Detalle de cotización</h1>
     <ErrorBanner message={error} />
@@ -38,5 +38,5 @@ export function QuoteDetailPage({ quoteId }: { quoteId: string }) {
         <section className="rounded-2xl border border-zinc-200 bg-white p-6"><h2 className="mb-5 text-lg font-semibold">Resumen económico</h2><dl className="space-y-4 text-sm">{[["Servicios", quote.services_subtotal], [quote.mobility_overridden ? "Movilidad acordada" : "Movilidad", quote.final_mobility_amount], ["Total", quote.total_amount], ["Adelanto requerido", quote.advance_amount], ["Saldo pendiente", quote.pending_balance]].map(([label, value]) => <div key={label} className="flex justify-between gap-4"><dt className="text-zinc-500">{label}</dt><dd className="font-semibold">{money(value)}</dd></div>)}</dl><p className="mt-5 text-xs leading-relaxed text-zinc-500">Importes registrados al emitir la cotización. La movilidad está incluida en el total.</p></section></div>
       <section className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6"><h2 className="mb-4 text-lg font-semibold">Pagos relacionados</h2>{quote.payments.length ? <ul className="divide-y divide-zinc-100">{quote.payments.map(payment => <li key={payment.payment_id} className="flex flex-wrap justify-between gap-3 py-3 text-sm"><span>{paymentLabels[payment.concept] ?? payment.concept}</span><span>{paymentLabels[payment.validation_status] ?? payment.validation_status}</span></li>)}</ul> : <p className="text-sm text-zinc-500">Todavía no hay pagos registrados.</p>}{quote.event_id && <p className="mt-4 break-all text-sm text-zinc-600">Evento asociado: {quote.event_id}</p>}<p className="mt-4 text-xs text-zinc-400">Enviada: {instant(quote.sent_at)} · Cliente: {quote.client.id}</p></section>
     </>}
-  </QuoteShell>;
+  </>;
 }
