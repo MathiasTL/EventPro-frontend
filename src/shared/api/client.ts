@@ -1,5 +1,6 @@
 import { API_URL } from "@/shared/config/env";
 import { clearSession, getToken } from "@/shared/lib/auth-storage";
+import { refreshSession, SessionRejectedError } from "@/shared/api/session";
 
 export class ApiRequestError extends Error {
   status: number;
@@ -16,6 +17,10 @@ export class ApiRequestError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: unknown;
+  /** Skip the 401 -> refresh -> retry flow (login and similar credential calls). */
+  skipRefresh?: boolean;
+  /** Read a successful response as binary instead of JSON (attachments). Errors stay JSON problems. */
+  responseType?: "json" | "blob";
 };
 
 function problemCode(problemType: string | undefined): string {
@@ -24,7 +29,7 @@ function problemCode(problemType: string | undefined): string {
   return parts[parts.length - 1] || "request-failed";
 }
 
-export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function apiFetchInner<T>(path: string, options: RequestOptions, retried: boolean): Promise<T> {
   const token = getToken();
   const multipart = options.body instanceof FormData;
   const headers: Record<string, string> = multipart ? {} : { "Content-Type": "application/json" };
@@ -44,6 +49,10 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
     return undefined as T;
   }
 
+  if (response.ok && options.responseType === "blob") {
+    return (await response.blob()) as T;
+  }
+
   const raw = await response.text();
   let data: unknown = null;
   try { data = raw ? JSON.parse(raw) : null; } catch { if (response.ok) throw new ApiRequestError(response.status, "El servidor devolvió una respuesta inválida.", "invalid-response"); }
@@ -51,7 +60,17 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   if (!response.ok) {
     const problem = (data ?? {}) as { detail?: string | { msg: string; loc: string[] }[]; type?: string };
     if (response.status === 401) {
-      clearSession();
+      // A transient refresh failure (network, 5xx) keeps the session so the user can retry.
+      let keepSession = false;
+      if (token && !retried && !options.skipRefresh) {
+        try {
+          await refreshSession();
+          return apiFetchInner<T>(path, options, true);
+        } catch (error) {
+          if (!(error instanceof SessionRejectedError)) keepSession = true;
+        }
+      }
+      if (!keepSession) clearSession();
     }
     throw new ApiRequestError(
       response.status,
@@ -61,4 +80,13 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   }
 
   return data as T;
+}
+
+export function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return apiFetchInner<T>(path, options, false);
+}
+
+/** Authenticated binary download sharing the refresh-once-and-retry flow of `apiFetch`. */
+export function apiFetchBlob(path: string): Promise<Blob> {
+  return apiFetchInner<Blob>(path, { responseType: "blob" }, false);
 }
