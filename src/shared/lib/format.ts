@@ -20,3 +20,10 @@ export function humanize(value: string | null | undefined): string {
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 }
+
+/** Up to two initials from a display name; `#` when it has no letters. */
+export function initials(name: string): string {
+  const parts = name.replace(/[^\p{L}\s]/gu, "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "#";
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
+}

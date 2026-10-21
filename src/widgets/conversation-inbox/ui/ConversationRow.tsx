@@ -1,6 +1,6 @@
-import type { Conversation } from "@/entities/conversation";
-import { formatRelative, handoffReasonLabels, initials, isHandoffPending, responsibleLabel } from "../model";
-import { LeadStatusBadge, ModeChip, UnreadBadge } from "./Pills";
+import { LeadStatusBadge, ModeChip, UnreadBadge, type Conversation } from "@/entities/conversation";
+import { initials } from "@/shared/lib/format";
+import { formatRelative, handoffReasonLabels, isHandoffPending, responsibleLabel } from "../model";
 
 type Props = {
   conversation: Conversation;

@@ -1,21 +1,4 @@
-import type {
-  Conversation,
-  ConversationFilters,
-  HandoffReason,
-  LeadStatus,
-} from "@/entities/conversation";
-
-export type BadgeTone = "neutral" | "success" | "warning" | "danger" | "info";
-
-/** Spanish labels and tones for the derived lead status (spec 09, 4.2). Text always carries the meaning. */
-export const leadStatusMeta: Record<LeadStatus, { label: string; tone: BadgeTone }> = {
-  QUOTING: { label: "Cotizando", tone: "neutral" },
-  QUOTE_SENT: { label: "Cotización enviada", tone: "info" },
-  PAYMENT_STARTED: { label: "Pago iniciado", tone: "warning" },
-  CONVERTED: { label: "Convertido", tone: "success" },
-  QUOTE_CLOSED: { label: "Vencida o cancelada", tone: "danger" },
-  EVENT_DONE: { label: "Evento realizado", tone: "success" },
-};
+import type { Conversation, ConversationFilters, HandoffReason } from "@/entities/conversation";
 
 export const handoffReasonLabels: Record<HandoffReason, string> = {
   CLIENT_REQUEST: "El cliente pidió hablar con una persona",
@@ -74,12 +57,6 @@ export function isHandoffPending(conversation: Conversation): boolean {
 export function responsibleLabel(conversation: Conversation): string {
   if (conversation.mode === "BOT") return "Bot";
   return conversation.assigned_user_name ?? "Sin asignar";
-}
-
-export function initials(name: string): string {
-  const parts = name.replace(/[^\p{L}\s]/gu, "").trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "#";
-  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
 const rtf = new Intl.RelativeTimeFormat("es-PE", { numeric: "auto" });

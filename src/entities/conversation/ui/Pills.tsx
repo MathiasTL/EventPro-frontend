@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import type { ConversationMode, LeadStatus } from "@/entities/conversation";
-import { leadStatusMeta, type BadgeTone } from "../model";
+import { leadStatusMeta, type BadgeTone } from "../lead-status";
+import type { ConversationMode, LeadStatus } from "../types";
 
 const tones: Record<BadgeTone, string> = {
   neutral: "bg-zinc-100 text-zinc-700",
