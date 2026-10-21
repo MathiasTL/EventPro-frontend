@@ -17,7 +17,7 @@ export function RetryButton({ conversationId, outboxId }: { conversationId: numb
         {mutation.isPending ? "Reintentando…" : "Reintentar"}
       </button>
       <span role="alert" className={mutation.isError ? "text-xs font-medium text-red-700" : "sr-only"}>
-        {mutation.isError ? sendErrorMessage(mutation.error) : ""}
+        {mutation.isError ? sendErrorMessage(mutation.error, { retry: true }) : ""}
       </span>
     </span>
   );

@@ -4,8 +4,11 @@ export const WINDOW_CLOSED_MESSAGE = "Han pasado más de 24 h; el cliente debe e
 const UNAVAILABLE = "La mensajería no está disponible temporalmente. Inténtalo de nuevo en unos minutos.";
 const GENERIC = "No se pudo enviar el mensaje. Inténtalo de nuevo.";
 
-/** Spanish message for a failed send or retry (spec 09, 6.4, 6.7 and section 10). Never exposes server text. */
-export function sendErrorMessage(error: unknown): string {
+/**
+ * Spanish message for a failed send or retry (spec 09, 6.4, 6.7 and section 10). Never exposes server text.
+ * `retry` selects the wording that only makes sense when requeuing an existing message.
+ */
+export function sendErrorMessage(error: unknown, { retry = false }: { retry?: boolean } = {}): string {
   if (!(error instanceof ApiRequestError)) return GENERIC;
   switch (error.code) {
     case "conversation-not-taken":
@@ -21,11 +24,12 @@ export function sendErrorMessage(error: unknown): string {
     case "validation-error":
       return "El mensaje no es válido. Revisa el texto o el archivo.";
     case "not-found":
-      return "La conversación ya no existe.";
+      return retry ? "El mensaje ya no está disponible para reintentar." : "La conversación ya no existe.";
     case "messaging-gateway-unavailable":
       return UNAVAILABLE;
     case "network-error":
-      return error.message;
+      // The request may have reached the server (there is no idempotency key), so the send is unconfirmed.
+      return retry ? error.message : "No se pudo confirmar el envío. Revisa el hilo antes de volver a enviarlo.";
   }
   if (error.status === 503) return UNAVAILABLE;
   if (error.status === 403) return "No tienes permiso para esta acción.";
@@ -33,6 +37,12 @@ export function sendErrorMessage(error: unknown): string {
 }
 
 /** Errors that mean the cached assignment or window is stale: refetch the conversation. */
+/** The server may have queued the message even though the response never arrived. */
+export const isNetworkError = (error: unknown) => error instanceof ApiRequestError && error.code === "network-error";
+
+/** The outbox row changed state under us (already sent or retried): the thread must be reloaded. */
+export const isInvalidOutboxState = (error: unknown) => error instanceof ApiRequestError && error.code === "invalid-outbox-state";
+
 export function isStaleConversationError(error: unknown): boolean {
   if (!(error instanceof ApiRequestError)) return false;
   return error.status === 409 || error.code === "service-window-closed";

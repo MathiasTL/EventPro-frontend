@@ -8,6 +8,8 @@ import { MessageBubble, UnsentBubble } from "./MessageBubble";
 type Props = {
   conversationId: number;
   ownName: string | null;
+  /** Whether failed messages offer «Reintentar» (false while the composer is blocked). */
+  canRetry: boolean;
   entries: TimelineEntry[];
   hasOlder: boolean;
   loadingOlder: boolean;
@@ -20,9 +22,9 @@ const NEAR_BOTTOM_PX = 120;
 /**
  * Oldest first. Scrolling to the top loads older pages (IntersectionObserver, with a visible button as the
  * keyboard and fallback path). Prepending keeps the reading position; new messages follow the bottom only when
- * the reader was already there.
+ * the reader was already there, except the user's own sends, which always scroll into view.
  */
-export function MessageList({ conversationId, ownName, entries, hasOlder, loadingOlder, olderError, onLoadOlder }: Props) {
+export function MessageList({ conversationId, ownName, canRetry, entries, hasOlder, loadingOlder, olderError, onLoadOlder }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const topSentinel = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
@@ -36,6 +38,8 @@ export function MessageList({ conversationId, ownName, entries, hasOlder, loadin
   const firstMessage = entries.find(entry => entry.kind !== "day");
   const oldest = firstMessage?.key ?? null;
   const newest = entries.length > 0 ? entries[entries.length - 1].key : null;
+  // A new pending row at the end is the user's own send (only the composer creates them): always follow it.
+  const ownSendAtEnd = entries.length > 0 && entries[entries.length - 1].kind === "unsent";
 
   useLayoutEffect(() => {
     const element = container.current;
@@ -43,8 +47,9 @@ export function MessageList({ conversationId, ownName, entries, hasOlder, loadin
     const before = previous.current;
     if (before.oldest === null) element.scrollTop = element.scrollHeight;
     else if (oldest !== before.oldest) element.scrollTop += element.scrollHeight - before.height;
-    else if (newest !== before.newest && nearBottom.current) element.scrollTop = element.scrollHeight;
+    else if (newest !== before.newest && (nearBottom.current || ownSendAtEnd)) element.scrollTop = element.scrollHeight;
     previous.current = { oldest, newest, height: element.scrollHeight };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `ownSendAtEnd` only matters when `newest` changes.
   }, [oldest, newest]);
 
   useEffect(() => {
@@ -88,8 +93,8 @@ export function MessageList({ conversationId, ownName, entries, hasOlder, loadin
                 </li>
               );
             }
-            if (entry.kind === "unsent") return <UnsentBubble key={entry.key} row={entry.row} conversationId={conversationId} ownName={ownName} />;
-            return <MessageBubble key={entry.key} message={entry.message} conversationId={conversationId} ownName={ownName} />;
+            if (entry.kind === "unsent") return <UnsentBubble key={entry.key} row={entry.row} conversationId={conversationId} ownName={ownName} canRetry={canRetry} />;
+            return <MessageBubble key={entry.key} message={entry.message} conversationId={conversationId} ownName={ownName} canRetry={canRetry} />;
           })}
         </ol>
       )}

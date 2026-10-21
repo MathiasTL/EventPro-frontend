@@ -12,7 +12,6 @@ export function listMessages(conversationId: number, before?: number, limit = ME
 
 /**
  * Downloads an attachment through the EventPro proxy with the JWT (spec 03, 4.3).
- * Backend task B9: the proxy endpoint is not implemented yet.
  * The path is rebuilt from ids because `attachments[].url` already carries the `/api/v1` prefix of `API_URL`.
  */
 export const fetchAttachmentBlob = (conversationId: number, attachmentId: number) =>

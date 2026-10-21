@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { conversationKeys } from "@/entities/conversation";
 import { messageKeys, type UnsentMessage } from "@/entities/message";
 import { retryOutboxMessage, sendAttachmentMessage, sendTextMessage, type QueuedMessage } from "./api";
-import { isStaleConversationError } from "./errors";
+import { isInvalidOutboxState, isNetworkError, isStaleConversationError } from "./errors";
 import { addQueuedRow, markRetried, type ThreadData } from "./thread-cache";
 
 export type OutgoingMessage = { kind: "text"; content: string } | { kind: "attachment"; file: File; caption?: string };
@@ -44,7 +44,11 @@ export function useSendMessage(conversationId: number, authorName: string | null
       };
       queryClient.setQueryData<ThreadData>(messageKeys.thread(conversationId), data => (data ? addQueuedRow(data, row) : data));
     },
-    onError: refetchOnStale,
+    onError: error => {
+      refetchOnStale(error);
+      // The send may have been enqueued even though the response was lost: show what the server actually has.
+      if (isNetworkError(error)) void queryClient.invalidateQueries({ queryKey: messageKeys.thread(conversationId) });
+    },
   });
 }
 
@@ -57,6 +61,9 @@ export function useRetryMessage(conversationId: number) {
     onSuccess: (_queued, outboxId) => {
       queryClient.setQueryData<ThreadData>(messageKeys.thread(conversationId), data => (data ? markRetried(data, outboxId) : data));
     },
-    onError: refetchOnStale,
+    onError: error => {
+      refetchOnStale(error);
+      if (isInvalidOutboxState(error)) void queryClient.invalidateQueries({ queryKey: messageKeys.thread(conversationId) });
+    },
   });
 }

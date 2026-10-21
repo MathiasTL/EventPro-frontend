@@ -4,7 +4,8 @@ import { DEFAULT_FAILURE_REASON, formatTime, isOwnAuthor } from "../model";
 import { DeliveryMark } from "./DeliveryMark";
 import { MessageAttachment } from "./MessageAttachment";
 
-type Common = { conversationId: number; ownName: string | null };
+/** `canRetry` is false while the composer is blocked: the backend only retries for the assignee with an open window. */
+type Common = { conversationId: number; ownName: string | null; canRetry: boolean };
 
 type Look = { side: "left" | "right"; bubble: string; label: string | null; onDark: boolean };
 
@@ -56,7 +57,7 @@ function Bubble({ look, time, children, status, failure, retry }: BodyProps) {
   );
 }
 
-export function MessageBubble({ message, conversationId, ownName }: Common & { message: Message }) {
+export function MessageBubble({ message, conversationId, ownName, canRetry }: Common & { message: Message }) {
   if (message.direction === "ACTIVITY") {
     return (
       <li className="flex justify-center">
@@ -73,7 +74,7 @@ export function MessageBubble({ message, conversationId, ownName }: Common & { m
       time={formatTime(message.created_at)}
       status={incoming ? null : message.delivery_status}
       failure={failed ? `No se envió: ${message.failure_reason ?? DEFAULT_FAILURE_REASON}` : null}
-      retry={failed && message.retryable && message.outbox_id ? <RetryButton conversationId={conversationId} outboxId={message.outbox_id} /> : null}
+      retry={canRetry && failed && message.retryable && message.outbox_id ? <RetryButton conversationId={conversationId} outboxId={message.outbox_id} /> : null}
     >
       {message.attachments.map(attachment => (
         <MessageAttachment key={attachment.id} conversationId={conversationId} attachment={attachment} />
@@ -84,7 +85,7 @@ export function MessageBubble({ message, conversationId, ownName }: Common & { m
 }
 
 /** Outbox row that has not reached the thread yet: pending («Enviando») or failed with «Reintentar». */
-export function UnsentBubble({ row, conversationId, ownName }: Common & { row: UnsentMessage }) {
+export function UnsentBubble({ row, conversationId, ownName, canRetry }: Common & { row: UnsentMessage }) {
   const look = lookFor(row.author_type, row.author_name, ownName);
   const failed = row.delivery_status === "FAILED";
   return (
@@ -93,7 +94,7 @@ export function UnsentBubble({ row, conversationId, ownName }: Common & { row: U
       time={formatTime(row.created_at)}
       status={failed ? "FAILED" : "QUEUED"}
       failure={failed ? `No se envió: ${row.failure_reason ?? DEFAULT_FAILURE_REASON}` : null}
-      retry={failed && row.retryable ? <RetryButton conversationId={conversationId} outboxId={row.outbox_id} /> : null}
+      retry={canRetry && failed && row.retryable ? <RetryButton conversationId={conversationId} outboxId={row.outbox_id} /> : null}
     >
       {row.message_type === "DOCUMENT" && <p className="text-xs font-semibold opacity-80">Documento adjunto</p>}
       {row.content && <p className="whitespace-pre-wrap break-words">{row.content}</p>}

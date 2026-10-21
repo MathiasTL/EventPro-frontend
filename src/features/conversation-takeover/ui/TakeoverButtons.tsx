@@ -24,15 +24,16 @@ function ActionError({ message }: { message: string | null }) {
 
 /**
  * «Tomar» when nobody holds the conversation; «Reasignarme» (with confirmation) for a SUPERADMIN when
- * another encargado holds it. Renders nothing when the user has neither option.
+ * another encargado holds it. Renders nothing when the user has neither option, except a pending error message.
  */
 export function TakeoverButton({ conversation, currentUserId, role, className = "" }: Common & { className?: string }) {
   const { canTake, canReassign } = assignmentActions({ conversation, currentUserId, role });
   const mutation = useConversationAssignment(conversation.chatwoot_conversation_id, "takeover");
   const [confirming, setConfirming] = useState(false);
 
-  if (!canTake && !canReassign) return null;
   const error = mutation.isError ? assignmentErrorMessage(mutation.error) : null;
+  // After a 409 the refetch can hide the buttons: keep the error visible instead of unmounting it.
+  if (!canTake && !canReassign) return error ? <div className={className}><ActionError message={error} /></div> : null;
 
   if (canTake) {
     return (
@@ -76,13 +77,14 @@ export function TakeoverButton({ conversation, currentUserId, role, className = 
 export function ReleaseButton({ conversation, currentUserId, role, className = "" }: Common & { className?: string }) {
   const { canRelease } = assignmentActions({ conversation, currentUserId, role });
   const mutation = useConversationAssignment(conversation.chatwoot_conversation_id, "release");
-  if (!canRelease) return null;
+  const error = mutation.isError ? assignmentErrorMessage(mutation.error) : null;
+  if (!canRelease) return error ? <div className={className}><ActionError message={error} /></div> : null;
   return (
     <div className={`flex flex-col items-start gap-1 ${className}`}>
       <Button variant="ghost" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
         {mutation.isPending ? "Devolviendo…" : "Devolver al bot"}
       </Button>
-      <ActionError message={mutation.isError ? assignmentErrorMessage(mutation.error) : null} />
+      <ActionError message={error} />
     </div>
   );
 }

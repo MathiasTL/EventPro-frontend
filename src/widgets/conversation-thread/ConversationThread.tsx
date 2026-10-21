@@ -74,6 +74,7 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
         <MessageList
           conversationId={conversationId}
           ownName={ownName}
+          canRetry={block === null}
           entries={entries}
           hasOlder={thread.hasNextPage}
           loadingOlder={thread.isFetchingNextPage}
