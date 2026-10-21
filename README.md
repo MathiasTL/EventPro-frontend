@@ -34,3 +34,16 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Cotizaciones
+
+El panel incorpora `/panel/quotes` (estados, cliente, fechas del evento y paginación)
+y `/panel/quotes/[id]` (detalle, importes congelados, observaciones y pagos relacionados).
+Requiere `ENCARGADO` o `SUPERADMIN` y consume la API real mediante `NEXT_PUBLIC_API_URL`.
+Las fechas del evento y los vencimientos se muestran en hora de Lima.
+
+El backend debe incluir los casos reales de la spec 08 y la migración
+`0006_quote_observations`. Este módulo consulta `GET /quotes` y `GET /quotes/{id}`;
+las acciones de adelanto y cancelación se integrarán con la entrega de Christian.
+
+Validación: `npm run lint`, `npx tsc --noEmit` y `npm run build`.
