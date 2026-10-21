@@ -3,8 +3,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 
+import { logoutRemote } from "@/shared/api/session";
 import {
   clearSession,
+  getRefreshToken,
+  getToken,
   getUser,
   setSession,
   type SessionUser,
@@ -13,7 +16,7 @@ import {
 type AuthContextValue = {
   user: SessionUser | null;
   ready: boolean;
-  startSession: (token: string, user: SessionUser | null) => void;
+  startSession: (token: string, refreshToken: string, user: SessionUser | null) => void;
   logout: () => void;
 };
 
@@ -31,12 +34,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { window.removeEventListener("eventpro:session", sync); window.removeEventListener("storage", sync); };
   }, []);
 
-  const startSession = useCallback((token: string, nextUser: SessionUser | null) => {
-    setSession(token, nextUser);
+  const startSession = useCallback((token: string, refreshToken: string, nextUser: SessionUser | null) => {
+    setSession(token, refreshToken, nextUser);
     setUser(nextUser);
   }, []);
 
   const logout = useCallback(() => {
+    // Revoke the refresh token server-side (best effort), then drop the local session.
+    void logoutRemote(getToken(), getRefreshToken());
     clearSession();
     setUser(null);
   }, []);

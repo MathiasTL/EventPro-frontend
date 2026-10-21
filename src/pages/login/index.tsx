@@ -22,7 +22,7 @@ export function LoginPage() {
     setLoading(true);
     try {
       const session = await loginRequest(email, password);
-      startSession(session.access_token, session.user ?? null);
+      startSession(session.access_token, session.refresh_token, session.user ?? null);
       router.replace("/panel/catalog");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo iniciar sesión.");

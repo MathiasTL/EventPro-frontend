@@ -1,5 +1,6 @@
 import { API_URL } from "@/shared/config/env";
 import { clearSession, getToken } from "@/shared/lib/auth-storage";
+import { refreshSession } from "@/shared/api/session";
 
 export class ApiRequestError extends Error {
   status: number;
@@ -16,6 +17,8 @@ export class ApiRequestError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: unknown;
+  /** Skip the 401 -> refresh -> retry flow (login and similar credential calls). */
+  skipRefresh?: boolean;
 };
 
 function problemCode(problemType: string | undefined): string {
@@ -24,7 +27,7 @@ function problemCode(problemType: string | undefined): string {
   return parts[parts.length - 1] || "request-failed";
 }
 
-export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function apiFetchInner<T>(path: string, options: RequestOptions, retried: boolean): Promise<T> {
   const token = getToken();
   const multipart = options.body instanceof FormData;
   const headers: Record<string, string> = multipart ? {} : { "Content-Type": "application/json" };
@@ -51,6 +54,9 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   if (!response.ok) {
     const problem = (data ?? {}) as { detail?: string | { msg: string; loc: string[] }[]; type?: string };
     if (response.status === 401) {
+      if (token && !retried && !options.skipRefresh && (await refreshSession().catch(() => null))) {
+        return apiFetchInner<T>(path, options, true);
+      }
       clearSession();
     }
     throw new ApiRequestError(
@@ -61,4 +67,8 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   }
 
   return data as T;
+}
+
+export function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return apiFetchInner<T>(path, options, false);
 }
