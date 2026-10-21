@@ -5,15 +5,17 @@ import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/app/providers/AuthProvider";
 import { canAccessConversations } from "@/app/routes/roles";
+import { Button } from "@/shared/ui";
 
 const links = [
   { href: "/panel/catalog", label: "Catálogo", visible: () => true },
   { href: "/panel/conversations", label: "Conversaciones", visible: canAccessConversations },
+  { href: "/panel/quotes", label: "Cotizaciones", visible: canAccessConversations },
 ];
 
-/** Panel section links; only managers and superadmins get a navigation bar (other roles see the restricted notice). */
+/** Single panel header: section links plus user name and logout; only managers and superadmins get a navigation bar (other roles see the restricted notice). */
 export function PanelNav() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const pathname = usePathname();
   if (!user || !canAccessConversations(user.role)) return null;
   return (
@@ -26,6 +28,10 @@ export function PanelNav() {
           </Link>
         );
       })}
+      <div className="ml-auto flex items-center gap-3 text-sm">
+        <span className="hidden text-zinc-700 sm:inline">{user.full_name}</span>
+        <Button variant="ghost" onClick={logout}>Salir</Button>
+      </div>
     </nav>
   );
 }
