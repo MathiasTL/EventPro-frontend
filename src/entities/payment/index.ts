@@ -30,3 +30,4 @@ export type {
 } from "./types";
 export { PaymentAuditBadge, PaymentConceptBadge, PaymentStatusBadge } from "./ui/PaymentBadges";
 export { PaymentEvidenceViewer } from "./ui/PaymentEvidenceViewer";
+export { paymentActionErrorMessage } from "./errors";
