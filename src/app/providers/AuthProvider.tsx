@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 
+import { AuthContext } from "@/entities/auth/context";
 import { logoutRemote } from "@/shared/api/session";
 import {
   clearSession,
@@ -13,14 +14,6 @@ import {
   type SessionUser,
 } from "@/shared/lib/auth-storage";
 
-type AuthContextValue = {
-  user: SessionUser | null;
-  ready: boolean;
-  startSession: (token: string, refreshToken: string, user: SessionUser | null) => void;
-  logout: () => void;
-};
-
-const AuthContext = createContext<AuthContextValue | null>(null);
 const subscribeReady = () => () => {};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -52,12 +45,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
-  return context;
 }

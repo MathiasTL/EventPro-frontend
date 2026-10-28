@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { login as loginRequest } from "@/entities/auth/api";
 import { Button, ErrorBanner, Field, Input } from "@/shared/ui";
 
@@ -23,7 +23,7 @@ export function LoginPage() {
     try {
       const session = await loginRequest(email, password);
       startSession(session.access_token, session.refresh_token, session.user ?? null);
-      router.replace("/panel/catalog");
+      router.replace(session.user?.role === "OPERADOR" ? "/agenda" : "/panel");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo iniciar sesión.");
     } finally {

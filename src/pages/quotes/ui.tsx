@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { quoteStatusLabels, type QuoteStatus } from "@/entities/quote/types";
 
 export function QuoteShell({ children }: { children: ReactNode }) {

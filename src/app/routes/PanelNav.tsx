@@ -3,12 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/auth/context";
 import { canAccessConversations } from "@/app/routes/roles";
 import { Button } from "@/shared/ui";
 
 const links = [
-  { href: "/panel/catalog", label: "Catálogo", visible: () => true },
+  { href: "/panel/solicitudes", label: "Solicitudes", visible: () => true },
+  { href: "/panel/catalogo", label: "Catálogo", visible: () => true },
+  { href: "/panel/sobrecupo", label: "Sobrecupo", visible: () => true },
+  { href: "/panel/cronograma", label: "Cronograma", visible: () => true },
+  { href: "/panel/pagos", label: "Pagos", visible: () => true },
+  { href: "/panel/finanzas", label: "Finanzas", visible: () => true },
+  { href: "/panel/usuarios", label: "Usuarios", visible: (role: string) => role === "SUPERADMIN" },
+  { href: "/panel/auditoria", label: "Auditoría", visible: () => true },
   { href: "/panel/conversations", label: "Conversaciones", visible: canAccessConversations },
   { href: "/panel/quotes", label: "Cotizaciones", visible: canAccessConversations },
 ];
@@ -19,7 +26,7 @@ export function PanelNav() {
   const pathname = usePathname();
   if (!user || !canAccessConversations(user.role)) return null;
   return (
-    <nav aria-label="Secciones del panel" className="flex h-11 shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-4 sm:px-6">
+    <nav aria-label="Secciones del panel" className="flex h-11 shrink-0 items-center gap-1 overflow-x-auto border-b border-zinc-200 bg-white px-4 sm:px-6">
       {links.filter(link => link.visible(user.role)).map(link => {
         const active = (pathname ?? "").startsWith(link.href);
         return (
