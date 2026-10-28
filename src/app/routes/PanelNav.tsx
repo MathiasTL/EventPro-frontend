@@ -26,7 +26,7 @@ export function PanelNav() {
   const pathname = usePathname();
   if (!user || !canAccessConversations(user.role)) return null;
   return (
-    <nav aria-label="Secciones del panel" className="flex h-11 shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-4 sm:px-6">
+    <nav aria-label="Secciones del panel" className="flex h-11 shrink-0 items-center gap-1 overflow-x-auto border-b border-zinc-200 bg-white px-4 sm:px-6">
       {links.filter(link => link.visible(user.role)).map(link => {
         const active = (pathname ?? "").startsWith(link.href);
         return (
