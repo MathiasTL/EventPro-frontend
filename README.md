@@ -58,7 +58,7 @@ El backend reconoce tres roles con cuenta (`SUPERADMIN`, `ENCARGADO`, `OPERADOR`
 | `/panel/auditoria` | `ENCARGADO`, `SUPERADMIN` | Bitácora de acciones críticas, de solo lectura, con filtros (US-24). |
 | `/panel/conversations` | `ENCARGADO`, `SUPERADMIN` | Bandeja de conversaciones de WhatsApp y detalle del hilo. |
 | `/panel/quotes` | `ENCARGADO`, `SUPERADMIN` | Bandeja de cotizaciones y detalle en `/panel/quotes/[id]`. |
-| `/panel/pagos` | `ENCARGADO`, `SUPERADMIN` | Entrada preparada en el menú; módulo aún no implementado (verificación/auditoría/reembolso de pagos). |
+| `/panel/pagos` | `ENCARGADO`, `SUPERADMIN` | Consola de pagos: filtros, detalle con comprobante, verificación/rechazo, auditoría y reembolso. |
 
 La barra de navegación del panel (`src/app/routes/PanelNav.tsx`, único encabezado del panel) ya filtra qué módulos ve cada rol; los guards (`src/app/routes`) son la defensa real en caso de navegación directa por URL.
 
@@ -88,6 +88,28 @@ El backend debe incluir los casos reales de la spec 08 y la migración
 las acciones de adelanto y cancelación se integrarán con la entrega de Christian.
 
 Validación: `npm run lint`, `npx tsc --noEmit` y `npm run build`.
+
+## Pagos
+
+`/panel/pagos` lista los cobros con `GET /payments` (filtros por estado de validación,
+concepto, auditoría, cotización y fechas; 20 por página). El detalle muestra el comprobante
+de `GET /payments/{id}/evidence`; el backend lo entrega como `application/octet-stream`,
+por lo que el visor detecta el tipo real (JPEG, PNG, WEBP o PDF) por sus primeros bytes.
+
+Cada acción solo aparece en los estados que el backend acepta:
+
+| Acción | Endpoint | Disponible cuando |
+|---|---|---|
+| Verificar | `PATCH /payments/{id}/verify` (`VERIFIED`) | Adelanto en `PENDING_VERIFICATION`. Requiere el ID de un evento en `AWAITING_SIGNATURE` de la misma cotización; al verificar se emite el contrato. |
+| Rechazar | `PATCH /payments/{id}/verify` (`REJECTED`) | `PENDING_VERIFICATION` o `REQUIRES_MANUAL_APPROVAL`. Motivo obligatorio. |
+| Auditar | `PATCH /payments/{id}/audit` | Saldo o extensión no revisados. Las observaciones son obligatorias al marcar para revisión. |
+| Reembolsar | `PATCH /payments/{id}/refund` | `REFUND_PENDING`. |
+
+Por ahora el ID del evento se ingresa a mano, igual que en Sobrecupo: el backend no expone
+una búsqueda de eventos por cotización.
+
+Este módulo reemplaza la rama `feat/e5-verificacion-pagos`. De esa rama no se portaron el tema
+visual, el rediseño del login ni la ruta `/pagos`, que no corresponden a la estructura actual.
 
 ## Documentación relacionada
 
