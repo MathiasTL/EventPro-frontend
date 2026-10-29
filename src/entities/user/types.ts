@@ -10,3 +10,7 @@ export type UserReadResponse = {
   is_active: boolean;
   created_at: string;
 };
+
+export type UserRole = "SUPERADMIN" | "ENCARGADO" | "OPERADOR";
+export type CreateUserRequest = { full_name: string; email: string; phone: string; role: UserRole; password: string };
+export type UpdateUserRequest = Partial<Omit<CreateUserRequest, "email">> & { is_active?: boolean };
