@@ -23,6 +23,8 @@ export type ConversationThreadProps = {
   currentUserName?: string | null;
   /** Narrow screens: shows a back button in the header. */
   onBack?: () => void;
+  /** Focus the thread heading once the header is mounted (narrow screens, after opening a thread). */
+  focusHeading?: boolean;
 };
 
 const isUnavailable = (error: unknown) =>
@@ -33,7 +35,7 @@ export function ConversationThread(props: ConversationThreadProps) {
   return <ThreadContent key={props.conversationId} {...props} />;
 }
 
-function ThreadContent({ conversationId, currentUserId, role, currentUserName, onBack }: ConversationThreadProps) {
+function ThreadContent({ conversationId, currentUserId, role, currentUserName, onBack, focusHeading }: ConversationThreadProps) {
   const detail = useQuery(conversationDetailOptions(conversationId));
   const thread = useInfiniteQuery(messageThreadOptions(conversationId));
   const conversation = detail.data;
@@ -64,7 +66,7 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
 
   return (
     <section aria-label={`Conversación con ${conversation.client.name || conversation.client.phone}`} className="flex h-full min-h-0 flex-col bg-white">
-      <ThreadHeader conversation={conversation} currentUserId={currentUserId} role={role} onBack={onBack} />
+      <ThreadHeader conversation={conversation} currentUserId={currentUserId} role={role} onBack={onBack} focusHeading={focusHeading} />
       {unavailable && thread.data && <UnavailableBanner />}
       {thread.isPending ? (
         <MessagesSkeleton />

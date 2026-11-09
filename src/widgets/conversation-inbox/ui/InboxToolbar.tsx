@@ -22,7 +22,7 @@ export function InboxToolbar({ state, onChange, assigneeOptions }: Props) {
           onChange={event => onChange({ search: event.target.value })}
         />
       </Field>
-      <div role="group" aria-label="Filtrar conversaciones" className="flex flex-wrap gap-1.5">
+      <div role="group" aria-label="Filtrar conversaciones" className="flex flex-wrap gap-x-1.5 gap-y-3">
         {scopeOptions.map(option => {
           const active = state.scope === option.value;
           return (
@@ -31,7 +31,7 @@ export function InboxToolbar({ state, onChange, assigneeOptions }: Props) {
               type="button"
               aria-pressed={active}
               onClick={() => onChange({ scope: option.value as ScopeFilter })}
-              className={`rounded-full border px-3 py-1 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 ${active ? "border-violet-700 bg-violet-700 text-white" : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"}`}
+              className={`relative rounded-full border px-3 py-1 text-sm font-medium transition after:absolute after:inset-x-0 after:-inset-y-[7px] after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 ${active ? "border-violet-700 bg-violet-700 text-white" : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"}`}
             >
               {option.label}
             </button>
@@ -46,7 +46,7 @@ export function InboxToolbar({ state, onChange, assigneeOptions }: Props) {
           </Select>
         </Field>
       )}
-      <label className="flex items-center gap-2 text-sm text-zinc-700">
+      <label className="relative flex items-center gap-2 text-sm text-zinc-700 after:absolute after:inset-x-0 after:-inset-y-3 after:content-['']">
         <input
           type="checkbox"
           className="h-4 w-4 accent-violet-700"

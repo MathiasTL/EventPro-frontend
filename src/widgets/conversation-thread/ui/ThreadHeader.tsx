@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { LeadStatusBadge, ModeChip, type Conversation } from "@/entities/conversation";
 import { TakeoverActions } from "@/features/conversation-takeover";
 import { initials } from "@/shared/lib/format";
@@ -8,6 +10,8 @@ type Props = {
   currentUserId: string;
   role: string | null | undefined;
   onBack?: () => void;
+  /** Moves keyboard and screen reader focus to the heading (narrow screens, right after opening a thread). */
+  focusHeading?: boolean;
 };
 
 function WindowPill({ conversation }: { conversation: Conversation }) {
@@ -28,15 +32,19 @@ function assigneeText(conversation: Conversation, currentUserId: string): string
   return `Atiende ${conversation.assigned_user_name ?? "otro encargado"}`;
 }
 
-export function ThreadHeader({ conversation, currentUserId, role, onBack }: Props) {
+export function ThreadHeader({ conversation, currentUserId, role, onBack, focusHeading }: Props) {
   const { client } = conversation;
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (focusHeading) heading.current?.focus();
+  }, [focusHeading]);
   const name = client.name || client.phone;
   return (
     <header className="border-b border-zinc-200 bg-white px-4 py-3">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {onBack && (
-            <button type="button" onClick={onBack} aria-label="Volver a la lista de conversaciones" className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-700 hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-violet-700 lg:hidden">
+            <button type="button" onClick={onBack} aria-label="Volver a la lista de conversaciones" className="relative -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-700 hover:bg-zinc-100 after:absolute after:-inset-1 after:content-[''] focus-visible:outline-2 focus-visible:outline-violet-700 lg:hidden">
               <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m15 18-6-6 6-6" />
               </svg>
@@ -44,7 +52,7 @@ export function ThreadHeader({ conversation, currentUserId, role, onBack }: Prop
           )}
           <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-sm font-semibold text-zinc-700">{initials(name)}</span>
           <div className="min-w-0">
-            <h2 className="truncate text-base font-semibold text-zinc-900">{name}</h2>
+            <h2 ref={heading} tabIndex={-1} className="truncate rounded text-base font-semibold text-zinc-900 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700">{name}</h2>
             <p className="truncate text-sm text-zinc-500">{client.phone}</p>
           </div>
         </div>

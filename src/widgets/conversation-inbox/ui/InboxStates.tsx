@@ -53,7 +53,7 @@ export function StreamIndicator({ status, onRetry }: { status?: ConversationStre
         {label ?? ""}
       </p>
       {status === "error" && onRetry && (
-        <button type="button" onClick={onRetry} className="rounded-md border border-amber-300 bg-white px-2 py-0.5 font-semibold text-amber-900 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-amber-700">
+        <button type="button" onClick={onRetry} className="relative rounded-md border border-amber-300 bg-white px-2 py-0.5 font-semibold text-amber-900 hover:bg-amber-100 after:absolute after:-inset-x-1 after:-inset-y-3 after:content-[''] focus-visible:outline-2 focus-visible:outline-amber-700">
           Reintentar
         </button>
       )}

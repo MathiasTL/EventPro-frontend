@@ -28,8 +28,9 @@ export function ModeChip({ mode }: { mode: ConversationMode }) {
 export function UnreadBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
-    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-violet-700 px-1.5 py-0.5 text-xs font-semibold text-white" aria-label={`${count} sin leer`}>
-      {count > 99 ? "99+" : count}
+    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-violet-700 px-1.5 py-0.5 text-xs font-semibold text-white">
+      <span aria-hidden="true">{count > 99 ? "99+" : count}</span>
+      <span className="sr-only">{`${count} sin leer`}</span>
     </span>
   );
 }

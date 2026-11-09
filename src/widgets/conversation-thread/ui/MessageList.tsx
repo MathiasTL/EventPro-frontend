@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/shared/ui";
 import type { TimelineEntry } from "../model";
 import { MessageBubble, UnsentBubble } from "./MessageBubble";
@@ -18,6 +18,25 @@ type Props = {
 };
 
 const NEAR_BOTTOM_PX = 120;
+const PREVIEW_MAX = 80;
+
+/** Last real message of the timeline (day separators and the user's pending rows are skipped). */
+function lastMessageEntry(entries: TimelineEntry[]): Extract<TimelineEntry, { kind: "message" }> | null {
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    const entry = entries[index];
+    if (entry.kind === "message") return entry;
+  }
+  return null;
+}
+
+function announcementFor(entry: Extract<TimelineEntry, { kind: "message" }>): string {
+  const { message } = entry;
+  if (message.direction !== "INCOMING" || message.author_type !== "CLIENT") return "";
+  const text = message.content.trim().replace(/\s+/g, " ");
+  if (!text) return "Nuevo mensaje del cliente con un archivo adjunto";
+  const preview = text.length > PREVIEW_MAX ? `${text.slice(0, PREVIEW_MAX)}…` : text;
+  return `Nuevo mensaje del cliente: ${preview}`;
+}
 
 /**
  * Oldest first. Scrolling to the top loads older pages (IntersectionObserver, with a visible button as the
@@ -30,6 +49,17 @@ export function MessageList({ conversationId, ownName, canRetry, entries, hasOld
   const nearBottom = useRef(true);
   const previous = useRef<{ oldest: string | null; newest: string | null; height: number }>({ oldest: null, newest: null, height: 0 });
   const loadOlderRef = useRef(onLoadOlder);
+
+  // Announce only a genuinely new last message: the key seen at mount is the baseline (no replay on load),
+  // prepending older pages never changes the last message, and own sends are outgoing or unsent rows.
+  const lastMessage = lastMessageEntry(entries);
+  const lastKey = lastMessage?.key ?? null;
+  const [seenKey, setSeenKey] = useState(lastKey);
+  const [announcement, setAnnouncement] = useState("");
+  if (seenKey !== lastKey) {
+    setSeenKey(lastKey);
+    setAnnouncement(lastMessage ? announcementFor(lastMessage) : "");
+  }
 
   useEffect(() => {
     loadOlderRef.current = onLoadOlder;
@@ -72,6 +102,9 @@ export function MessageList({ conversationId, ownName, canRetry, entries, hasOld
       }}
       className="min-h-0 flex-1 overflow-y-auto bg-zinc-50 px-4 py-4"
     >
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement && <span key={seenKey}>{announcement}</span>}
+      </div>
       <div ref={topSentinel} aria-hidden="true" className="h-px" />
       {hasOlder && (
         <div className="mb-3 flex flex-col items-center gap-1">
