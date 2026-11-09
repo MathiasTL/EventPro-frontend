@@ -52,6 +52,7 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
         notFound={detail.error instanceof ApiRequestError && detail.error.status === 404}
         onRetry={() => void detail.refetch()}
         retrying={detail.isRefetching}
+        onBack={onBack}
       />
     );
   }

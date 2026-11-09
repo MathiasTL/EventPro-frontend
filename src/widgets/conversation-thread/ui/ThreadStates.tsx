@@ -35,11 +35,13 @@ type ErrorProps = {
   notFound?: boolean;
   onRetry: () => void;
   retrying: boolean;
+  /** Narrow screens: the header (and its back button) is not mounted, so the error offers its own way back to the list. */
+  onBack?: () => void;
 };
 
-export function ThreadError({ unavailable, notFound = false, onRetry, retrying }: ErrorProps) {
+export function ThreadError({ unavailable, notFound = false, onRetry, retrying, onBack }: ErrorProps) {
   const message = notFound
-    ? "La conversación no existe o ya no está disponible."
+    ? "La conversación no existe o ya no está disponible. Vuelve a la lista para elegir otra conversación."
     : unavailable
       ? "La mensajería no está disponible temporalmente."
       : "No se pudo cargar la conversación.";
@@ -47,7 +49,10 @@ export function ThreadError({ unavailable, notFound = false, onRetry, retrying }
     <div className="flex flex-1 items-center justify-center p-6">
       <div role="alert" className="max-w-sm space-y-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
         <p>{message}</p>
-        {!notFound && <Button variant="ghost" onClick={onRetry} disabled={retrying}>{retrying ? "Reintentando…" : "Reintentar"}</Button>}
+        <div className="flex flex-wrap items-center gap-2">
+          {!notFound && <Button variant="ghost" onClick={onRetry} disabled={retrying}>{retrying ? "Reintentando…" : "Reintentar"}</Button>}
+          {onBack && <Button variant="ghost" onClick={onBack} className="min-h-11 lg:hidden">Volver a conversaciones</Button>}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LeadStatusBadge, ModeChip, UnreadBadge, type Conversation } from "@/entities/conversation";
 import { initials } from "@/shared/lib/format";
 import { formatRelative, handoffReasonLabels, isHandoffPending, responsibleLabel } from "../model";
@@ -5,18 +6,19 @@ import { formatRelative, handoffReasonLabels, isHandoffPending, responsibleLabel
 type Props = {
   conversation: Conversation;
   selected: boolean;
-  onSelect: (conversationId: number) => void;
+  href: string;
 };
 
-export function ConversationRow({ conversation, selected, onSelect }: Props) {
+export function ConversationRow({ conversation, selected, href }: Props) {
   const { client, unread_count: unread } = conversation;
   const pending = isHandoffPending(conversation);
   const name = client.name || client.phone;
   return (
     <li>
-      <button
-        type="button"
-        onClick={() => onSelect(conversation.chatwoot_conversation_id)}
+      <Link
+        href={href}
+        scroll={false}
+        prefetch={false}
         aria-current={selected ? "true" : undefined}
         className={`flex w-full gap-3 border-l-4 px-4 py-3 text-left transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-700 ${selected ? "border-violet-700 bg-violet-50" : "border-transparent hover:bg-zinc-50"}`}
       >
@@ -43,7 +45,7 @@ export function ConversationRow({ conversation, selected, onSelect }: Props) {
             <span className="truncate text-xs text-zinc-500">{responsibleLabel(conversation)}</span>
           </span>
         </span>
-      </button>
+      </Link>
     </li>
   );
 }

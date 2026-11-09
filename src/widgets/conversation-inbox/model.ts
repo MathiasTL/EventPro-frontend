@@ -32,6 +32,35 @@ export const initialFilterState: InboxFilterState = {
 };
 
 export const MIN_SEARCH_LENGTH = 2;
+export const MAX_SEARCH_LENGTH = 100;
+
+/** Query params that carry the filter state; the selection param (`c`) is deliberately not part of this list. */
+export const FILTER_PARAMS = { search: "q", scope: "scope", assignedUserId: "assignee", includeResolved: "resolved" } as const;
+
+type ParamReader = { get(name: string): string | null };
+
+/** Reads the filter state from query params; missing or invalid values fall back to the defaults. */
+export function parseFilterParams(params: ParamReader, canPickAssignee: boolean): InboxFilterState {
+  const scope = params.get(FILTER_PARAMS.scope);
+  return {
+    search: (params.get(FILTER_PARAMS.search) ?? "").slice(0, MAX_SEARCH_LENGTH),
+    scope: scopeOptions.some(option => option.value === scope) ? (scope as ScopeFilter) : initialFilterState.scope,
+    assignedUserId: canPickAssignee ? (params.get(FILTER_PARAMS.assignedUserId) ?? "") : "",
+    includeResolved: params.get(FILTER_PARAMS.includeResolved) === "1",
+  };
+}
+
+/** Returns a copy of `params` with only the filter params rewritten; defaults are omitted and other params are kept. */
+export function withFilterParams(params: URLSearchParams, state: InboxFilterState, canPickAssignee: boolean): URLSearchParams {
+  const next = new URLSearchParams(params.toString());
+  Object.values(FILTER_PARAMS).forEach(name => next.delete(name));
+  const search = state.search.trim();
+  if (search) next.set(FILTER_PARAMS.search, search);
+  if (state.scope !== initialFilterState.scope) next.set(FILTER_PARAMS.scope, state.scope);
+  if (canPickAssignee && state.assignedUserId) next.set(FILTER_PARAMS.assignedUserId, state.assignedUserId);
+  if (state.includeResolved) next.set(FILTER_PARAMS.includeResolved, "1");
+  return next;
+}
 
 export function toApiFilters(state: InboxFilterState, search: string, canPickAssignee: boolean): ConversationFilters {
   const filters: ConversationFilters = {};

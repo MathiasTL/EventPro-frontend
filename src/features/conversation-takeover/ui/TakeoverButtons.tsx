@@ -77,14 +77,33 @@ export function TakeoverButton({ conversation, currentUserId, role, className = 
 export function ReleaseButton({ conversation, currentUserId, role, className = "" }: Common & { className?: string }) {
   const { canRelease } = assignmentActions({ conversation, currentUserId, role });
   const mutation = useConversationAssignment(conversation.chatwoot_conversation_id, "release");
+  const [confirming, setConfirming] = useState(false);
   const error = mutation.isError ? assignmentErrorMessage(mutation.error) : null;
   if (!canRelease) return error ? <div className={className}><ActionError message={error} /></div> : null;
+  const heldByMe = conversation.assigned_user_id === currentUserId;
+  const holder = conversation.assigned_user_name ?? "el encargado asignado";
   return (
     <div className={`flex flex-col items-start gap-1 ${className}`}>
-      <Button variant="ghost" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+      <Button variant="ghost" onClick={() => setConfirming(true)} disabled={mutation.isPending}>
         {mutation.isPending ? "Devolviendo…" : "Devolver al bot"}
       </Button>
       <ActionError message={error} />
+      <Modal open={confirming} title="Devolver la conversación al bot" onClose={() => setConfirming(false)}>
+        <p className="text-sm text-zinc-700">
+          Si continúas, el bot volverá a responder al cliente y {heldByMe ? "dejarás de responder" : <><strong>{holder}</strong> dejará de responder</>} desde el panel.
+        </p>
+        <div className="mt-5 flex justify-end gap-2">
+          <Button variant="ghost" onClick={() => setConfirming(false)}>Cancelar</Button>
+          <Button
+            onClick={() => {
+              setConfirming(false);
+              mutation.mutate();
+            }}
+          >
+            Devolver al bot
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

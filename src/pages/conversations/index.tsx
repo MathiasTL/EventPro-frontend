@@ -69,12 +69,17 @@ function ConversationsWorkspace({ userId, userName, role }: { userId: string; us
 
   const managers = useQuery({ ...activeManagersOptions(), enabled: role === "SUPERADMIN" });
 
-  const select = useCallback((id: number | null) => {
+  // Single place that builds workspace URLs: current path, every other param preserved, `c` set or removed.
+  const hrefFor = useCallback((id: number | null) => {
     const params = new URLSearchParams(searchParams?.toString() ?? "");
     if (id === null) params.delete(PARAM); else params.set(PARAM, String(id));
     const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
-  }, [pathname, router, searchParams]);
+    return query ? `${pathname}?${query}` : pathname;
+  }, [pathname, searchParams]);
+
+  const select = useCallback((id: number | null) => {
+    router.push(hrefFor(id), { scroll: false });
+  }, [hrefFor, router]);
 
   // Narrow screens swap panes: the control that held focus disappears, so move focus to a visible target.
   // Opening: the pane takes focus at once (the thread is still loading), then the thread heading takes over
@@ -92,7 +97,7 @@ function ConversationsWorkspace({ userId, userName, role }: { userId: string; us
       <h1 ref={heading} tabIndex={-1} className="w-fit rounded text-xl font-bold tracking-tight outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700">Conversaciones</h1>
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(20rem,26rem)_1fr]">
         <div className={`${selectedId ? "hidden lg:block" : "block"} min-h-0`}>
-          <ConversationInbox role={role} assigneeOptions={managers.data} selectedId={selectedId} onSelect={select} streamStatus={streamStatus} onStreamRetry={retryStream} />
+          <ConversationInbox role={role} assigneeOptions={managers.data} selectedId={selectedId} hrefFor={hrefFor} streamStatus={streamStatus} onStreamRetry={retryStream} />
         </div>
         <div ref={threadPane} tabIndex={-1} className={`${selectedId ? "block" : "hidden lg:block"} min-h-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-700`}>
           {selectedId ? (

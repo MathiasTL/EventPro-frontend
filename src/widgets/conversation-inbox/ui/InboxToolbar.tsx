@@ -1,5 +1,5 @@
 import { Field, Input, Select } from "@/shared/ui";
-import { scopeOptions, type InboxFilterState, type ScopeFilter } from "../model";
+import { MAX_SEARCH_LENGTH, scopeOptions, type InboxFilterState, type ScopeFilter } from "../model";
 
 export type AssigneeOption = { id: string; name: string };
 
@@ -18,7 +18,7 @@ export function InboxToolbar({ state, onChange, assigneeOptions }: Props) {
           type="search"
           placeholder="Nombre o teléfono…"
           value={state.search}
-          maxLength={100}
+          maxLength={MAX_SEARCH_LENGTH}
           onChange={event => onChange({ search: event.target.value })}
         />
       </Field>

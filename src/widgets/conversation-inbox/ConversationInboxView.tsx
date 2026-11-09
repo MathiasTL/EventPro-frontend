@@ -13,7 +13,7 @@ export type ConversationInboxViewProps = {
   assigneeOptions?: AssigneeOption[];
   conversations: Conversation[];
   selectedId?: number | null;
-  onSelect: (conversationId: number) => void;
+  hrefFor: (conversationId: number) => string;
   loading: boolean;
   /** Set when the last query failed; previously loaded rows stay visible. */
   error: { unavailable: boolean } | null;
@@ -51,7 +51,7 @@ export function ConversationInboxView(props: ConversationInboxViewProps) {
                     key={conversation.chatwoot_conversation_id}
                     conversation={conversation}
                     selected={conversation.chatwoot_conversation_id === props.selectedId}
-                    onSelect={props.onSelect}
+                    href={props.hrefFor(conversation.chatwoot_conversation_id)}
                   />
                 ))}
               </ul>
