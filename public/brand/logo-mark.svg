@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EventPro mark: credential E">
+  <title>EventPro mark: credential E</title>
+  <rect x="2" y="2" width="60" height="60" rx="7" fill="#15131E"/>
+  <rect x="4" y="4" width="56" height="56" rx="5" fill="#FAFAF7"/>
+  <rect x="25" y="8" width="14" height="5" rx="2.5" fill="#15131E"/>
+  <path d="M7 23H20V57H7Z" fill="#CC1170"/>
+  <path d="M25 24H53V32H25ZM25 36H46V44H25ZM25 48H53V56H25Z" fill="#15131E"/>
+</svg>

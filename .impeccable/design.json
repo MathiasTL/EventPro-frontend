@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-09T21:21:44.016327+00:00",
+  "title": "Design System: EventPro",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Backstage Ink",
+        "canonical": "#15131e",
+        "tonalRamp": [
+          "#07070a",
+          "#0b0a10",
+          "#0f0e16",
+          "#13111b",
+          "#313039",
+          "#6a6970",
+          "#a3a2a7",
+          "#dcdcdd"
+        ]
+      },
+      "pass-white": {
+        "role": "neutral",
+        "displayName": "Pass White",
+        "canonical": "#fafaf7",
+        "tonalRamp": [
+          "#585856",
+          "#868684",
+          "#b4b4b2",
+          "#e3e3e0",
+          "#fbfbf8",
+          "#fcfcfa",
+          "#fdfdfc",
+          "#fefefe"
+        ]
+      },
+      "wash": {
+        "role": "neutral",
+        "displayName": "Page Wash",
+        "canonical": "#f1f0f4",
+        "tonalRamp": [
+          "#545455",
+          "#818183",
+          "#aeadb0",
+          "#dbdadd",
+          "#f3f2f5",
+          "#f6f5f8",
+          "#faf9fb",
+          "#fdfdfd"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#cfccd9",
+        "tonalRamp": [
+          "#48474c",
+          "#6f6d74",
+          "#95939d",
+          "#bcb9c5",
+          "#d5d2de",
+          "#e0dfe7",
+          "#ecebf0",
+          "#f8f7f9"
+        ]
+      },
+      "mute": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#5e5a70",
+        "tonalRamp": [
+          "#211f27",
+          "#32303c",
+          "#444151",
+          "#555266",
+          "#726e81",
+          "#9996a4",
+          "#c0bec7",
+          "#e7e6ea"
+        ]
+      },
+      "magenta": {
+        "role": "primary",
+        "displayName": "Access Magenta",
+        "canonical": "#cc1170",
+        "tonalRamp": [
+          "#470627",
+          "#6d093c",
+          "#930c51",
+          "#b90f66",
+          "#d22e81",
+          "#df68a4",
+          "#eba2c7",
+          "#f7dbea"
+        ]
+      },
+      "cobalt": {
+        "role": "secondary",
+        "displayName": "Bot Cobalt",
+        "canonical": "#2446e0",
+        "tonalRamp": [
+          "#0d184e",
+          "#132678",
+          "#1a32a2",
+          "#2140cb",
+          "#3f5ce4",
+          "#7489eb",
+          "#a9b6f3",
+          "#dee3fa"
+        ]
+      },
+      "signal": {
+        "role": "secondary",
+        "displayName": "Handoff Signal",
+        "canonical": "#ff5a1f",
+        "tonalRamp": [
+          "#591f0b",
+          "#893011",
+          "#b84116",
+          "#e7521c",
+          "#ff6e3a",
+          "#ff9671",
+          "#ffbea7",
+          "#ffe6dd"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Danger",
+        "canonical": "#b4232c",
+        "tonalRamp": [
+          "#3f0c0f",
+          "#601318",
+          "#821920",
+          "#a32028",
+          "#bd3e46",
+          "#cf7379",
+          "#e2a9ac",
+          "#f4dedf"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "credential-name": {
+        "displayName": "Credential Name",
+        "purpose": "Client name in the thread header; condensed caps."
+      },
+      "row-name": {
+        "displayName": "Row Name",
+        "purpose": "Inbox row title."
+      },
+      "band-label": {
+        "displayName": "Band Label",
+        "purpose": "Rotated holder label on credential bands."
+      },
+      "holder-block": {
+        "displayName": "Holder Block",
+        "purpose": "Who holds the conversation, in the header."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Messages and composer text."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Times, countdown, status marks; tabular numerals."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "chat-in",
+        "value": "420ms cubic-bezier(0.22, 1, 0.36, 1) both; from opacity 0, translateY(10px) scale(0.98)",
+        "purpose": "Entrance for live incoming client and bot messages only; off under prefers-reduced-motion."
+      },
+      {
+        "name": "fade-top",
+        "value": "mask-image: linear-gradient(to bottom, transparent 0, #000 16px)",
+        "purpose": "Fades message content under the header (.ep-fade-top)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Claims or sends: Tomar, Enviar.",
+      "html": "<button class=\"ds-btn-solid\">Tomar</button>",
+      "css": ".ds-btn-solid{background:#15131e;color:#fff;border:1px solid #15131e;font:600 0.8125rem/1 Archivo,system-ui,sans-serif;min-height:44px;padding:0 14px;border-radius:8px;cursor:pointer;transition:background .15s;}.ds-btn-solid:hover{background:#221f30}.ds-btn-solid:focus-visible{outline:2px solid #cc1170;outline-offset:2px;}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary actions: Reasignarme, Devolver al bot.",
+      "html": "<button class=\"ds-btn-outline\">Devolver al bot</button>",
+      "css": ".ds-btn-outline{background:#fafaf7;color:#15131e;border:1px solid #cfccd9;font:600 0.8125rem/1 Archivo,system-ui,sans-serif;min-height:44px;padding:0 14px;border-radius:8px;cursor:pointer;transition:background .15s;}.ds-btn-outline:hover{background:#fff}.ds-btn-outline:focus-visible{outline:2px solid #cc1170;outline-offset:2px;}"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Inbox search field.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Buscar por nombre o teléfono…\">",
+      "css": ".ds-input{width:100%;height:44px;padding:0 12px;background:#fff;color:#15131e;border:1px solid #15131e;border-radius:8px;font:400 0.875rem Archivo,system-ui,sans-serif;caret-color:#cc1170}.ds-input::placeholder{color:#5e5a70}.ds-input:focus-visible{outline:2px solid #cc1170;outline-offset:2px;}"
+    },
+    {
+      "name": "Rail Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Ink rail links; active is pass-white with a filled magenta dot.",
+      "html": "<div class=\"ds-rail\"><a class=\"ds-nav\"><i></i>Cotizaciones</a><a class=\"ds-nav ds-on\"><i></i>Conversaciones</a></div>",
+      "css": ".ds-rail{background:#15131e;padding:12px;display:flex;flex-direction:column;gap:2px;width:200px;font-family:Archivo,system-ui,sans-serif}.ds-nav{display:flex;align-items:center;gap:10px;min-height:36px;padding:0 8px;border-radius:6px;color:#c9c5da;font-size:.875rem}.ds-nav i{width:6px;height:6px;border-radius:2px;border:1.5px solid #a09cb5}.ds-nav:hover{background:#221f30;color:#fafaf7}.ds-on{background:#fafaf7;color:#15131e;font-weight:700}.ds-on i{background:#cc1170;border-color:#cc1170}"
+    },
+    {
+      "name": "Conversation Row",
+      "kind": "custom",
+      "refersTo": "band-mine",
+      "description": "Credential band row: width = urgency, rotated condensed label, mark grammar.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-band\"><span>Tú</span></span><div class=\"ds-body\"><b class=\"ds-name\">María Pérez</b><span class=\"ds-prev\">¿Pueden confirmar la fecha?</span><span class=\"ds-mark\"><i></i>En conversación</span></div></div>",
+      "css": ".ds-row{display:flex;min-height:92px;background:#fafaf7;border-bottom:1px solid #e3e1e8;font-family:Archivo,system-ui,sans-serif;color:#15131e}.ds-row:hover{background:#fff}.ds-band{width:36px;background:#cc1170;color:#fff;display:flex;align-items:center;justify-content:center;font-stretch:62%;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.8125rem}.ds-band span{writing-mode:vertical-rl;transform:rotate(180deg)}.ds-body{padding:12px 14px;display:flex;flex-direction:column;gap:2px}.ds-name{font-stretch:62%;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.1875rem;line-height:1.1}.ds-prev{font-size:.8125rem;color:#3f3b52}.ds-mark{display:flex;align-items:center;gap:6px;font-size:.75rem;color:#5e5a70;margin-top:2px}.ds-mark i{width:9px;height:9px;border-radius:2px;border:1.5px solid #cc1170;background:#cc1170}"
+    },
+    {
+      "name": "Credential Header",
+      "kind": "custom",
+      "refersTo": "band-mine",
+      "description": "Open thread header: client name, holder block, 24 h window bar.",
+      "html": "<header class=\"ds-cred\"><div class=\"ds-id\"><h2>María Pérez</h2><p>+51 999 888 777</p></div><div><div class=\"ds-hold\">Atiendes tú</div><div class=\"ds-win\">Ventana 24 h · cierra en <b>18 h 20 min</b><div class=\"ds-track\"><div style=\"width:76%\"></div></div></div></div></header>",
+      "css": ".ds-cred{display:grid;grid-template-columns:1fr 248px;background:#fafaf7;border:1px solid #cfccd9;border-radius:8px;overflow:hidden;font-family:Archivo,system-ui,sans-serif;color:#15131e}.ds-id{padding:16px 20px}.ds-id h2{margin:6px 0;font-stretch:62%;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:3rem;line-height:.95}.ds-id p{margin:0;font-weight:600;font-variant-numeric:tabular-nums}.ds-hold{background:#cc1170;color:#fff;padding:14px 18px;font-stretch:62%;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.4375rem;line-height:1.1}.ds-win{background:#15131e;color:#fff;padding:10px 18px;font-size:.78rem;font-variant-numeric:tabular-nums}.ds-track{height:3px;border-radius:2px;background:#34304a;margin-top:6px;overflow:hidden}.ds-track div{height:100%;background:#fafaf7;border-radius:2px}"
+    },
+    {
+      "name": "Message Bubbles",
+      "kind": "custom",
+      "refersTo": "bubble-client",
+      "description": "Client (pass-white left), bot (cobalt tint right), own (magenta right).",
+      "html": "<ul class=\"ds-msgs\"><li class=\"ds-c\">Hola, quiero cotizar un show.</li><li class=\"ds-b\"><span>Bot</span>Con gusto, ¿para qué fecha?</li><li class=\"ds-o\">Te escribo yo desde aquí.</li></ul>",
+      "css": ".ds-msgs{list-style:none;margin:0;padding:12px;background:#f1f0f4;display:flex;flex-direction:column;gap:8px;font-family:Archivo,system-ui,sans-serif;font-size:.90625rem;line-height:1.45;color:#15131e}.ds-msgs li{max-width:85%;padding:8px 12px;border-radius:12px}.ds-msgs span{display:block;font-stretch:62%;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.6875rem;color:#2446e0}.ds-c{align-self:flex-start;background:#fafaf7;border:1px solid #e3e1e8;border-top-left-radius:4px}.ds-b{align-self:flex-end;background:#e9edfc;border:1px solid #c9d2f6;border-top-right-radius:4px}.ds-o{align-self:flex-end;background:#cc1170;color:#fff;border:1px solid #cc1170;border-top-right-radius:4px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Backstage Pass",
+    "overview": "Every conversation is a production pass. Its colour band says who holds it and how urgent it is, at a glance, before any text is read. The world is an ink-black backstage rail beside pass-white paper: condensed bold caps for names and credential labels, plain-width Archivo for everything people actually read, flat fields of colour instead of badges, and state carried by marks rather than decoration.",
+    "keyCharacteristics": [
+      "Ink rail beside pass-white panels on a cool wash page.",
+      "Magenta = tú and brand, cobalt = bot, signal orange = pending handoff, ink = another encargado.",
+      "Band width encodes urgency; the rotated condensed label names the holder.",
+      "State marks: outline at rest, filled when held, struck when resolved.",
+      "Condensed bold caps (Archivo wdth 62%) for names and labels; normal width for reading.",
+      "Flat: no shadows, small radii, violet-tinted hairlines."
+    ],
+    "rules": [
+      {
+        "name": "The Band Means Holder Rule",
+        "body": "Magenta, cobalt, signal and ink each mean exactly one holder. Never use a role colour decoratively, and never show a holder colour without its text label.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signal Is Ink-Texted Rule",
+        "body": "Signal orange takes ink text. White on it fails contrast.",
+        "section": "colors"
+      },
+      {
+        "name": "The Magenta Text Rule",
+        "body": "Only #cc1170 may be text; the bright magenta is for fills.",
+        "section": "colors"
+      },
+      {
+        "name": "The Caps Are Names Rule",
+        "body": "Condensed caps are for names and credential labels only.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Time Rule",
+        "body": "Anything that counts or stamps time uses tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Rule",
+        "body": "Surfaces never lift. Hover brightens a surface to white or darkens ink to ink-2; it does not cast.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do let a colour band plus its text label say who holds a conversation; width carries urgency.",
+      "Do use condensed caps (.ep-cond) only for client names, holder blocks and credential labels.",
+      "Do keep surfaces flat: hairlines, tonal fields, an inset ink ring for selection.",
+      "Do put ink text on signal orange and white text on magenta, cobalt and ink.",
+      "Do keep every touch target at least 44px, relaxing to 36-40px at lg.",
+      "Do use the mark grammar for state: outline at rest, filled when held, struck when resolved.",
+      "Do use --ep-* tokens on any new migrated surface and keep light theme only until a dark theme is designed."
+    ],
+    "donts": [
+      "Don't add shadows, glows or gradient fills to panels, bubbles or buttons.",
+      "Don't show holder or status by colour alone.",
+      "Don't set body text, buttons or sentences in the condensed caps.",
+      "Don't use #e5177a for text.",
+      "Don't mix legacy tokens (violet, zinc, Geist, --brand) with --ep-* on one surface; migrate the surface whole.",
+      "Don't replace the standing column band with stacked pill badges on rows.",
+      "Don't animate history: the entrance plays only for live incoming messages."
+    ]
+  }
+}

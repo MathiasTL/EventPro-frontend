@@ -1,4 +1,4 @@
-import type { LeadStatus } from "./types";
+import type { Conversation, LeadStatus } from "./types";
 
 export type BadgeTone = "neutral" | "success" | "warning" | "danger" | "info";
 
@@ -11,3 +11,8 @@ export const leadStatusMeta: Record<LeadStatus, { label: string; tone: BadgeTone
   QUOTE_CLOSED: { label: "Vencida o cancelada", tone: "danger" },
   EVENT_DONE: { label: "Evento realizado", tone: "success" },
 };
+
+/** Closed work reads struck through: resolved by a person, or the quote expired or was cancelled. */
+export function isConversationClosed(conversation: Pick<Conversation, "status" | "lead_status">): boolean {
+  return conversation.status === "resolved" || conversation.lead_status === "QUOTE_CLOSED";
+}

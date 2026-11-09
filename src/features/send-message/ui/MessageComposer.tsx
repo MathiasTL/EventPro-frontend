@@ -81,22 +81,22 @@ export function MessageComposer({ conversationId, authorName, blocked = null }: 
   }
 
   return (
-    <form onSubmit={onSubmit} className="border-t border-zinc-200 bg-white px-4 py-3" aria-label="Responder al cliente">
+    <form onSubmit={onSubmit} className="shrink-0 bg-ep-wash px-4 pb-3 pt-2 lg:px-7 lg:pb-5" aria-label="Responder al cliente">
       {blocked && (
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5">
-          <p id={reasonId} className="text-sm text-zinc-700">{blocked.reason}</p>
-          {blocked.action}
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-ep-line-strong bg-ep-pass px-3 py-2.5">
+          <p id={reasonId} className="min-w-0 flex-1 text-sm text-ep-body">{blocked.reason}</p>
+          {blocked.action && <div className="shrink-0">{blocked.action}</div>}
         </div>
       )}
       {file && (
-        <div className="mb-2 flex items-center justify-between gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-sm text-violet-900">
-          <span className="min-w-0 truncate">{file.name} <span className="text-violet-700">({formatFileSize(file.size)})</span></span>
-          <button type="button" onClick={clearFile} className="shrink-0 rounded px-1 text-violet-800 hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-700" aria-label="Quitar el archivo adjunto">
+        <div className="mb-2 flex items-center justify-between gap-2 rounded-lg border border-ep-line-strong bg-ep-pass px-3 py-1.5 text-sm text-ep-ink">
+          <span className="min-w-0 truncate">{file.name} <span className="text-ep-mute">({formatFileSize(file.size)})</span></span>
+          <button type="button" onClick={clearFile} className="flex h-11 w-11 shrink-0 items-center justify-center rounded text-ep-ink hover:bg-ep-wash focus-visible:outline-2 focus-visible:outline-ep-magenta lg:h-8 lg:w-8" aria-label="Quitar el archivo adjunto">
             ✕
           </button>
         </div>
       )}
-      <div className="flex items-end gap-2">
+      <div className="flex items-end gap-2 rounded-xl border border-ep-line-strong bg-ep-pass p-2 focus-within:outline-2 focus-within:outline-ep-magenta">
         <input
           ref={fileInput}
           type="file"
@@ -112,7 +112,7 @@ export function MessageComposer({ conversationId, authorName, blocked = null }: 
           disabled={disabled || mutation.isPending}
           aria-label="Adjuntar imagen o PDF"
           title="Adjuntar imagen o PDF"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ep-mute transition hover:bg-ep-wash hover:text-ep-ink focus-visible:outline-2 focus-visible:outline-ep-magenta lg:h-10 lg:w-10 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m21.4 11.6-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5" />
@@ -131,19 +131,19 @@ export function MessageComposer({ conversationId, authorName, blocked = null }: 
             maxLength={MAX_TEXT_LENGTH}
             rows={1}
             placeholder={file ? "Agrega un texto al archivo (opcional)" : "Escribe un mensaje"}
-            className="block max-h-40 min-h-10 w-full resize-none rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none [field-sizing:content] focus:border-violet-600 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500"
+            className="block max-h-40 min-h-11 w-full resize-none rounded-lg bg-transparent px-2 py-2.5 text-[0.90625rem] text-ep-ink outline-none placeholder:text-ep-mute [field-sizing:content] disabled:cursor-not-allowed disabled:text-ep-mute lg:min-h-10 lg:py-2"
           />
         </div>
         <button
           type="submit"
           disabled={!canSend}
-          className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-violet-700 px-4 text-sm font-medium text-white transition hover:bg-violet-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 disabled:cursor-not-allowed disabled:bg-violet-300"
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-ep-ink px-5 text-sm font-semibold text-white transition hover:bg-ep-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta disabled:cursor-not-allowed disabled:opacity-40 lg:h-10"
         >
           {mutation.isPending ? "Enviando…" : "Enviar"}
         </button>
       </div>
-      <p className="mt-1.5 text-xs text-zinc-500">Enter envía · Shift+Enter agrega una línea</p>
-      <p role="alert" className={error ? "mt-1.5 text-sm font-medium text-red-700" : "sr-only"}>{error ?? ""}</p>
+      <p className="mt-1.5 hidden text-xs text-ep-mute lg:block">Enter envía · Shift+Enter agrega una línea</p>
+      <p role="alert" className={error ? "mt-1.5 text-sm font-semibold text-ep-danger" : "sr-only"}>{error ?? ""}</p>
     </form>
   );
 }

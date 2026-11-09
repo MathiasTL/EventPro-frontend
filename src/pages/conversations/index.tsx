@@ -27,7 +27,7 @@ export function ConversationsPage() {
   if (user && !canAccessConversations(user.role)) {
     return (
       <main className="p-10">
-        <h1 className="text-xl font-semibold">Acceso restringido</h1>
+        <h1 className="ep-cond text-3xl">Acceso restringido</h1>
         <p className="my-4">Las conversaciones requieren una cuenta de encargado o superadministrador.</p>
         <Button onClick={logout}>Cerrar sesión</Button>
       </main>
@@ -35,7 +35,7 @@ export function ConversationsPage() {
   }
   if (!user) return null;
   return (
-    <Suspense fallback={<p role="status" className="p-10 text-sm text-zinc-500">Cargando conversaciones…</p>}>
+    <Suspense fallback={<p role="status" className="p-10 text-sm text-ep-mute">Cargando conversaciones…</p>}>
       <ConversationsWorkspace userId={user.id} userName={user.full_name} role={user.role} />
     </Suspense>
   );
@@ -93,22 +93,19 @@ function ConversationsWorkspace({ userId, userName, role }: { userId: string; us
   }, [selectedId]);
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-2.75rem)] w-full max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6">
-      <h1 ref={heading} tabIndex={-1} className="w-fit rounded text-xl font-bold tracking-tight outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700">Conversaciones</h1>
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(20rem,26rem)_1fr]">
-        <div className={`${selectedId ? "hidden lg:block" : "block"} min-h-0`}>
-          <ConversationInbox role={role} assigneeOptions={managers.data} selectedId={selectedId} hrefFor={hrefFor} streamStatus={streamStatus} onStreamRetry={retryStream} />
-        </div>
-        <div ref={threadPane} tabIndex={-1} className={`${selectedId ? "block" : "hidden lg:block"} min-h-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-700`}>
-          {selectedId ? (
-            <ConversationThread conversationId={selectedId} currentUserId={userId} currentUserName={userName} role={role} onBack={() => select(null)} focusHeading={openedFromList && !isWide} />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-1 p-10 text-center">
-              <h2 className="text-base font-semibold text-zinc-800">Selecciona una conversación</h2>
-              <p className="text-sm text-zinc-500">Elige un chat de la lista para ver los mensajes y responder.</p>
-            </div>
-          )}
-        </div>
+    <main className="flex h-[calc(100dvh-3rem)] w-full bg-ep-wash lg:h-dvh">
+      <div className={`${selectedId ? "hidden lg:block" : "block"} min-h-0 w-full lg:w-[25rem] lg:shrink-0`}>
+        <ConversationInbox role={role} assigneeOptions={managers.data} currentUserId={userId} headingRef={heading} selectedId={selectedId} hrefFor={hrefFor} streamStatus={streamStatus} onStreamRetry={retryStream} />
+      </div>
+      <div ref={threadPane} tabIndex={-1} className={`${selectedId ? "block" : "hidden lg:block"} min-h-0 min-w-0 flex-1 overflow-hidden outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ep-magenta`}>
+        {selectedId ? (
+          <ConversationThread conversationId={selectedId} currentUserId={userId} currentUserName={userName} role={role} onBack={() => select(null)} focusHeading={openedFromList && !isWide} />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-1 p-10 text-center">
+            <h2 className="ep-cond text-2xl">Selecciona una conversación</h2>
+            <p className="text-sm text-ep-mute">Elige un chat de la lista para ver los mensajes y responder.</p>
+          </div>
+        )}
       </div>
       <HandoffNotices notices={notices} onOpen={select} onDismiss={dismiss} />
     </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type Ref } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { conversationListOptions } from "@/entities/conversation";
@@ -17,6 +17,10 @@ export type ConversationInboxProps = {
   role: string | null | undefined;
   /** Options for the SUPERADMIN assignee selector (the page loads them from `GET /users`). */
   assigneeOptions?: AssigneeOption[];
+  /** Id of the signed-in user; rows held by them read as «Tú». */
+  currentUserId: string;
+  /** Ref for the inbox title (the page returns focus to it on phones). */
+  headingRef?: Ref<HTMLHeadingElement>;
   selectedId?: number | null;
   /** Builds the link for a conversation row; the page owns the selection param and keeps the other params. */
   hrefFor: (conversationId: number) => string;
@@ -26,7 +30,7 @@ export type ConversationInboxProps = {
   onStreamRetry?: () => void;
 };
 
-export function ConversationInbox({ role, assigneeOptions, selectedId, hrefFor, streamStatus, onStreamRetry }: ConversationInboxProps) {
+export function ConversationInbox({ role, assigneeOptions, currentUserId, headingRef, selectedId, hrefFor, streamStatus, onStreamRetry }: ConversationInboxProps) {
   const canPickAssignee = role === "SUPERADMIN";
   const router = useRouter();
   const pathname = usePathname() ?? "";
@@ -68,6 +72,8 @@ export function ConversationInbox({ role, assigneeOptions, selectedId, hrefFor, 
       onClearFilters={() => { setState(initialFilterState); setDebouncedSearch(""); }}
       assigneeOptions={canPickAssignee ? (assigneeOptions ?? []) : undefined}
       conversations={conversations}
+      currentUserId={currentUserId}
+      headingRef={headingRef}
       selectedId={selectedId}
       hrefFor={hrefFor}
       loading={query.isPending}

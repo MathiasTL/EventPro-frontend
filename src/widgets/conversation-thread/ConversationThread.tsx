@@ -66,9 +66,10 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
   const block = composerBlock({ conversation, currentUserId, role, loading: thread.isPending, unavailable });
 
   return (
-    <section aria-label={`Conversación con ${conversation.client.name || conversation.client.phone}`} className="flex h-full min-h-0 flex-col bg-white">
+    <section aria-label={`Conversación con ${conversation.client.name || conversation.client.phone}`} className="flex h-full min-h-0 flex-col bg-ep-wash">
       <ThreadHeader conversation={conversation} currentUserId={currentUserId} role={role} onBack={onBack} focusHeading={focusHeading} />
       {unavailable && thread.data && <UnavailableBanner />}
+      <div aria-hidden="true" className="hidden h-3 shrink-0 lg:block" />
       {thread.isPending ? (
         <MessagesSkeleton />
       ) : !thread.data ? (
@@ -88,12 +89,9 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
       <MessageComposer
         conversationId={conversationId}
         authorName={ownName}
-        blocked={
-          block && {
-            reason: block.reason,
-            action: block.showTakeover ? <TakeoverButton conversation={conversation} currentUserId={currentUserId} role={role} /> : undefined,
-          }
-        }
+        // «Tomar» lives here only (the header strip keeps «Reasignarme» / «Devolver al bot»). The button hides itself
+        // when it does not apply and keeps its error message while mounted.
+        blocked={block && { reason: block.reason, action: <TakeoverButton conversation={conversation} currentUserId={currentUserId} role={role} only="take" /> }}
       />
     </section>
   );

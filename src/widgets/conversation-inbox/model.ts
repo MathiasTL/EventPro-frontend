@@ -83,6 +83,16 @@ export function isHandoffPending(conversation: Conversation): boolean {
   return conversation.mode === "HUMAN" && conversation.status === "open" && conversation.assigned_user_id === null && conversation.handed_off_at !== null;
 }
 
+/** Who holds a conversation, as the colour band of its row shows it. */
+export type HolderKind = "pending" | "bot" | "mine" | "other" | "free";
+
+export function holderKind(conversation: Conversation, currentUserId: string): HolderKind {
+  if (isHandoffPending(conversation)) return "pending";
+  if (conversation.mode === "BOT") return "bot";
+  if (conversation.assigned_user_id === null) return "free";
+  return conversation.assigned_user_id === currentUserId ? "mine" : "other";
+}
+
 export function responsibleLabel(conversation: Conversation): string {
   if (conversation.mode === "BOT") return "Bot";
   return conversation.assigned_user_name ?? "Sin asignar";

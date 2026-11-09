@@ -7,13 +7,13 @@ import { MessageAttachment } from "./MessageAttachment";
 /** `canRetry` is false while the composer is blocked: the backend only retries for the assignee with an open window. */
 type Common = { conversationId: number; ownName: string | null; canRetry: boolean };
 
-type Look = { side: "left" | "right"; bubble: string; label: string | null; onDark: boolean };
+type Look = { side: "left" | "right"; bubble: string; labelTone: string; label: string | null; onDark: boolean };
 
 const looks = {
-  client: { side: "left", bubble: "bg-white text-zinc-900 border border-zinc-200", onDark: false },
-  bot: { side: "right", bubble: "bg-zinc-100 text-zinc-900 border border-zinc-200", onDark: false },
-  other: { side: "right", bubble: "bg-violet-100 text-violet-950", onDark: false },
-  own: { side: "right", bubble: "bg-violet-700 text-white", onDark: true },
+  client: { side: "left", bubble: "bg-ep-pass text-ep-ink border border-ep-line", labelTone: "text-ep-body", onDark: false },
+  bot: { side: "right", bubble: "bg-ep-cobalt-field text-ep-ink border border-ep-cobalt-line", labelTone: "text-ep-cobalt", onDark: false },
+  other: { side: "right", bubble: "bg-ep-neutral-field text-ep-ink border border-ep-line-strong", labelTone: "text-ep-body", onDark: false },
+  own: { side: "right", bubble: "bg-ep-magenta text-white border border-ep-magenta", labelTone: "text-white", onDark: true },
 } as const;
 
 function lookFor(authorType: Message["author_type"], authorName: string | null, ownName: string | null): Look {
@@ -25,6 +25,8 @@ function lookFor(authorType: Message["author_type"], authorName: string | null, 
 }
 
 type BodyProps = {
+  /** Plays the entrance animation (live incoming messages only). */
+  live?: boolean;
   look: Look;
   time: string;
   children: React.ReactNode;
@@ -33,21 +35,21 @@ type BodyProps = {
   retry: React.ReactNode;
 };
 
-function Bubble({ look, time, children, status, failure, retry }: BodyProps) {
+function Bubble({ look, time, children, status, failure, retry, live = false }: BodyProps) {
   const failed = status === "FAILED";
   return (
-    <li className={`flex ${look.side === "right" ? "justify-end" : "justify-start"}`}>
-      <div className={`flex max-w-[85%] flex-col gap-1 sm:max-w-[70%] ${look.side === "right" ? "items-end" : "items-start"}`}>
-        <div className={`flex flex-col gap-1.5 rounded-2xl px-3 py-2 text-sm shadow-sm ${look.bubble} ${failed ? "ring-2 ring-red-400" : ""} ${look.side === "right" ? "rounded-br-md" : "rounded-bl-md"}`}>
-          {look.label && <span className="text-xs font-semibold opacity-80">{look.label}</span>}
+    <li className={`flex ${live ? "chat-in" : ""} ${look.side === "right" ? "justify-end" : "justify-start"}`}>
+      <div className={`flex max-w-[85%] flex-col gap-1 sm:max-w-[34rem] ${look.side === "right" ? "items-end" : "items-start"}`}>
+        <div className={`flex flex-col gap-1.5 rounded-xl px-3 py-2 text-[0.90625rem] leading-[1.45] ${look.bubble} ${failed ? "outline-2 outline-offset-1 outline-ep-danger" : ""} ${look.side === "right" ? "rounded-tr-sm" : "rounded-tl-sm"}`}>
+          {look.label && <span className={`ep-cond text-[0.6875rem] ${look.labelTone}`}>{look.label}</span>}
           {children}
-          <span className="flex items-center justify-end gap-1.5 text-[11px] opacity-80">
+          <span className={`flex items-center justify-end gap-1.5 text-[11px] tabular-nums ${look.onDark ? "text-white" : "text-ep-mute"}`}>
             <time>{time}</time>
-            {look.side === "right" && <DeliveryMark status={status} onDark={look.onDark} />}
+            <DeliveryMark status={status} onDark={look.onDark} />
           </span>
         </div>
         {failure !== null && (
-          <p className="flex flex-wrap items-center justify-end gap-2 text-xs font-medium text-red-700">
+          <p className="flex flex-wrap items-center justify-end gap-2 text-xs font-semibold text-ep-danger">
             <span>{failure}</span>
             {retry}
           </p>
@@ -57,11 +59,14 @@ function Bubble({ look, time, children, status, failure, retry }: BodyProps) {
   );
 }
 
-export function MessageBubble({ message, conversationId, ownName, canRetry }: Common & { message: Message }) {
+export function MessageBubble({ message, conversationId, ownName, canRetry, live = false }: Common & { message: Message; live?: boolean }) {
   if (message.direction === "ACTIVITY") {
     return (
       <li className="flex justify-center">
-        <p className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-600">{message.content}</p>
+        <p className="flex items-center gap-1.5 rounded-full border border-ep-line-strong bg-ep-pass px-3 py-1 text-xs font-semibold text-ep-ink">
+          <span aria-hidden="true" className="h-[9px] w-[9px] shrink-0 rounded-[2px] border-[1.5px] border-ep-magenta bg-ep-magenta" />
+          {message.content}
+        </p>
       </li>
     );
   }
@@ -70,6 +75,7 @@ export function MessageBubble({ message, conversationId, ownName, canRetry }: Co
   const failed = message.delivery_status === "FAILED";
   return (
     <Bubble
+      live={live && (incoming || message.author_type === "BOT")}
       look={look}
       time={formatTime(message.created_at)}
       status={incoming ? null : message.delivery_status}

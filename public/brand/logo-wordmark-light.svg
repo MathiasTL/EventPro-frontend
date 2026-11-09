@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 56" role="img" aria-label="EventPro logo for light backgrounds">
+  <title>EventPro logo for light backgrounds</title>
+  <rect x="3.625" y="3.625" width="48.75" height="48.75" rx="5.688" fill="#15131E"/>
+  <rect x="5.25" y="5.25" width="45.5" height="45.5" rx="4.063" fill="#FAFAF7"/>
+  <rect x="22.313" y="8.5" width="11.375" height="4.063" rx="2.031" fill="#15131E"/>
+  <path d="M7.688 20.688H18.25V48.313H7.688Z" fill="#CC1170"/>
+  <path d="M22.313 21.5H45.063V28H22.313ZM22.313 31.25H39.375V37.75H22.313ZM22.313 41H45.063V47.5H22.313Z" fill="#15131E"/>
+  <g transform="translate(67 11)">
+    <path d="M0 0H18V6H6V14H16V20H6V28H18V34H0Z" fill="#15131E" fill-rule="evenodd" transform="translate(0 0)"/>
+    <path d="M0 0H6.5L10.5 26L14.5 0H21L14.3 34H6.7Z" fill="#15131E" fill-rule="evenodd" transform="translate(23 0)"/>
+    <path d="M0 0H18V6H6V14H16V20H6V28H18V34H0Z" fill="#15131E" fill-rule="evenodd" transform="translate(49 0)"/>
+    <path d="M0 0H6L14 20V0H20V34H14L6 14V34H0Z" fill="#15131E" fill-rule="evenodd" transform="translate(72 0)"/>
+    <path d="M0 0H21V6H13.5V34H7.5V6H0Z" fill="#15131E" fill-rule="evenodd" transform="translate(97 0)"/>
+    <path d="M0 0H13C17 0 19 2.5 19 6V13C19 17 17 19 13 19H6V34H0ZM6 6V13H12C13 13 13.5 12.5 13.5 11.5V7.5C13.5 6.5 13 6 12 6Z" fill="#CC1170" fill-rule="evenodd" transform="translate(123 0)"/>
+    <path d="M0 0H13C17 0 19 2.5 19 6V13C19 16.5 17.5 18.5 14.5 19L20 34H13.5L8.5 20H6V34H0ZM6 6V14H12C13 14 13.5 13.5 13.5 12.5V7.5C13.5 6.5 13 6 12 6Z" fill="#CC1170" fill-rule="evenodd" transform="translate(147 0)"/>
+    <path d="M6 0H16C20 0 22 2 22 6V28C22 32 20 34 16 34H6C2 34 0 32 0 28V6C0 2 2 0 6 0ZM7 6C6.3 6 6 6.3 6 7V27C6 27.7 6.3 28 7 28H15C15.7 28 16 27.7 16 27V7C16 6.3 15.7 6 15 6Z" fill="#CC1170" fill-rule="evenodd" transform="translate(172 0)"/>
+  </g>
+</svg>
