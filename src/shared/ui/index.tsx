@@ -187,3 +187,8 @@ export function Panel({ className = "", ...props }: HTMLAttributes<HTMLElement>)
 export function FilterBar({ className = "", ...props }: HTMLAttributes<HTMLElement>) {
   return <Panel className={`flex flex-wrap items-end gap-3 ${className}`} {...props} />;
 }
+
+/** Panel page container: shared gutters (16px phone, 28px desktop), top/bottom padding and a max width for dense tables. */
+export function Page({ className = "", ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={`mx-auto w-full max-w-6xl space-y-6 px-4 py-6 lg:px-7 lg:py-7 ${className}`} {...props} />;
+}
