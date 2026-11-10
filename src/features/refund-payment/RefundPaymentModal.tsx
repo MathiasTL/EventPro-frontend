@@ -50,7 +50,7 @@ function RefundPaymentForm({ payment, onClose, onDone }: Props & { payment: Paym
   return (
     <form onSubmit={event => { event.preventDefault(); mutation.mutate(); }} className="space-y-4">
       <fieldset disabled={busy} className="space-y-4 disabled:opacity-60">
-        <p className="text-sm text-zinc-500">Indica cómo se devolvió el dinero al cliente. Esta acción cierra el pago como reembolsado.</p>
+        <p className="text-sm text-ep-body">Indica cómo se devolvió el dinero al cliente. Esta acción cierra el pago como reembolsado.</p>
         <Field label="Medio de reembolso">
           <Select value={method} onChange={e => setMethod(e.target.value as PaymentMethod)}>
             {PAYMENT_METHODS.map(value => <option key={value} value={value}>{PAYMENT_METHOD_LABELS[value]}</option>)}

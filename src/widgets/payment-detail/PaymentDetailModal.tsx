@@ -24,8 +24,8 @@ type ActiveAction = { kind: "verify"; action: VerifyPaymentAction } | { kind: "a
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <>
-      <dt className="font-semibold text-zinc-500">{label}</dt>
-      <dd className="break-all text-zinc-900">{children ?? "—"}</dd>
+      <dt className="font-semibold text-ep-mute">{label}</dt>
+      <dd className="break-all text-ep-ink">{children ?? "—"}</dd>
     </>
   );
 }
@@ -58,7 +58,7 @@ function PaymentDetail({ initial, onClose, onDone }: { initial: PaymentRead; onC
         <PaymentConceptBadge concept={payment.concept} />
         <PaymentStatusBadge status={payment.validation_status} />
         <PaymentAuditBadge status={payment.audit_status} />
-        <span className="ml-auto text-base font-semibold text-zinc-900">{formatSoles(payment.amount)}</span>
+        <span className="ml-auto text-base font-semibold tabular-nums text-ep-ink">{formatSoles(payment.amount)}</span>
       </div>
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-xs">
@@ -78,11 +78,11 @@ function PaymentDetail({ initial, onClose, onDone }: { initial: PaymentRead; onC
       </dl>
 
       <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Comprobante</p>
+        <p className="text-xs font-semibold text-ep-mute">Comprobante</p>
         <PaymentEvidenceViewer paymentId={payment.payment_id} />
       </div>
 
-      <div className="flex flex-wrap justify-end gap-2 border-t border-zinc-200 pt-4">
+      <div className="flex flex-wrap justify-end gap-2 border-t border-ep-line pt-4">
         {verify && <Button onClick={() => setActive({ kind: "verify", action: "VERIFIED" })}>Verificar</Button>}
         {reject && <Button variant="danger" onClick={() => setActive({ kind: "verify", action: "REJECTED" })}>Rechazar</Button>}
         {audit && <Button variant="ghost" onClick={() => setActive({ kind: "audit" })}>Auditar</Button>}

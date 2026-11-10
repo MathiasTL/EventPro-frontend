@@ -3,15 +3,15 @@ import { leadStatusMeta, type BadgeTone } from "../lead-status";
 import type { ConversationMode, LeadStatus } from "../types";
 
 const tones: Record<BadgeTone, string> = {
-  neutral: "bg-ep-neutral-field text-ep-ink",
-  info: "bg-ep-cobalt-field text-ep-cobalt",
-  success: "bg-emerald-100 text-emerald-800",
-  warning: "bg-amber-100 text-amber-800",
-  danger: "bg-red-100 text-red-800",
+  neutral: "border-transparent bg-ep-neutral-field text-ep-ink",
+  info: "border-transparent bg-ep-cobalt-field text-ep-cobalt",
+  success: "border-transparent bg-ep-success-field text-ep-success",
+  warning: "border-ep-signal-line bg-ep-signal-field text-ep-ink",
+  danger: "border-transparent bg-ep-danger-field text-ep-danger",
 };
 
 function Pill({ tone, children }: { tone: BadgeTone; children: ReactNode }) {
-  return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap ${tones[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold whitespace-nowrap ${tones[tone]}`}>{children}</span>;
 }
 
 export function LeadStatusBadge({ status }: { status: LeadStatus }) {

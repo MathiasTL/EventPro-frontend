@@ -1,7 +1,7 @@
 import { Badge } from "@/shared/ui";
 import type { PaymentAuditStatus, PaymentConcept, PaymentValidationStatus } from "../types";
 
-type Tone = "neutral" | "success" | "warning" | "danger";
+type Tone = "neutral" | "progress" | "success" | "warning" | "danger";
 
 const STATUS: Record<PaymentValidationStatus, { label: string; tone: Tone }> = {
   PENDING_VERIFICATION: { label: "Pendiente de verificación", tone: "warning" },
@@ -9,7 +9,7 @@ const STATUS: Record<PaymentValidationStatus, { label: string; tone: Tone }> = {
   VERIFIED: { label: "Verificado", tone: "success" },
   REJECTED: { label: "Rechazado", tone: "danger" },
   REFUND_PENDING: { label: "Reembolso pendiente", tone: "warning" },
-  REFUNDED: { label: "Reembolsado", tone: "neutral" },
+  REFUNDED: { label: "Reembolsado", tone: "danger" },
 };
 
 const CONCEPT: Record<PaymentConcept, string> = {
@@ -19,7 +19,7 @@ const CONCEPT: Record<PaymentConcept, string> = {
 };
 
 const AUDIT: Record<PaymentAuditStatus, { label: string; tone: Tone }> = {
-  UNREVIEWED: { label: "Sin revisar", tone: "neutral" },
+  UNREVIEWED: { label: "Sin revisar", tone: "progress" },
   REVIEWED: { label: "Revisado", tone: "success" },
   FLAGGED: { label: "Observado", tone: "danger" },
 };

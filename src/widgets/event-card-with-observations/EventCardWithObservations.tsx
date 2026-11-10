@@ -10,9 +10,9 @@ export function EventCardWithObservations({ event, children }: { event: Schedule
   return (
     <EventCard event={event}>
       {event.client_observations && (
-        <div role="note" className="rounded-lg border border-amber-300 bg-amber-50 p-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">Observaciones del cliente</p>
-          <p className="mt-1 text-sm text-amber-900">{event.client_observations}</p>
+        <div role="note" className="rounded-lg border border-ep-signal-line bg-ep-signal-field p-3 text-ep-ink">
+          <p className="text-xs font-semibold">Observaciones del cliente</p>
+          <p className="mt-1 text-sm">{event.client_observations}</p>
         </div>
       )}
       {children}

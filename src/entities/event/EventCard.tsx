@@ -13,9 +13,9 @@ export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
   CANCELLED: "Cancelado",
 };
 
-const EVENT_STATUS_TONES: Record<EventStatus, "neutral" | "success" | "warning" | "danger"> = {
-  AWAITING_SIGNATURE: "neutral",
-  SCHEDULED: "neutral",
+const EVENT_STATUS_TONES: Record<EventStatus, "neutral" | "progress" | "success" | "warning" | "danger"> = {
+  AWAITING_SIGNATURE: "progress",
+  SCHEDULED: "progress",
   AWAITING_BALANCE: "warning",
   IN_PROGRESS: "success",
   EXTENDED: "warning",
@@ -26,22 +26,22 @@ const EVENT_STATUS_TONES: Record<EventStatus, "neutral" | "success" | "warning" 
 export function EventCard({ event, children }: { event: ScheduleEvent; children?: ReactNode }) {
   const crossesMidnight = event.end_date !== event.event_date;
   return (
-    <article className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
+    <article className="flex flex-col gap-3 rounded-lg border border-ep-line bg-ep-pass p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="text-xs text-zinc-500">{event.event_code}</p>
-          <h3 className="font-semibold text-zinc-900">{event.client_name}</h3>
-          <p className="text-sm text-zinc-600">{event.package_name}{event.theme_name && ` · ${event.theme_name}`}</p>
+          <p className="text-xs tabular-nums text-ep-mute">{event.event_code}</p>
+          <h3 className="font-semibold text-ep-ink">{event.client_name}</h3>
+          <p className="text-sm text-ep-body">{event.package_name}{event.theme_name && ` · ${event.theme_name}`}</p>
         </div>
         <Badge tone={EVENT_STATUS_TONES[event.status]}>{EVENT_STATUS_LABELS[event.status]}</Badge>
       </div>
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-ep-body">
         {event.start_time}–{event.end_time}{crossesMidnight && " (+1 día)"} · {event.district}
       </p>
       {event.crews.length > 0 && (
-        <p className="text-sm text-zinc-600">Elenco: {event.crews.map(crew => crew.leader_name).join(", ")}</p>
+        <p className="text-sm text-ep-body">Elenco: {event.crews.map(crew => crew.leader_name).join(", ")}</p>
       )}
-      <p className="text-sm font-medium text-zinc-700">Saldo pendiente: {formatSoles(event.pending_balance_to_collect)}</p>
+      <p className="text-sm font-medium text-ep-ink">Saldo pendiente: {formatSoles(event.pending_balance_to_collect)}</p>
       {children}
     </article>
   );
