@@ -3,6 +3,7 @@ import { useEffect, useId, useRef } from "react";
 
 import type {
   ButtonHTMLAttributes,
+  HTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
@@ -11,69 +12,60 @@ import type {
 
 type ButtonVariant = "primary" | "ghost" | "danger";
 
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta";
+
 export function Button({
   variant = "primary",
   className = "",
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant }) {
   const styles: Record<ButtonVariant, string> = {
-    primary: "bg-violet-700 text-white hover:bg-violet-800 disabled:bg-violet-300 focus-visible:outline-violet-700",
-    ghost: "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 focus-visible:outline-violet-700",
-    danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600",
+    primary: "bg-ep-ink text-white hover:bg-ep-ink-2",
+    ghost: "border border-ep-line-strong bg-ep-pass text-ep-ink hover:bg-white",
+    danger: "bg-ep-danger text-white hover:brightness-90",
   };
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed ${styles[variant]} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center rounded-lg px-3.5 text-[0.8125rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-10 ${focusRing} ${styles[variant]} ${className}`}
       {...props}
     />
   );
 }
 
+const fieldClass = `w-full rounded-lg border border-ep-ink bg-white px-3 text-sm text-ep-ink placeholder:text-ep-mute disabled:opacity-60 ${focusRing} focus-visible:outline-offset-1`;
+
 export function Input({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      className={`w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus-visible:border-violet-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-violet-700 ${className}`}
-      {...props}
-    />
-  );
+  return <input className={`min-h-11 lg:min-h-10 ${fieldClass} ${className}`} {...props} />;
 }
 
 export function Select({ className = "", ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select
-      className={`w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus-visible:border-violet-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-violet-700 ${className}`}
-      {...props}
-    />
-  );
+  return <select className={`ep-select min-h-11 pr-9 lg:min-h-10 ${fieldClass} ${className}`} {...props} />;
 }
 
 export function Textarea({ className = "", ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return (
-    <textarea
-      className={`w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus-visible:border-violet-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-violet-700 ${className}`}
-      {...props}
-    />
-  );
+  return <textarea className={`min-h-11 py-2 ${fieldClass} ${className}`} {...props} />;
 }
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1 text-sm">
-      <span className="font-medium text-zinc-700">{label}</span>
+      <span className="font-medium text-ep-ink">{label}</span>
       {children}
     </label>
   );
 }
 
-export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "success" | "warning" | "danger" }) {
-  const tones = {
-    neutral: "bg-zinc-100 text-zinc-700",
-    success: "bg-emerald-100 text-emerald-700",
-    warning: "bg-amber-100 text-amber-700",
-    danger: "bg-red-100 text-red-700",
-  } as const;
+type Tone = "neutral" | "success" | "warning" | "danger";
+
+export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: Tone }) {
+  const tones: Record<Tone, string> = {
+    neutral: "border-transparent bg-ep-neutral-field text-ep-body",
+    success: "border-transparent bg-ep-success-field text-ep-success",
+    warning: "border-ep-signal-line bg-ep-signal-field text-ep-ink",
+    danger: "border-transparent bg-ep-danger-field text-ep-danger",
+  };
   return (
-    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
+    <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -81,9 +73,9 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
 
 export function Table({ head, children }: { head: string[]; children: ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
-      <table className="w-full border-collapse text-sm">
-        <thead className="bg-zinc-50 text-left text-xs uppercase tracking-wide text-zinc-500">
+    <div className="overflow-x-auto rounded-lg border border-ep-line bg-ep-pass">
+      <table className="w-full border-collapse text-sm text-ep-ink tabular-nums">
+        <thead className="border-b border-ep-line text-left text-xs text-ep-mute">
           <tr>
             {head.map((column) => (
               <th key={column} className="px-4 py-3 font-semibold">
@@ -92,7 +84,7 @@ export function Table({ head, children }: { head: string[]; children: ReactNode 
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-100">{children}</tbody>
+        <tbody className="divide-y divide-ep-line">{children}</tbody>
       </table>
     </div>
   );
@@ -113,12 +105,14 @@ export function Modal({
   const titleId = useId();
   useEffect(() => { if (open) dialog.current?.showModal(); else dialog.current?.close(); }, [open]);
   return (
-    <dialog ref={dialog} aria-labelledby={titleId} onCancel={event => { event.preventDefault(); onClose(); }} className="m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-lg overflow-y-auto rounded-2xl border-0 bg-white p-0 text-zinc-900 shadow-xl backdrop:bg-black/40">
-      {open && <div className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 id={titleId} className="text-lg font-semibold text-zinc-900">{title}</h2>
-          <button onClick={onClose} className="rounded-md text-zinc-400 hover:text-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700" aria-label="Cerrar">
-            ✕
+    <dialog ref={dialog} aria-labelledby={titleId} onCancel={event => { event.preventDefault(); onClose(); }} className="m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-lg overflow-y-auto rounded-xl border border-ep-line bg-ep-pass p-0 text-ep-ink backdrop:bg-ep-ink/50">
+      {open && <div className="p-4 sm:p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 id={titleId} className="text-lg font-semibold text-ep-ink">{title}</h2>
+          <button type="button" onClick={onClose} className={`-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ep-mute hover:text-ep-ink ${focusRing}`} aria-label="Cerrar">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
           </button>
         </div>
         {children}
@@ -130,20 +124,65 @@ export function Modal({
 export function ErrorBanner({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{message}</p>
+    <p role="alert" className="rounded-lg border border-ep-danger bg-ep-danger-field px-3 py-2 text-sm text-ep-danger">{message}</p>
   );
 }
 
 export function EmptyState({ message }: { message: string }) {
-  return <p className="rounded-xl border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">{message}</p>;
+  return <p className="rounded-lg border border-dashed border-ep-line-strong p-6 text-center text-sm text-ep-mute">{message}</p>;
 }
 
-export function ComingSoon({ title, description }: { title: string; description: string }) {
+/** Page title block. The title is a section name, so it takes the condensed caps; the eyebrow is a quiet caption. */
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  actions,
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+}) {
   return (
-    <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center">
-      <h2 className="text-lg font-semibold text-zinc-900">{title}</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm text-zinc-500">{description}</p>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-violet-600">Próximamente</p>
+    <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div className="min-w-0">
+        {eyebrow && <p className="text-xs font-medium text-ep-mute">{eyebrow}</p>}
+        <h1 className="ep-cond text-3xl leading-none text-ep-ink sm:text-4xl">{title}</h1>
+        {description && <p className="mt-2 max-w-prose text-[0.8125rem] leading-snug text-ep-body">{description}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </header>
+  );
+}
+
+type NoticeTone = "success" | "error" | "warning" | "info";
+
+/** Inline feedback banner. Errors are announced assertively (role=alert), the rest politely (role=status). */
+export function Notice({ tone, children }: { tone: NoticeTone; children: ReactNode }) {
+  const tones: Record<NoticeTone, string> = {
+    success: "border-ep-success bg-ep-success-field text-ep-success",
+    error: "border-ep-danger bg-ep-danger-field text-ep-danger",
+    warning: "border-ep-signal-line bg-ep-signal-field text-ep-ink",
+    info: "border-ep-cobalt-line bg-ep-cobalt-field text-ep-ink",
+  };
+  return (
+    <div role={tone === "error" ? "alert" : "status"} className={`rounded-lg border px-3 py-2 text-sm ${tones[tone]}`}>
+      {children}
     </div>
   );
+}
+
+export function LoadingState({ label = "Cargando…" }: { label?: string }) {
+  return <p role="status" className="py-6 text-center text-sm text-ep-mute">{label}</p>;
+}
+
+/** Flat pass-white section container. */
+export function Panel({ className = "", ...props }: HTMLAttributes<HTMLElement>) {
+  return <section className={`rounded-lg border border-ep-line bg-ep-pass p-4 sm:p-7 ${className}`} {...props} />;
+}
+
+/** Panel holding filter controls laid out in a wrapping row. */
+export function FilterBar({ className = "", ...props }: HTMLAttributes<HTMLElement>) {
+  return <Panel className={`flex flex-wrap items-end gap-3 ${className}`} {...props} />;
 }

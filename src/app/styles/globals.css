@@ -49,6 +49,10 @@
   --ep-signal-line: #ffcf9e;
   --ep-neutral-field: #ebeaf0;
   --ep-danger: #b4232c;
+  --ep-danger-field: #fbe9ea;
+  /* Success: deep green, text-safe on its field and on pass-white. Always paired with a text label. */
+  --ep-success: #1d6b4a;
+  --ep-success-field: #e3f3ea;
   /* Brand accent from the logo (deep violet). Never a state color, never body text on dark. */
   --ep-violet: #210151;
   --ep-brand-gradient: linear-gradient(135deg, #c9035c, #210151); /* reserved for login/landing, not applied yet */
@@ -89,6 +93,9 @@
   --color-ep-signal-line: var(--ep-signal-line);
   --color-ep-neutral-field: var(--ep-neutral-field);
   --color-ep-danger: var(--ep-danger);
+  --color-ep-danger-field: var(--ep-danger-field);
+  --color-ep-success: var(--ep-success);
+  --color-ep-success-field: var(--ep-success-field);
   --color-ep-violet: var(--ep-violet);
 
   --font-sans: var(--font-geist-sans);

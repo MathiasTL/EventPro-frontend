@@ -24,6 +24,9 @@ colors:
   signal-line: "#ffcf9e"
   neutral-field: "#ebeaf0"
   danger: "#b4232c"
+  danger-field: "#fbe9ea"
+  success: "#1d6b4a"
+  success-field: "#e3f3ea"
   violet: "#210151"
 typography:
   credential-name:
@@ -188,7 +191,9 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 - **Hairline** (`#e3e1e8`) and **Strong Hairline** (`#cfccd9`): row dividers, bubble borders, control borders, scrollbar thumb, the "Libre" band.
 - **Muted Ink** (`#5e5a70`) and **Body Ink** (`#3f3b52`): timestamps and secondary text; running text and previews.
 - **State fields**: magenta `#fce6ef`, cobalt `#e9edfc` (line `#c9d2f6`), signal `#fff0e2` (line `#ffcf9e`), neutral `#ebeaf0`. Low-chroma tints used behind text that stays ink.
-- **Danger** (`#b4232c`): failed sends and action errors only.
+- **Danger** (`#b4232c`, field `#fbe9ea`): failed sends, action errors and negative states (rejected, refunded).
+- **Success** (`#1d6b4a`, field `#e3f3ea`): completed or positive states (verified payment, converted quote, active
+  user) and confirmation notices. Never a holder colour; always with its text label.
 
 ### Named Rules
 **The Band Means Holder Rule.** Magenta, cobalt, signal and ink each mean exactly one holder. Never use a role colour decoratively, and never show a holder colour without its text label.
@@ -245,7 +250,7 @@ Mobile chips use 4px. Logo: the ticket-E mark is square (`eventpro-mark.png`, 25
 ## Components
 
 ### Buttons
-Quiet and square-ish, 44px on touch, 36px at `lg`.
+Quiet and square-ish, 44px on touch, 40px at `lg` (same height as fields, so they align in filter bars).
 - **Solid (Tomar, Enviar, confirm):** ink fill, white text, `0.8125rem`/600, 8px radius; hover ink-2. Reserved for the action that claims or sends.
 - **Outline (Reasignarme, Devolver al bot, Cancelar):** pass-white fill, 1px strong hairline, ink text; hover white.
 - **Focus:** 2px magenta outline, 2px offset. Disabled: 60% opacity (Enviar 40%).
