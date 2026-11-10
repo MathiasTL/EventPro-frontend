@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="EventPro favicon">
-  <title>EventPro favicon</title>
-  <rect x="1" y="1" width="30" height="30" rx="4" fill="#15131E"/>
-  <rect x="3" y="3" width="26" height="26" rx="2" fill="#FAFAF7"/>
-  <rect x="12" y="4" width="8" height="3" rx="1.5" fill="#15131E"/>
-  <path d="M4 11H10V28H4Z" fill="#CC1170"/>
-  <path d="M13 11H27V15H13ZM13 18H24V22H13ZM13 25H27V29H13Z" fill="#15131E"/>
-</svg>

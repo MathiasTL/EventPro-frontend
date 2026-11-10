@@ -1,9 +1,10 @@
 # EventPro logo
-- Concept: a backstage production pass with a punched lanyard slot; its magenta access band becomes the E's stem.
-- Study: `concepts/01-pass-e.svg`, `02-band-e.svg`, and `03-crossed-pass.svg` explore badge, band, and crossed-pass forms.
-- Chosen: Credential E. It keeps the event-production cue and the initial legible at 24 px; the band-only form loses context and the crossed form crowds at 16 px.
-- Construction: 64 × 64 square mark; simple solid shapes with no filters, fonts, linked assets, or raster content.
-- Wordmark: custom condensed geometric capitals; EVENT uses pass white on ink or ink on light, while PRO is magenta.
-- Colours: ink `#15131E`, pass white `#FAFAF7`, magenta `#CC1170`; cobalt `#2446E0` and signal orange `#FF5A1F` stay in the wider system.
-- Minimum sizes: mark 24 px, horizontal lockup 168 px wide; use the simplified favicon at 16–32 px.
-- Clear space: leave at least one slot width (14/64 of mark height) around every side of the mark or lockup.
+
+- Concept: a ticket-shaped "E" with spark accents and an orbit swoosh (magenta to purple gradient, orange accents).
+- Files:
+  - `eventpro-mark.png` (256 px, transparent): the ticket-E mark alone. Used on dark surfaces next to live "EventPro" text.
+  - `eventpro-logo.png` (1086 × 362, opaque white background): full lockup with the "EventPro" wordmark. Use only on light backgrounds.
+  - `eventpro-mark-source.png` / `eventpro-logo-source.png`: original high-resolution artwork. Do not reference them from the app.
+  - `app/icon.png` (512 px): favicon generated from the mark.
+- On dark backgrounds never use the full lockup: its background is opaque and the navy "Event" has no contrast on ink. Render the mark plus text instead (see `src/shared/ui/Wordmark.tsx`).
+- Minimum size: mark 24 px.
