@@ -25,16 +25,16 @@ export function SettleEventButton({ eventId, onSettled }: { eventId: string; onS
 
   return (
     <>
-      <Button className="w-full py-3 text-base" onClick={() => setOpen(true)}>Liquidar evento</Button>
+      <Button className="w-full" onClick={() => setOpen(true)}>Liquidar evento</Button>
       <Modal open={open} title="Confirmar liquidación" onClose={() => { if (!busy) setOpen(false); }}>
         <div className="space-y-4">
-          <p className="text-sm text-zinc-700">
+          <p className="text-sm text-ep-body">
             Vas a cerrar este evento como liquidado. Confirma solo si todo el cobro (servicios, movilidad y extensiones) ya está cubierto.
           </p>
           <ErrorBanner message={error} />
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" disabled={busy} onClick={() => setOpen(false)}>Cancelar</Button>
-            <Button disabled={busy} className="py-3 text-base" onClick={confirm}>{busy ? "Liquidando…" : "Sí, liquidar"}</Button>
+            <Button disabled={busy}  onClick={confirm}>{busy ? "Liquidando…" : "Sí, liquidar"}</Button>
           </div>
         </div>
       </Modal>

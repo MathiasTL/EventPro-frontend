@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createUser, updateUser } from "@/entities/user/api";
 import { ROLE_LABELS, type PanelUser, type UserRole } from "@/entities/user/types";
+import { Plus } from "lucide-react";
 import { formatLimaDateTime } from "@/shared/lib/date";
 import { Badge, Button, ErrorBanner, Field, Input, Modal, Select, Table } from "@/shared/ui";
 
@@ -25,17 +26,17 @@ export function UserTable({
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={() => setEditing(null)}>+ Nuevo usuario</Button>
+        <Button onClick={() => setEditing(null)}><Plus aria-hidden="true" className="mr-1.5 h-[18px] w-[18px]" strokeWidth={1.75} strokeLinecap="square" />Nuevo usuario</Button>
       </div>
       <Table head={["Nombre", "Correo", "Teléfono", "Rol", "Estado", "Creado", "Acciones"]}>
         {users.map(user => (
           <tr key={user.id}>
-            <td className="px-4 py-4 font-medium text-zinc-900">{user.full_name}</td>
-            <td className="px-4 py-4 text-zinc-600">{user.email}</td>
-            <td className="px-4 py-4 text-zinc-600">{user.phone}</td>
-            <td className="px-4 py-4 text-zinc-600">{ROLE_LABELS[user.role]}</td>
+            <td className="px-4 py-4 font-medium text-ep-ink">{user.full_name}</td>
+            <td className="px-4 py-4 text-ep-body">{user.email}</td>
+            <td className="px-4 py-4 text-ep-body">{user.phone}</td>
+            <td className="px-4 py-4 text-ep-body">{ROLE_LABELS[user.role]}</td>
             <td className="px-4 py-4"><Badge tone={user.is_active ? "success" : "danger"}>{user.is_active ? "Activo" : "Inactivo"}</Badge></td>
-            <td className="px-4 py-4 text-xs text-zinc-500">{formatLimaDateTime(user.created_at)}</td>
+            <td className="px-4 py-4 text-xs text-ep-mute">{formatLimaDateTime(user.created_at)}</td>
             <td className="px-4 py-4"><Button variant="ghost" onClick={() => setEditing(user)}>Editar</Button></td>
           </tr>
         ))}
@@ -112,7 +113,7 @@ function UserFormModal({
           <Field label="Correo">
             <Input type="email" value={email} onChange={event => setEmail(event.target.value)} required disabled={!!user} maxLength={150} />
           </Field>
-          {user && <p className="-mt-2 text-xs text-zinc-500">El correo no se puede cambiar desde aquí.</p>}
+          {user && <p className="-mt-2 text-xs text-ep-mute">El correo no se puede cambiar desde aquí.</p>}
           <Field label="Teléfono">
             <Input value={phone} onChange={event => setPhone(event.target.value)} required placeholder="+519XXXXXXXX" maxLength={20} />
           </Field>
@@ -123,11 +124,11 @@ function UserFormModal({
           </Field>
           {user && (
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={isActive} disabled={isSelf} onChange={event => setIsActive(event.target.checked)} />
+              <input type="checkbox" className="h-5 w-5 accent-ep-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta" checked={isActive} disabled={isSelf} onChange={event => setIsActive(event.target.checked)} />
               Cuenta activa
             </label>
           )}
-          {isSelf && <p className="text-xs text-amber-700">No puedes cambiar tu propio rol ni desactivar tu cuenta.</p>}
+          {isSelf && <p className="text-xs text-ep-body">No puedes cambiar tu propio rol ni desactivar tu cuenta.</p>}
           <Field label={user ? "Nueva contraseña (opcional)" : "Contraseña"}>
             <Input type="password" value={password} onChange={event => setPassword(event.target.value)} required={!user} minLength={8} maxLength={128} placeholder={user ? "Déjalo en blanco para no cambiarla" : undefined} />
           </Field>

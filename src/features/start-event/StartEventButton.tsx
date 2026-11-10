@@ -24,7 +24,7 @@ export function StartEventButton({ eventId, onStarted }: { eventId: string; onSt
   return (
     <div className="space-y-2">
       <ErrorBanner message={error} />
-      <Button className="w-full py-3 text-base" disabled={busy} onClick={handleStart}>
+      <Button className="w-full" disabled={busy} onClick={handleStart}>
         {busy ? "Iniciando…" : "Iniciar show"}
       </Button>
     </div>

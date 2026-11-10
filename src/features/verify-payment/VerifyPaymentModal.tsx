@@ -59,7 +59,7 @@ function VerifyPaymentForm({ payment, action, onClose, onDone }: Props & { payme
       <fieldset disabled={busy} className="space-y-4 disabled:opacity-60">
         {approving ? (
           <>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-ep-body">
               Vincula el adelanto al evento pendiente de firma de la misma cotización ({payment.quote_id.slice(0, 8)}). Al verificar se emite el contrato.
             </p>
             <Field label="ID del evento">

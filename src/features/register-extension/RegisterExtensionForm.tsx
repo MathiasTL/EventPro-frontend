@@ -62,19 +62,19 @@ export function RegisterExtensionForm({ eventId, onRegistered }: { eventId: stri
 
   return (
     <>
-      <Button variant="ghost" className="w-full py-3 text-base" onClick={() => setOpen(true)}>Registrar extensión</Button>
+      <Button variant="ghost" className="w-full" onClick={() => setOpen(true)}>Registrar extensión</Button>
       <Modal open={open} title="Registrar tiempo adicional" onClose={() => { if (!busy) { setOpen(false); reset(); } }}>
         <form onSubmit={submit} className="space-y-4">
           <fieldset disabled={busy} className="space-y-4 disabled:opacity-60">
             <div>
-              <p className="mb-2 text-sm font-medium text-zinc-700">Minutos adicionales</p>
+              <p className="mb-1 text-sm font-medium text-ep-ink">Minutos adicionales</p>
               <div className="flex gap-2">
                 {QUICK_MINUTES.map(value => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setMinutes(value)}
-                    className={`flex-1 rounded-lg border px-3 py-3 text-base font-medium ${minutes === value ? "border-violet-700 bg-violet-700 text-white" : "border-zinc-300 text-zinc-700"}`}
+                    className={`flex min-h-11 flex-1 items-center justify-center rounded-lg border px-3 text-[0.8125rem] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta lg:min-h-10 ${minutes === value ? "border-ep-ink bg-ep-ink text-white" : "border-ep-line-strong bg-ep-pass text-ep-ink hover:bg-white"}`}
                   >
                     +{value} min
                   </button>
@@ -103,18 +103,18 @@ export function RegisterExtensionForm({ eventId, onRegistered }: { eventId: stri
                 accept="image/*"
                 capture="environment"
                 onChange={event => pickFile(event.target.files?.[0] ?? null)}
-                className="block w-full text-sm text-zinc-700"
+                className="block w-full text-sm text-ep-body file:mr-3 file:min-h-10 file:rounded-lg file:border file:border-ep-line-strong file:bg-ep-pass file:px-3 file:text-[0.8125rem] file:font-semibold file:text-ep-ink hover:file:bg-white"
               />
             </Field>
             {preview && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={preview} alt="Vista previa de la foto del cobro" className="max-h-56 w-full rounded-lg border border-zinc-200 object-contain" />
+              <img src={preview} alt="Vista previa de la foto del cobro" className="max-h-56 w-full rounded-lg border border-ep-line object-contain" />
             )}
           </fieldset>
           <ErrorBanner message={error} />
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" disabled={busy} onClick={() => { setOpen(false); reset(); }}>Cancelar</Button>
-            <Button disabled={busy} className="py-3 text-base">{busy ? "Registrando…" : "Registrar extensión"}</Button>
+            <Button disabled={busy} >{busy ? "Registrando…" : "Registrar extensión"}</Button>
           </div>
         </form>
       </Modal>
