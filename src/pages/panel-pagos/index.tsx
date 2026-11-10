@@ -15,7 +15,7 @@ import {
 } from "@/entities/payment";
 import { PaymentDetailModal } from "@/widgets/payment-detail/PaymentDetailModal";
 import { PaymentsTable } from "@/widgets/payments-table/PaymentsTable";
-import { Button, EmptyState, ErrorBanner, Field, Input, Select } from "@/shared/ui";
+import { Button, EmptyState, ErrorBanner, Field, FilterBar, Input, LoadingState, Notice, Page, PageHeader, Select } from "@/shared/ui";
 
 const PAGE_SIZE = 20;
 
@@ -65,14 +65,11 @@ export function PagosPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-violet-700">Panel de operaciones</p>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Pagos</h1>
-        <p className="mt-2 text-sm text-zinc-500">Verificación, auditoría y devoluciones de cobros.</p>
-      </div>
+    <Page>
+      <PageHeader title="Pagos" description="Verificación, auditoría y devoluciones de cobros." />
 
-      <form onSubmit={applyFilters} className="flex flex-wrap items-end gap-4 rounded-2xl border border-zinc-200 bg-white p-4">
+      <form onSubmit={applyFilters}>
+        <FilterBar>
         <Field label="Estado de validación">
           <Select value={draft.status} onChange={event => setDraft({ ...draft, status: event.target.value })} className="w-56">
             <option value="">Todos</option>
@@ -95,13 +92,14 @@ export function PagosPage() {
         <Field label="Desde"><Input type="date" value={draft.fromDate} onChange={event => setDraft({ ...draft, fromDate: event.target.value })} /></Field>
         <Field label="Hasta"><Input type="date" value={draft.toDate} onChange={event => setDraft({ ...draft, toDate: event.target.value })} /></Field>
         <Button type="submit" disabled={isFetching}>{isFetching ? "Filtrando…" : "Filtrar"}</Button>
+        </FilterBar>
       </form>
 
-      {success && <p role="status" className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</p>}
+      {success && <Notice tone="success">{success}</Notice>}
       <ErrorBanner message={errorMessage} />
 
       {isPending ? (
-        <p role="status" className="py-12 text-center text-sm text-zinc-500">Cargando pagos…</p>
+        <LoadingState label="Cargando pagos…" />
       ) : !error && items.length === 0 ? (
         <EmptyState message="No hay pagos con estos filtros." />
       ) : !error && (
@@ -110,7 +108,7 @@ export function PagosPage() {
           {total > PAGE_SIZE && (
             <div className="flex items-center justify-end gap-3">
               <Button variant="ghost" disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</Button>
-              <span className="text-sm text-zinc-600">Página {page} de {Math.ceil(total / PAGE_SIZE)}</span>
+              <span className="text-sm text-ep-body">Página {page} de {Math.ceil(total / PAGE_SIZE)}</span>
               <Button variant="ghost" disabled={page * PAGE_SIZE >= total} onClick={() => setPage(page + 1)}>Siguiente</Button>
             </div>
           )}
@@ -118,6 +116,6 @@ export function PagosPage() {
       )}
 
       <PaymentDetailModal payment={selected} onClose={() => setSelected(null)} onDone={message => { setSuccess(message); setSelected(null); }} />
-    </div>
+    </Page>
   );
 }
