@@ -28,7 +28,7 @@ export function RequireRole({
 
   if (!ready || !user) {
     return (
-      <div className="flex flex-1 items-center justify-center p-10 text-sm text-zinc-500">
+      <div className="flex flex-1 items-center justify-center p-10 text-sm text-ep-mute">
         Cargando sesión…
       </div>
     );
@@ -37,8 +37,8 @@ export function RequireRole({
   if (!allowed) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-10 text-center">
-        <h1 className="text-xl font-semibold text-zinc-900">Acceso restringido</h1>
-        <p className="text-sm text-zinc-500">Tu rol no tiene acceso a esta sección.</p>
+        <h1 className="ep-cond text-2xl leading-none text-ep-ink">Acceso restringido</h1>
+        <p className="text-sm text-ep-body">Tu rol no tiene acceso a esta sección.</p>
         <Button variant="ghost" onClick={logout}>Cerrar sesión</Button>
       </div>
     );

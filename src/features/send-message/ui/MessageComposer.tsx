@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import { X } from "lucide-react";
 import { sendErrorMessage } from "../errors";
 import { ACCEPTED_FILE_TYPES, MAX_TEXT_LENGTH, formatFileSize, validateAttachment } from "../model";
 import { useSendMessage } from "../use-send-message";
@@ -92,7 +93,7 @@ export function MessageComposer({ conversationId, authorName, blocked = null }: 
         <div className="mb-2 flex items-center justify-between gap-2 rounded-lg border border-ep-line-strong bg-ep-pass px-3 py-1.5 text-sm text-ep-ink">
           <span className="min-w-0 truncate">{file.name} <span className="text-ep-mute">({formatFileSize(file.size)})</span></span>
           <button type="button" onClick={clearFile} className="flex h-11 w-11 shrink-0 items-center justify-center rounded text-ep-ink hover:bg-ep-wash focus-visible:outline-2 focus-visible:outline-ep-magenta lg:h-8 lg:w-8" aria-label="Quitar el archivo adjunto">
-            ✕
+            <X aria-hidden="true" size={18} strokeWidth={1.75} strokeLinecap="square" />
           </button>
         </div>
       )}

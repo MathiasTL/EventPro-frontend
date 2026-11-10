@@ -2,9 +2,9 @@
 
 /*
  * Two visual lines live here during the brand migration (see DESIGN.md):
- * - Legacy line (landing, login, unmigrated panel pages): violet-700 accent, zinc neutrals, Geist.
+ * - Legacy line (landing, login and the operator agenda only): violet-700 accent, zinc neutrals, Geist.
  *   Tokens: --brand, --ink, --muted, --line, --surface.
- * - "Credencial backstage" brand system (panel shell and Conversaciones): the --ep-* tokens below,
+ * - "Credencial backstage" brand system (the whole panel): the --ep-* tokens below,
  *   Archivo via .ep-panel. New work uses --ep-* only; legacy tokens go away once every surface migrates.
  */
 :root {
