@@ -66,7 +66,7 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
     danger: "border-transparent bg-ep-danger-field text-ep-danger",
   };
   return (
-    <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
+    <span className={`inline-flex items-center whitespace-nowrap rounded-sm border px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );
