@@ -3,14 +3,14 @@ import type { ConversationStreamStatus } from "@/features/conversation-stream";
 
 export function ListSkeleton() {
   return (
-    <div role="status" aria-label="Cargando conversaciones" className="divide-y divide-zinc-100">
+    <div role="status" aria-label="Cargando conversaciones" className="">
       {Array.from({ length: 6 }, (_, index) => (
-        <div key={index} className="flex animate-pulse gap-3 px-4 py-3 motion-reduce:animate-none">
-          <div className="h-10 w-10 rounded-full bg-zinc-200" />
-          <div className="flex-1 space-y-2">
-            <div className="h-3 w-1/2 rounded bg-zinc-200" />
-            <div className="h-3 w-4/5 rounded bg-zinc-100" />
-            <div className="h-3 w-1/3 rounded bg-zinc-100" />
+        <div key={index} className="flex min-h-[5.75rem] animate-pulse border-b border-ep-line motion-reduce:animate-none">
+          <div className="w-5 shrink-0 bg-ep-neutral-field" />
+          <div className="flex-1 space-y-2.5 px-3.5 py-4">
+            <div className="h-4 w-1/2 rounded-sm bg-ep-neutral-field" />
+            <div className="h-3 w-4/5 rounded-sm bg-ep-wash" />
+            <div className="h-3 w-1/3 rounded-sm bg-ep-wash" />
           </div>
         </div>
       ))}
@@ -30,7 +30,7 @@ export function InboxEmpty({ filtered, onClear }: { filtered: boolean; onClear: 
 
 export function InboxError({ unavailable, onRetry, retrying }: { unavailable: boolean; onRetry: () => void; retrying: boolean }) {
   return (
-    <div role="alert" className="m-4 space-y-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+    <div role="alert" className="m-4 space-y-3 rounded-lg border border-ep-danger/40 bg-white p-4 text-sm text-ep-danger">
       <p>{unavailable ? "La mensajería no está disponible temporalmente." : "No se pudieron cargar las conversaciones."}</p>
       <Button variant="ghost" onClick={onRetry} disabled={retrying}>{retrying ? "Reintentando…" : "Reintentar"}</Button>
     </div>
@@ -48,12 +48,12 @@ const streamLabels: Partial<Record<ConversationStreamStatus, string>> = {
 export function StreamIndicator({ status, onRetry }: { status?: ConversationStreamStatus; onRetry?: () => void }) {
   const label = status ? streamLabels[status] : undefined;
   return (
-    <div className={label ? "flex items-center justify-between gap-2 border-b border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-medium text-amber-900" : undefined}>
+    <div className={label ? "flex items-center justify-between gap-2 border-b border-ep-signal-line bg-ep-signal-field px-4 py-1.5 text-xs font-bold text-ep-ink" : undefined}>
       <p aria-live="polite" role="status" className={label ? undefined : "sr-only"}>
         {label ?? ""}
       </p>
       {status === "error" && onRetry && (
-        <button type="button" onClick={onRetry} className="rounded-md border border-amber-300 bg-white px-2 py-0.5 font-semibold text-amber-900 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-amber-700">
+        <button type="button" onClick={onRetry} className="relative rounded-md border border-ep-ink bg-white px-2 py-0.5 font-semibold text-ep-ink hover:bg-ep-wash after:absolute after:-inset-x-1 after:-inset-y-3 after:content-[''] focus-visible:outline-2 focus-visible:outline-ep-magenta">
           Reintentar
         </button>
       )}

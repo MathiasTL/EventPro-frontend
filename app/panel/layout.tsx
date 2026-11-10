@@ -1,11 +1,10 @@
-import { PanelNav } from "@/app/routes/PanelNav";
+import { PanelShell } from "@/app/routes/PanelShell";
 import { RequireRole } from "@/app/routes/RequireRole";
 
 export default function PanelLayout({ children }: LayoutProps<"/panel">) {
   return (
     <RequireRole allow={["ENCARGADO", "SUPERADMIN"]} redirectTo="/agenda">
-      <PanelNav />
-      {children}
+      <PanelShell>{children}</PanelShell>
     </RequireRole>
   );
 }

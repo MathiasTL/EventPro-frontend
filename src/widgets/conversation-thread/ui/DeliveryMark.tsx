@@ -3,7 +3,7 @@ import { deliveryLabels } from "../model";
 
 type Props = {
   status: DeliveryStatus | "QUEUED" | null;
-  /** Own bubbles sit on a violet background and need lighter marks. */
+  /** Own bubbles sit on the magenta background and need white marks. */
   onDark?: boolean;
 };
 
@@ -26,7 +26,7 @@ function DoubleCheck({ className }: { className: string }) {
 /** One check SENT, two DELIVERED, two highlighted READ, red alert FAILED; the text label is always available. */
 export function DeliveryMark({ status, onDark = false }: Props) {
   if (status === null) return null;
-  const quiet = onDark ? "text-white/75" : "text-zinc-500";
+  const quiet = onDark ? "text-white" : "text-ep-mute";
   const label = status === "QUEUED" ? "Enviando" : deliveryLabels[status];
   let icon;
   if (status === "QUEUED") {
@@ -41,7 +41,7 @@ export function DeliveryMark({ status, onDark = false }: Props) {
   else if (status === "READ") icon = <DoubleCheck className={onDark ? "text-sky-300" : "text-sky-600"} />;
   else {
     icon = (
-      <svg aria-hidden="true" viewBox="0 0 16 16" className={`h-3.5 w-3.5 ${onDark ? "text-red-200" : "text-red-600"}`} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <svg aria-hidden="true" viewBox="0 0 16 16" className={`h-3.5 w-3.5 ${onDark ? "text-white" : "text-ep-danger"}`} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <circle cx="8" cy="8" r="6.5" />
         <path d="M8 4.5v4M8 11v.5" />
       </svg>

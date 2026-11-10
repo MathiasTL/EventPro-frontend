@@ -109,3 +109,40 @@ export function buildTimeline(pages: MessagePage[]): TimelineEntry[] {
 export function isOwnAuthor(authorName: string | null, ownName: string | null): boolean {
   return authorName !== null && ownName !== null && authorName.trim().toLowerCase() === ownName.trim().toLowerCase();
 }
+
+export const SERVICE_WINDOW_MS = 24 * 60 * 60 * 1000;
+/** Below this remaining time the window bar turns to the urgent colour. */
+export const WINDOW_URGENT_MS = 2 * 60 * 60 * 1000;
+
+export type WindowState =
+  | { open: false }
+  | { open: true; remainingMs: number; fraction: number; urgent: boolean; /** «3 h 12 min», «45 min» or «menos de 1 min». */ remaining: string };
+
+/** «3 h 12 min» (minutes dropped when zero), «45 min», or «menos de 1 min». */
+export function formatRemaining(ms: number): string {
+  const minutes = Math.floor(ms / 60_000);
+  if (minutes < 1) return "menos de 1 min";
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours === 0) return `${rest} min`;
+  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
+}
+
+/**
+ * Countdown of the 24 h service window from the backend expiry. The backend flag wins when it says closed;
+ * an open window without an expiry cannot be counted down and is treated as closed for display.
+ */
+export function windowState(conversation: Pick<Conversation, "service_window_open" | "service_window_expires_at">, now: number): WindowState {
+  if (!conversation.service_window_open || !conversation.service_window_expires_at) return { open: false };
+  const expires = Date.parse(conversation.service_window_expires_at);
+  if (Number.isNaN(expires)) return { open: false };
+  const remainingMs = expires - now;
+  if (remainingMs <= 0) return { open: false };
+  return {
+    open: true,
+    remainingMs,
+    fraction: Math.min(1, remainingMs / SERVICE_WINDOW_MS),
+    urgent: remainingMs < WINDOW_URGENT_MS,
+    remaining: formatRemaining(remainingMs),
+  };
+}

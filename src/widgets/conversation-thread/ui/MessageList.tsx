@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/shared/ui";
 import type { TimelineEntry } from "../model";
 import { MessageBubble, UnsentBubble } from "./MessageBubble";
@@ -18,6 +18,25 @@ type Props = {
 };
 
 const NEAR_BOTTOM_PX = 120;
+const PREVIEW_MAX = 80;
+
+/** Last real message of the timeline (day separators and the user's pending rows are skipped). */
+function lastMessageEntry(entries: TimelineEntry[]): Extract<TimelineEntry, { kind: "message" }> | null {
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    const entry = entries[index];
+    if (entry.kind === "message") return entry;
+  }
+  return null;
+}
+
+function announcementFor(entry: Extract<TimelineEntry, { kind: "message" }>): string {
+  const { message } = entry;
+  if (message.direction !== "INCOMING" || message.author_type !== "CLIENT") return "";
+  const text = message.content.trim().replace(/\s+/g, " ");
+  if (!text) return "Nuevo mensaje del cliente con un archivo adjunto";
+  const preview = text.length > PREVIEW_MAX ? `${text.slice(0, PREVIEW_MAX)}…` : text;
+  return `Nuevo mensaje del cliente: ${preview}`;
+}
 
 /**
  * Oldest first. Scrolling to the top loads older pages (IntersectionObserver, with a visible button as the
@@ -30,6 +49,24 @@ export function MessageList({ conversationId, ownName, canRetry, entries, hasOld
   const nearBottom = useRef(true);
   const previous = useRef<{ oldest: string | null; newest: string | null; height: number }>({ oldest: null, newest: null, height: 0 });
   const loadOlderRef = useRef(onLoadOlder);
+
+  // Announce only a genuinely new last message: the key seen at mount is the baseline (no replay on load),
+  // prepending older pages never changes the last message, and own sends are outgoing or unsent rows.
+  const lastMessage = lastMessageEntry(entries);
+  const lastKey = lastMessage?.key ?? null;
+  const [seenKey, setSeenKey] = useState(lastKey);
+  // Entrance animation is only for messages that arrive live: entries after the newest *message* at mount
+  // (unsent rows are skipped because their key changes once the send is confirmed). Initial and older pages never
+  // animate. A thread with no message at mount (null baseline) animates every arrival. If the baseline message
+  // ever disappears from the timeline, nothing animates rather than replaying the whole thread.
+  const [baselineKey] = useState(() => lastMessageEntry(entries)?.key ?? null);
+  const foundIndex = baselineKey === null ? -1 : entries.findIndex(entry => entry.key === baselineKey);
+  const baselineIndex = baselineKey !== null && foundIndex === -1 ? Number.POSITIVE_INFINITY : foundIndex;
+  const [announcement, setAnnouncement] = useState("");
+  if (seenKey !== lastKey) {
+    setSeenKey(lastKey);
+    setAnnouncement(lastMessage ? announcementFor(lastMessage) : "");
+  }
 
   useEffect(() => {
     loadOlderRef.current = onLoadOlder;
@@ -70,31 +107,34 @@ export function MessageList({ conversationId, ownName, canRetry, entries, hasOld
         const el = event.currentTarget;
         nearBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM_PX;
       }}
-      className="min-h-0 flex-1 overflow-y-auto bg-zinc-50 px-4 py-4"
+      className="ep-scroll ep-fade-top min-h-0 flex-1 overflow-y-auto bg-ep-wash px-4 py-4 lg:px-7"
     >
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement && <span key={seenKey}>{announcement}</span>}
+      </div>
       <div ref={topSentinel} aria-hidden="true" className="h-px" />
       {hasOlder && (
         <div className="mb-3 flex flex-col items-center gap-1">
           <Button variant="ghost" onClick={onLoadOlder} disabled={loadingOlder}>
             {loadingOlder ? "Cargando mensajes anteriores…" : "Cargar mensajes anteriores"}
           </Button>
-          {olderError && <p role="alert" className="text-xs font-medium text-red-700">No se pudieron cargar los mensajes anteriores.</p>}
+          {olderError && <p role="alert" className="text-xs font-semibold text-ep-danger">No se pudieron cargar los mensajes anteriores.</p>}
         </div>
       )}
       {entries.length === 0 ? (
-        <p className="py-10 text-center text-sm text-zinc-500">Todavía no hay mensajes en esta conversación.</p>
+        <p className="py-10 text-center text-sm text-ep-mute">Todavía no hay mensajes en esta conversación.</p>
       ) : (
         <ol className="flex flex-col gap-2" aria-label="Mensajes de la conversación">
-          {entries.map(entry => {
+          {entries.map((entry, index) => {
             if (entry.kind === "day") {
               return (
-                <li key={entry.key} className="my-2 flex justify-center">
-                  <span className="rounded-full bg-zinc-200 px-3 py-0.5 text-xs font-medium text-zinc-700">{entry.label}</span>
+                <li key={entry.key} className="ep-cond my-2 flex items-center gap-3 text-[0.6875rem] tracking-[0.12em] text-ep-mute before:h-px before:flex-1 before:bg-ep-line-strong after:h-px after:flex-1 after:bg-ep-line-strong">
+                  {entry.label}
                 </li>
               );
             }
             if (entry.kind === "unsent") return <UnsentBubble key={entry.key} row={entry.row} conversationId={conversationId} ownName={ownName} canRetry={canRetry} />;
-            return <MessageBubble key={entry.key} message={entry.message} conversationId={conversationId} ownName={ownName} canRetry={canRetry} />;
+            return <MessageBubble key={entry.key} message={entry.message} conversationId={conversationId} ownName={ownName} canRetry={canRetry} live={index > baselineIndex} />;
           })}
         </ol>
       )}

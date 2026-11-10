@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 /*
- * Línea gráfica EventPro (compartida por landing, login y panel):
- * violeta-700 como acento, neutros zinc, tipografía Geist, esquinas
- * rounded-lg/xl y solo tema claro.
+ * Two visual lines live here during the brand migration (see DESIGN.md):
+ * - Legacy line (landing, login, unmigrated panel pages): violet-700 accent, zinc neutrals, Geist.
+ *   Tokens: --brand, --ink, --muted, --line, --surface.
+ * - "Credencial backstage" brand system (panel shell and Conversaciones): the --ep-* tokens below,
+ *   Archivo via .ep-panel. New work uses --ep-* only; legacy tokens go away once every surface migrates.
  */
 :root {
   --background: #ffffff;
@@ -18,6 +20,35 @@
   --brand-tint: var(--color-violet-50);
   --whatsapp: #25d366;
   --whatsapp-ink: #052e16;
+
+  /*
+   * EventPro brand system (redesign, namespaced `ep-`). The panel uses these first; landing and login keep the
+   * tokens above until their own migration. Text-safe magenta is --ep-magenta; --ep-magenta-bright is for
+   * non-text fills only.
+   */
+  --ep-ink: #15131e;
+  --ep-ink-2: #221f30;
+  --ep-ink-line: #34304a;
+  --ep-ink-mute: #a09cb5;
+  --ep-rail-text: #c9c5da;
+  --ep-pass: #fafaf7;
+  --ep-wash: #f1f0f4;
+  --ep-line: #e3e1e8;
+  --ep-line-strong: #cfccd9;
+  --ep-mute: #5e5a70;
+  --ep-body: #3f3b52;
+  --ep-magenta: #cc1170;
+  --ep-magenta-bright: #e5177a;
+  --ep-cobalt: #2446e0;
+  --ep-signal: #ff5a1f;
+  /* State fields: low-chroma tints of the band colors, used behind text that stays ink or the band hue. */
+  --ep-magenta-field: #fbe7f1;
+  --ep-cobalt-field: #e9edfc;
+  --ep-cobalt-line: #c9d2f6;
+  --ep-signal-field: #ffede4;
+  --ep-signal-line: #ffc9b0;
+  --ep-neutral-field: #ebeaf0;
+  --ep-danger: #b4232c;
 }
 
 @theme inline {
@@ -33,7 +64,31 @@
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-ink: var(--whatsapp-ink);
 
+  --color-ep-ink: var(--ep-ink);
+  --color-ep-ink-2: var(--ep-ink-2);
+  --color-ep-ink-line: var(--ep-ink-line);
+  --color-ep-ink-mute: var(--ep-ink-mute);
+  --color-ep-rail-text: var(--ep-rail-text);
+  --color-ep-pass: var(--ep-pass);
+  --color-ep-wash: var(--ep-wash);
+  --color-ep-line: var(--ep-line);
+  --color-ep-line-strong: var(--ep-line-strong);
+  --color-ep-mute: var(--ep-mute);
+  --color-ep-body: var(--ep-body);
+  --color-ep-magenta: var(--ep-magenta);
+  --color-ep-magenta-bright: var(--ep-magenta-bright);
+  --color-ep-cobalt: var(--ep-cobalt);
+  --color-ep-signal: var(--ep-signal);
+  --color-ep-magenta-field: var(--ep-magenta-field);
+  --color-ep-cobalt-field: var(--ep-cobalt-field);
+  --color-ep-cobalt-line: var(--ep-cobalt-line);
+  --color-ep-signal-field: var(--ep-signal-field);
+  --color-ep-signal-line: var(--ep-signal-line);
+  --color-ep-neutral-field: var(--ep-neutral-field);
+  --color-ep-danger: var(--ep-danger);
+
   --font-sans: var(--font-geist-sans);
+  --font-ep: var(--font-archivo), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 
   --text-hero: clamp(2.5rem, 7vw, 4.25rem);
@@ -56,6 +111,51 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.ep-cond {
+  /* Condensed bold caps for names and credential labels (Archivo width axis). */
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 62%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ep-panel {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 100%;
+  color: var(--ep-ink);
+}
+
+.ep-panel input,
+.ep-panel textarea {
+  caret-color: var(--ep-magenta);
+}
+
+/* Select without browser chrome; the ink chevron is a background image. */
+.ep-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2315131E' stroke-width='1.8' stroke-linecap='square'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.75rem 0.5rem;
+}
+
+/* Content fades out over the first 16px so a bubble is never sliced hard against the header above. */
+.ep-fade-top {
+  mask-image: linear-gradient(to bottom, transparent 0, #000 16px);
+}
+
+/* Thin themed scrollbar for the inbox list and the message list. */
+.ep-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ep-line-strong) transparent;
+}
+
+.ep-panel ::selection {
+  background: var(--ep-magenta);
+  color: #fff;
 }
 
 .chat-in {

@@ -12,11 +12,11 @@ export function RetryButton({ conversationId, outboxId }: { conversationId: numb
         type="button"
         onClick={() => mutation.mutate(outboxId)}
         disabled={mutation.isPending}
-        className="rounded-md border border-red-300 bg-white px-2 py-0.5 text-xs font-semibold text-red-800 transition hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-md border border-ep-danger bg-white px-2 py-0.5 text-xs font-semibold text-ep-danger transition hover:bg-ep-wash focus-visible:outline-2 focus-visible:outline-ep-magenta disabled:cursor-not-allowed disabled:opacity-60"
       >
         {mutation.isPending ? "Reintentando…" : "Reintentar"}
       </button>
-      <span role="alert" className={mutation.isError ? "text-xs font-medium text-red-700" : "sr-only"}>
+      <span role="alert" className={mutation.isError ? "text-xs font-semibold text-ep-danger" : "sr-only"}>
         {mutation.isError ? sendErrorMessage(mutation.error, { retry: true }) : ""}
       </span>
     </span>

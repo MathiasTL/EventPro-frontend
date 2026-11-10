@@ -23,6 +23,8 @@ export type ConversationThreadProps = {
   currentUserName?: string | null;
   /** Narrow screens: shows a back button in the header. */
   onBack?: () => void;
+  /** Focus the thread heading once the header is mounted (narrow screens, after opening a thread). */
+  focusHeading?: boolean;
 };
 
 const isUnavailable = (error: unknown) =>
@@ -33,7 +35,7 @@ export function ConversationThread(props: ConversationThreadProps) {
   return <ThreadContent key={props.conversationId} {...props} />;
 }
 
-function ThreadContent({ conversationId, currentUserId, role, currentUserName, onBack }: ConversationThreadProps) {
+function ThreadContent({ conversationId, currentUserId, role, currentUserName, onBack, focusHeading }: ConversationThreadProps) {
   const detail = useQuery(conversationDetailOptions(conversationId));
   const thread = useInfiniteQuery(messageThreadOptions(conversationId));
   const conversation = detail.data;
@@ -50,6 +52,7 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
         notFound={detail.error instanceof ApiRequestError && detail.error.status === 404}
         onRetry={() => void detail.refetch()}
         retrying={detail.isRefetching}
+        onBack={onBack}
       />
     );
   }
@@ -63,9 +66,10 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
   const block = composerBlock({ conversation, currentUserId, role, loading: thread.isPending, unavailable });
 
   return (
-    <section aria-label={`Conversación con ${conversation.client.name || conversation.client.phone}`} className="flex h-full min-h-0 flex-col bg-white">
-      <ThreadHeader conversation={conversation} currentUserId={currentUserId} role={role} onBack={onBack} />
+    <section aria-label={`Conversación con ${conversation.client.name || conversation.client.phone}`} className="flex h-full min-h-0 flex-col bg-ep-wash">
+      <ThreadHeader conversation={conversation} currentUserId={currentUserId} role={role} onBack={onBack} focusHeading={focusHeading} />
       {unavailable && thread.data && <UnavailableBanner />}
+      <div aria-hidden="true" className="hidden h-3 shrink-0 lg:block" />
       {thread.isPending ? (
         <MessagesSkeleton />
       ) : !thread.data ? (
@@ -85,12 +89,9 @@ function ThreadContent({ conversationId, currentUserId, role, currentUserName, o
       <MessageComposer
         conversationId={conversationId}
         authorName={ownName}
-        blocked={
-          block && {
-            reason: block.reason,
-            action: block.showTakeover ? <TakeoverButton conversation={conversation} currentUserId={currentUserId} role={role} /> : undefined,
-          }
-        }
+        // «Tomar» lives here only (the header strip keeps «Reasignarme» / «Devolver al bot»). The button hides itself
+        // when it does not apply and keeps its error message while mounted.
+        blocked={block && { reason: block.reason, action: <TakeoverButton conversation={conversation} currentUserId={currentUserId} role={role} only="take" /> }}
       />
     </section>
   );

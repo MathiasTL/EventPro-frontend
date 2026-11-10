@@ -44,3 +44,10 @@ demo-artifacts/
 next-env.d.ts
 
 !.env.example
+
+# impeccable: local design-work artifacts (sketches, captures, decision page state)
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/decision-payload.json
+.impeccable/hook.cache.json
