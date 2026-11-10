@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
 import type { HandoffRequestedData } from "@/features/conversation-stream";
 import { handoffReasonLabels } from "@/widgets/conversation-inbox";
 
@@ -32,16 +33,16 @@ function NoticeItem({ notice, onOpen, onDismiss }: { notice: Notice; onOpen: (id
     return () => clearTimeout(timer);
   }, [notice.key, onDismiss]);
   return (
-    <li className="pointer-events-auto flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950 shadow-lg">
+    <li className="pointer-events-auto flex items-start gap-3 rounded-lg border border-ep-signal-line border-l-[6px] border-l-ep-signal bg-ep-signal-field p-3 text-sm text-ep-ink">
       <div className="min-w-0 flex-1">
         <p className="font-semibold">{notice.client} pide atención</p>
-        <p className="mt-0.5 text-amber-900">{notice.reason}</p>
-        <button type="button" onClick={() => { onOpen(notice.conversationId); onDismiss(notice.key); }} className="mt-2 rounded-md text-sm font-medium text-violet-800 underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-violet-700">
+        <p className="mt-0.5 text-ep-body">{notice.reason}</p>
+        <button type="button" onClick={() => { onOpen(notice.conversationId); onDismiss(notice.key); }} className="mt-2 rounded-sm text-sm font-semibold text-ep-ink underline underline-offset-4 hover:text-ep-magenta focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta">
           Abrir conversación
         </button>
       </div>
-      <button type="button" onClick={() => onDismiss(notice.key)} aria-label="Descartar aviso" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-amber-800 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-violet-700">
-        <span aria-hidden="true">✕</span>
+      <button type="button" onClick={() => onDismiss(notice.key)} aria-label="Descartar aviso" className="-m-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-ep-ink hover:bg-ep-pass focus-visible:outline-2 focus-visible:outline-ep-magenta lg:h-9 lg:w-9">
+        <X aria-hidden="true" size={18} strokeWidth={1.75} strokeLinecap="square" />
       </button>
     </li>
   );

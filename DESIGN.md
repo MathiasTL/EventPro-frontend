@@ -149,7 +149,7 @@ components:
 
 # Design System: EventPro
 
-> Scope note. This file records the EventPro BRAND system as built so far. Only the Conversaciones pilot and the panel shell (ink rail, phone drawer) are migrated. Other panel pages, the shared Button / Input / Modal focus colors, HandoffNotices, login and landing still use the legacy violet / zinc / Geist line; its tokens (`--brand`, `--ink`, `--line`, `--surface`, `--muted`, Geist faces) remain in `globals.css` until each surface migrates. Light theme only. Everything below that says `--ep-*` is the new system; do not mix it with the legacy tokens on one surface.
+> Scope note. This file records the EventPro BRAND system as built. The whole panel is migrated: the shell (ink rail, phone drawer, section icons), Conversaciones, every panel page (Solicitudes, Catálogo, Sobrecupo, Cronograma, Pagos, Finanzas, Usuarios, Auditoría, Cotizaciones) and the shared UI in `src/shared/ui` (Page, PageHeader, FilterBar, Panel, Notice, LoadingState, Button, fields, Badge, Table, Modal, EmptyState). Login, landing, the operator agenda and `button-link` still use the legacy violet / zinc / Geist line; its tokens (`--brand`, `--ink`, `--line`, `--surface`, `--muted`, Geist faces) remain in `globals.css` until those surfaces migrate. Light theme only. Do not mix legacy tokens with `--ep-*` on one surface.
 
 ## Overview
 
@@ -311,4 +311,4 @@ A pass-white shell (1px strong hairline, 12px radius, magenta focus-within outli
 
 ## Not canonized (defects the build carries)
 
-The Conversaciones surface still carries two items that are not part of the system: the "✕" text glyph in the composer's remove-attachment button (use an SVG icon on future surfaces), and the legacy shared Modal used by the takeover confirmations. These should be migrated, not copied.
+None in the panel. The earlier composer "✕" glyph and the legacy shared Modal are migrated (lucide `X` icon, flat ep Modal). Outside the panel, the operator agenda still uses text-glyph arrows and the legacy line; migrate it with login and landing.
