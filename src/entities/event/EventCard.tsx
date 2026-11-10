@@ -13,9 +13,9 @@ export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
   CANCELLED: "Cancelado",
 };
 
-const EVENT_STATUS_TONES: Record<EventStatus, "neutral" | "success" | "warning" | "danger"> = {
-  AWAITING_SIGNATURE: "neutral",
-  SCHEDULED: "neutral",
+const EVENT_STATUS_TONES: Record<EventStatus, "neutral" | "progress" | "success" | "warning" | "danger"> = {
+  AWAITING_SIGNATURE: "progress",
+  SCHEDULED: "progress",
   AWAITING_BALANCE: "warning",
   IN_PROGRESS: "success",
   EXTENDED: "warning",

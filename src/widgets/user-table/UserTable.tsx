@@ -34,7 +34,7 @@ export function UserTable({
             <td className="px-4 py-4 text-zinc-600">{user.email}</td>
             <td className="px-4 py-4 text-zinc-600">{user.phone}</td>
             <td className="px-4 py-4 text-zinc-600">{ROLE_LABELS[user.role]}</td>
-            <td className="px-4 py-4"><Badge tone={user.is_active ? "success" : "neutral"}>{user.is_active ? "Activo" : "Inactivo"}</Badge></td>
+            <td className="px-4 py-4"><Badge tone={user.is_active ? "success" : "danger"}>{user.is_active ? "Activo" : "Inactivo"}</Badge></td>
             <td className="px-4 py-4 text-xs text-zinc-500">{formatLimaDateTime(user.created_at)}</td>
             <td className="px-4 py-4"><Button variant="ghost" onClick={() => setEditing(user)}>Editar</Button></td>
           </tr>

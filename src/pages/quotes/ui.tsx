@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useAuth } from "@/entities/auth/context";
+import { Badge } from "@/shared/ui";
 import { quoteStatusLabels, type QuoteStatus } from "@/entities/quote/types";
 
 export function QuoteShell({ children }: { children: ReactNode }) {
@@ -19,9 +20,16 @@ export function QuoteShell({ children }: { children: ReactNode }) {
   </div>;
 }
 
+const QUOTE_STATUS_TONES: Record<QuoteStatus, "progress" | "success" | "warning" | "danger"> = {
+  SENT: "progress",
+  PAYMENT_STARTED: "warning",
+  CONVERTED: "success",
+  EXPIRED: "danger",
+  CANCELLED: "danger",
+};
+
 export function QuoteStatusBadge({ status }: { status: QuoteStatus }) {
-  const color = status === "CONVERTED" ? "bg-emerald-50 text-emerald-800" : status === "EXPIRED" || status === "CANCELLED" ? "bg-zinc-100 text-zinc-700" : "bg-violet-50 text-violet-800";
-  return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${color}`}>{quoteStatusLabels[status]}</span>;
+  return <Badge tone={QUOTE_STATUS_TONES[status]}>{quoteStatusLabels[status]}</Badge>;
 }
 
 export function money(amount: string) {

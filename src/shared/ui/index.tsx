@@ -55,11 +55,12 @@ export function Field({ label, children }: { label: string; children: ReactNode 
   );
 }
 
-type Tone = "neutral" | "success" | "warning" | "danger";
+export type Tone = "neutral" | "progress" | "success" | "warning" | "danger";
 
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: Tone }) {
   const tones: Record<Tone, string> = {
     neutral: "border-transparent bg-ep-neutral-field text-ep-body",
+    progress: "border-transparent bg-ep-progress-field text-ep-progress",
     success: "border-transparent bg-ep-success-field text-ep-success",
     warning: "border-ep-signal-line bg-ep-signal-field text-ep-ink",
     danger: "border-transparent bg-ep-danger-field text-ep-danger",

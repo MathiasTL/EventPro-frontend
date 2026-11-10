@@ -27,6 +27,8 @@ colors:
   danger-field: "#fbe9ea"
   success: "#1d6b4a"
   success-field: "#e3f3ea"
+  progress: "#0a6578"
+  progress-field: "#e0f1f5"
   violet: "#210151"
 typography:
   credential-name:
@@ -194,6 +196,10 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 - **Danger** (`#b4232c`, field `#fbe9ea`): failed sends, action errors and negative states (rejected, refunded).
 - **Success** (`#1d6b4a`, field `#e3f3ea`): completed or positive states (verified payment, converted quote, active
   user) and confirmation notices. Never a holder colour; always with its text label.
+- **Progress** (`#0a6578`, field `#e0f1f5`): states that are under way and need no action from the encargado (quote sent,
+  event scheduled or awaiting signature, payment not yet reviewed). Teal, kept apart from Success green and Bot Cobalt.
+- **Status tones**: every status chip carries a meaningful colour (progress, warning = a person must act, success,
+  danger = rejected, expired, cancelled, inactive). Neutral grey is only for categories that are not states (payment concept).
 
 ### Named Rules
 **The Band Means Holder Rule.** Magenta, cobalt, signal and ink each mean exactly one holder. Never use a role colour decoratively, and never show a holder colour without its text label.
