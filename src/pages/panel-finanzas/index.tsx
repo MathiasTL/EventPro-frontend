@@ -6,7 +6,7 @@ import type { FinancialPnl, PeriodType } from "@/entities/financial/types";
 import { FinancialKpiSummary } from "@/widgets/financial-kpi-summary/FinancialKpiSummary";
 import { limaToday } from "@/shared/lib/date";
 import { formatSoles } from "@/shared/lib/format";
-import { Button, ErrorBanner, Field, Input, Select, Table } from "@/shared/ui";
+import { Button, ErrorBanner, Field, FilterBar, Input, LoadingState, Page, PageHeader, Panel, Select, Table } from "@/shared/ui";
 
 const MONTH_NAMES = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -54,14 +54,11 @@ export function FinanzasPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-violet-700">Panel de operaciones</p>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Finanzas</h1>
-        <p className="mt-2 text-sm text-zinc-500">Ingresos, costos y utilidad neta de los eventos liquidados en el período.</p>
-      </div>
+    <Page>
+      <PageHeader title="Finanzas" description="Ingresos, costos y utilidad neta de los eventos liquidados en el período." />
 
-      <form onSubmit={submit} className="flex flex-wrap items-end gap-4 rounded-2xl border border-zinc-200 bg-white p-4">
+      <form onSubmit={submit}>
+        <FilterBar>
         <Field label="Período">
           <Select value={periodType} onChange={event => setPeriodType(event.target.value as PeriodType)}>
             <option value="MONTHLY">Mensual</option>
@@ -83,18 +80,19 @@ export function FinanzasPage() {
           </Field>
         )}
         <Button type="submit" disabled={loading}>{loading ? "Consultando…" : "Consultar"}</Button>
+        </FilterBar>
       </form>
 
       <ErrorBanner message={error} />
 
       {loading ? (
-        <p role="status" className="py-12 text-center text-sm text-zinc-500">Calculando el reporte…</p>
+        <LoadingState label="Calculando el reporte…" />
       ) : !error && pnl && (
         <div className="space-y-6">
           <FinancialKpiSummary pnl={pnl} />
-          <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
-            <h2 className="mb-1 text-lg font-semibold text-zinc-900">Detalle de costos directos</h2>
-            <p className="mb-4 text-sm text-zinc-500">Período consultado: {pnl.period}</p>
+          <Panel>
+            <h2 className="mb-1 text-lg font-semibold text-ep-ink">Detalle de costos directos</h2>
+            <p className="mb-4 text-sm text-ep-body">Período consultado: {pnl.period}</p>
             <Table head={["Concepto", "Importe"]}>
               <tr>
                 <td className="px-4 py-3">Paquetes (costo fijo)</td>
@@ -113,9 +111,9 @@ export function FinanzasPage() {
                 <td className="px-4 py-3">{formatSoles(pnl.direct_costs.total_costs)}</td>
               </tr>
             </Table>
-          </section>
+          </Panel>
         </div>
       )}
-    </div>
+    </Page>
   );
 }
