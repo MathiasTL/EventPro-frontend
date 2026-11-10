@@ -172,7 +172,7 @@ The logo is a gradient ticket-shaped "E" (magenta to deep violet) with an orange
 A violet-tinted neutral set (all greys lean toward hue 280) carrying four saturated role colours used as flat fields.
 
 ### Primary
-- **Access Magenta** (`#c9035c`): "tú", the brand, the active nav dot, own-message bubbles, caret and text selection, focus outlines. The text-safe magenta; white text on it passes.
+- **Access Magenta** (`#c9035c`): "tú", the brand, the active nav icon, own-message bubbles, caret and text selection, focus outlines. The text-safe magenta; white text on it passes.
 - **Access Magenta Bright** (`#e3106f`): non-text fills only. Never set text in it.
 - **Logo Violet** (`#210151`, `--ep-violet`): brand accent taken from the logo gradient. Never a state color and never body text on dark (it has no contrast on ink). Reserved for brand moments (login, landing) through `--ep-brand-gradient` (`linear-gradient(135deg, #c9035c, #210151)`), not applied anywhere yet. The no-gradient rule for panels still holds.
 
@@ -184,7 +184,7 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 - **Backstage Ink** (`#15131e`): rail, solid buttons, primary text, window countdown bar, selected-row ring, "Enc" band for another encargado.
 - **Ink 2** (`#221f30`): rail hover, solid button hover, other-encargado holder block.
 - **Ink Line** (`#34304a`): hairlines on ink and the window bar track.
-- **Ink Mute** (`#a09cb5`): inactive nav dot, logout border on ink.
+- **Ink Mute** (`#a09cb5`): inactive nav icons, logout border on ink.
 - **Rail Text** (`#c9c5da`): nav text on the rail.
 - **Pass White** (`#fafaf7`): the panel surface: rows, header, client bubbles, composer, active nav item.
 - **Page Wash** (`#f1f0f4`): the page behind panels.
@@ -243,7 +243,7 @@ Flat. There are no box-shadows in the built panel. Depth is conveyed by tonal la
 
 ## Shapes
 
-Mostly small and square-leaning. Role marks are 9px squares with a 2px corner and 1.5px border; nav dots are 6px squares with a 2px corner. Controls (buttons, inputs, composer shell) use 8px; bubbles use 12px with the tail-side top corner cut to 4px (right bubbles `rounded-tr-sm`, left `rounded-tl-sm`); the header credential is 8px. Colour bands are full-height rectangles with no radius, standing on the left edge of a row. The activity pill is the one fully rounded shape.
+Mostly small and square-leaning. Role marks are 9px squares with a 2px corner and 1.5px border; Controls (buttons, inputs, composer shell) use 8px; bubbles use 12px with the tail-side top corner cut to 4px (right bubbles `rounded-tr-sm`, left `rounded-tl-sm`); the header credential is 8px. Colour bands are full-height rectangles with no radius, standing on the left edge of a row. The activity pill is the one fully rounded shape.
 
 Mobile chips use 4px. Logo: the ticket-E mark is square (`eventpro-mark.png`, 256px); clear space is one quarter of the mark height on every side; minimum mark size 24px, minimum lockup width 120px, favicon (`app/favicon.ico`) at 16, 32 and 48px.
 
@@ -263,7 +263,7 @@ Quiet and square-ish, 44px on touch, 40px at `lg` (same height as fields, so the
 
 ### Navigation (ink rail)
 - **Item:** 36px (44px on phone), 6px radius, rail-text on ink; hover ink-2 with pass-white text.
-- **Active:** pass-white fill, ink bold text, filled magenta square dot; inactive items carry an outline dot in ink-mute.
+- **Active:** pass-white fill, ink bold text, Lucide icon (18px, stroke 1.75, square caps) in magenta; inactive icons in ink-mute, pass-white on hover. Icons: Solicitudes Inbox, Catálogo Package, Sobrecupo Layers, Cronograma CalendarDays, Pagos Wallet, Finanzas ChartLine, Usuarios Users, Auditoría ScrollText, Conversaciones MessagesSquare, Cotizaciones ReceiptText.
 - **Footer:** user name truncated, outline "Salir" button in pass-white on ink.
 - **Focus:** pass-white outline inset on ink; magenta on the active (pass-white) item.
 

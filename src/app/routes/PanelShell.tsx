@@ -2,23 +2,26 @@
 
 import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import Link from "next/link";
+import {
+  CalendarDays, ChartLine, Inbox, Layers, MessagesSquare, Package, ReceiptText, ScrollText, Users, Wallet, type LucideIcon,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/entities/auth/context";
 import { canAccessConversations } from "@/app/routes/roles";
 import { Wordmark } from "@/shared/ui/Wordmark";
 
-const links = [
-  { href: "/panel/solicitudes", label: "Solicitudes", visible: () => true },
-  { href: "/panel/catalogo", label: "Catálogo", visible: () => true },
-  { href: "/panel/sobrecupo", label: "Sobrecupo", visible: () => true },
-  { href: "/panel/cronograma", label: "Cronograma", visible: () => true },
-  { href: "/panel/pagos", label: "Pagos", visible: () => true },
-  { href: "/panel/finanzas", label: "Finanzas", visible: () => true },
-  { href: "/panel/usuarios", label: "Usuarios", visible: (role: string) => role === "SUPERADMIN" },
-  { href: "/panel/auditoria", label: "Auditoría", visible: () => true },
-  { href: "/panel/conversations", label: "Conversaciones", visible: canAccessConversations },
-  { href: "/panel/quotes", label: "Cotizaciones", visible: canAccessConversations },
+const links: { href: string; label: string; icon: LucideIcon; visible: (role: string) => boolean }[] = [
+  { href: "/panel/solicitudes", label: "Solicitudes", icon: Inbox, visible: () => true },
+  { href: "/panel/catalogo", label: "Catálogo", icon: Package, visible: () => true },
+  { href: "/panel/sobrecupo", label: "Sobrecupo", icon: Layers, visible: () => true },
+  { href: "/panel/cronograma", label: "Cronograma", icon: CalendarDays, visible: () => true },
+  { href: "/panel/pagos", label: "Pagos", icon: Wallet, visible: () => true },
+  { href: "/panel/finanzas", label: "Finanzas", icon: ChartLine, visible: () => true },
+  { href: "/panel/usuarios", label: "Usuarios", icon: Users, visible: (role: string) => role === "SUPERADMIN" },
+  { href: "/panel/auditoria", label: "Auditoría", icon: ScrollText, visible: () => true },
+  { href: "/panel/conversations", label: "Conversaciones", icon: MessagesSquare, visible: canAccessConversations },
+  { href: "/panel/quotes", label: "Cotizaciones", icon: ReceiptText, visible: canAccessConversations },
 ];
 
 /**
@@ -70,14 +73,21 @@ export function PanelShell({ children }: { children: ReactNode }) {
         <nav aria-label="Secciones del panel" className="flex flex-col gap-0.5">
           {links.filter(link => link.visible(user.role)).map(link => {
             const active = pathname.startsWith(link.href);
+            const Icon = link.icon;
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex min-h-11 items-center gap-2.5 rounded-md px-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ep-pass lg:min-h-9 ${active ? "bg-ep-pass font-bold text-ep-ink focus-visible:outline-ep-magenta" : "hover:bg-ep-ink-2 hover:text-ep-pass"}`}
+                className={`group flex min-h-11 items-center gap-2.5 rounded-md px-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ep-pass lg:min-h-9 ${active ? "bg-ep-pass font-bold text-ep-ink focus-visible:outline-ep-magenta" : "hover:bg-ep-ink-2 hover:text-ep-pass"}`}
               >
-                <span aria-hidden="true" className={`h-1.5 w-1.5 shrink-0 rounded-[2px] border-[1.5px] ${active ? "border-ep-magenta bg-ep-magenta" : "border-ep-ink-mute"}`} />
+                <Icon
+                  aria-hidden="true"
+                  size={18}
+                  strokeWidth={1.75}
+                  strokeLinecap="square"
+                  className={`shrink-0 ${active ? "text-ep-magenta" : "text-ep-ink-mute group-hover:text-ep-pass"}`}
+                />
                 {link.label}
               </Link>
             );
