@@ -3,21 +3,19 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useAuth } from "@/entities/auth/context";
-import { Badge } from "@/shared/ui";
+import { Badge, Page } from "@/shared/ui";
 import { quoteStatusLabels, type QuoteStatus } from "@/entities/quote/types";
 
 export function QuoteShell({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   if (!user) return null; // RequireAuth in the panel layout guarantees a session.
   if (!["ENCARGADO", "SUPERADMIN"].includes(user.role)) return (
-    <main className="p-8"><h1 className="text-2xl font-semibold">Acceso restringido</h1>
-      <p className="my-4">Las cotizaciones requieren una cuenta de encargado o superadministrador.</p>
-      <Link className="text-violet-700 underline" href="/agenda">Ir a mi agenda</Link>
-    </main>
+    <Page className="space-y-4"><h1 className="ep-cond text-3xl leading-none text-ep-ink sm:text-4xl">Acceso restringido</h1>
+      <p className="text-sm text-ep-body">Las cotizaciones requieren una cuenta de encargado o superadministrador.</p>
+      <Link className="inline-block text-sm font-medium text-ep-ink underline underline-offset-4 hover:text-ep-magenta focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta" href="/agenda">Ir a mi agenda</Link>
+    </Page>
   );
-  return <div className="flex-1 bg-zinc-50 text-zinc-900">
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">{children}</main>
-  </div>;
+  return <Page>{children}</Page>;
 }
 
 const QUOTE_STATUS_TONES: Record<QuoteStatus, "progress" | "success" | "warning" | "danger"> = {

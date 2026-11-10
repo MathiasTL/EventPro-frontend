@@ -66,7 +66,7 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
     danger: "border-transparent bg-ep-danger-field text-ep-danger",
   };
   return (
-    <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
+    <span className={`inline-flex items-center whitespace-nowrap rounded-sm border px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -186,4 +186,9 @@ export function Panel({ className = "", ...props }: HTMLAttributes<HTMLElement>)
 /** Panel holding filter controls laid out in a wrapping row. */
 export function FilterBar({ className = "", ...props }: HTMLAttributes<HTMLElement>) {
   return <Panel className={`flex flex-wrap items-end gap-3 ${className}`} {...props} />;
+}
+
+/** Panel page container: shared gutters (16px phone, 28px desktop), top/bottom padding and a max width for dense tables. */
+export function Page({ className = "", ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={`mx-auto w-full max-w-6xl space-y-6 px-4 py-6 lg:px-7 lg:py-7 ${className}`} {...props} />;
 }
