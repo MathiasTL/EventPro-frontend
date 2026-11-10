@@ -13,17 +13,18 @@ colors:
   line-strong: "#cfccd9"
   mute: "#5e5a70"
   body: "#3f3b52"
-  magenta: "#cc1170"
-  magenta-bright: "#e5177a"
+  magenta: "#c9035c"
+  magenta-bright: "#e3106f"
   cobalt: "#2446e0"
-  signal: "#ff5a1f"
-  magenta-field: "#fbe7f1"
+  signal: "#fd6c01"
+  magenta-field: "#fce6ef"
   cobalt-field: "#e9edfc"
   cobalt-line: "#c9d2f6"
-  signal-field: "#ffede4"
-  signal-line: "#ffc9b0"
+  signal-field: "#fff0e2"
+  signal-line: "#ffcf9e"
   neutral-field: "#ebeaf0"
   danger: "#b4232c"
+  violet: "#210151"
 typography:
   credential-name:
     fontFamily: "Archivo, system-ui, sans-serif"
@@ -153,7 +154,7 @@ Every conversation is a production pass. Its colour band says who holds it and h
 
 The system is dense and operational. The two encargados work mostly on a desktop, sometimes on a phone, and need to know instantly which conversations need a human. Colour is always paired with text (band labels, holder names, "Atiende el bot"), never alone. Surfaces are flat: borders and tonal fields do the layering, there are no shadows anywhere in the built panel.
 
-The logo follows the same logic: a credential "E" whose magenta access band becomes the stem, beside a custom condensed EVENT / PRO wordmark.
+The logo is a gradient ticket-shaped "E" (magenta to deep violet) with an orange flame, spark rays and an orbit swoosh, set beside the wordmark "Event" (navy) + "Pro" (magenta). Its measured colors drive the palette: magenta `#c9035c`, "Pro" `#c3004c`, violet `#210151`, navy `#010028`, flame `#fd6c01`, rays `#fc9c00`.
 
 **Key Characteristics:**
 - Ink rail (`#15131e`) beside pass-white (`#fafaf7`) panels on a cool wash (`#f1f0f4`) page.
@@ -168,12 +169,13 @@ The logo follows the same logic: a credential "E" whose magenta access band beco
 A violet-tinted neutral set (all greys lean toward hue 280) carrying four saturated role colours used as flat fields.
 
 ### Primary
-- **Access Magenta** (`#cc1170`): "tú", the brand, the active nav dot, own-message bubbles, caret and text selection, focus outlines. The text-safe magenta; white text on it passes.
-- **Access Magenta Bright** (`#e5177a`): non-text fills only. Never set text in it.
+- **Access Magenta** (`#c9035c`): "tú", the brand, the active nav dot, own-message bubbles, caret and text selection, focus outlines. The text-safe magenta; white text on it passes.
+- **Access Magenta Bright** (`#e3106f`): non-text fills only. Never set text in it.
+- **Logo Violet** (`#210151`, `--ep-violet`): brand accent taken from the logo gradient. Never a state color and never body text on dark (it has no contrast on ink). Reserved for brand moments (login, landing) through `--ep-brand-gradient` (`linear-gradient(135deg, #c9035c, #210151)`), not applied anywhere yet. The no-gradient rule for panels still holds.
 
 ### Secondary
 - **Bot Cobalt** (`#2446e0`): the bot. The 24px band, the "Atiende el bot" holder block, bot bubble label text.
-- **Handoff Signal** (`#ff5a1f`): a conversation waiting for a person. Always carries ink text, never white. Also the urgent state of the 24 h window bar.
+- **Handoff Signal** (`#fd6c01`): a conversation waiting for a person. Always carries ink text, never white. Also the urgent state of the 24 h window bar.
 
 ### Neutral
 - **Backstage Ink** (`#15131e`): rail, solid buttons, primary text, window countdown bar, selected-row ring, "Enc" band for another encargado.
@@ -185,7 +187,7 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 - **Page Wash** (`#f1f0f4`): the page behind panels.
 - **Hairline** (`#e3e1e8`) and **Strong Hairline** (`#cfccd9`): row dividers, bubble borders, control borders, scrollbar thumb, the "Libre" band.
 - **Muted Ink** (`#5e5a70`) and **Body Ink** (`#3f3b52`): timestamps and secondary text; running text and previews.
-- **State fields**: magenta `#fbe7f1`, cobalt `#e9edfc` (line `#c9d2f6`), signal `#ffede4` (line `#ffc9b0`), neutral `#ebeaf0`. Low-chroma tints used behind text that stays ink.
+- **State fields**: magenta `#fce6ef`, cobalt `#e9edfc` (line `#c9d2f6`), signal `#fff0e2` (line `#ffcf9e`), neutral `#ebeaf0`. Low-chroma tints used behind text that stays ink.
 - **Danger** (`#b4232c`): failed sends and action errors only.
 
 ### Named Rules
@@ -193,7 +195,7 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 
 **The Signal Is Ink-Texted Rule.** Signal orange takes ink text. White on it fails contrast.
 
-**The Magenta Text Rule.** Only `#cc1170` may be text; the bright magenta is for fills.
+**The Magenta Text Rule.** Only `#c9035c` may be text; the bright magenta is for fills.
 
 ## Typography
 
@@ -238,7 +240,7 @@ Flat. There are no box-shadows in the built panel. Depth is conveyed by tonal la
 
 Mostly small and square-leaning. Role marks are 9px squares with a 2px corner and 1.5px border; nav dots are 6px squares with a 2px corner. Controls (buttons, inputs, composer shell) use 8px; bubbles use 12px with the tail-side top corner cut to 4px (right bubbles `rounded-tr-sm`, left `rounded-tl-sm`); the header credential is 8px. Colour bands are full-height rectangles with no radius, standing on the left edge of a row. The activity pill is the one fully rounded shape.
 
-Mobile chips use 4px. The logo mark is a 64 x 64 solid-shape credential with a punched lanyard slot; clear space is one slot width (14/64 of the mark height) on every side; minimum mark size 24px, horizontal lockup 168px wide, simplified favicon at 16-32px.
+Mobile chips use 4px. Logo: the ticket-E mark is square (`eventpro-mark.png`, 256px); clear space is one quarter of the mark height on every side; minimum mark size 24px, minimum lockup width 120px, favicon (`app/favicon.ico`) at 16, 32 and 48px.
 
 ## Components
 
@@ -273,7 +275,7 @@ Flat, bordered, no shadow, 12px radius with a 4px tail corner. Client: pass-whit
 A pass-white shell (1px strong hairline, 12px radius, magenta focus-within outline) holding an attach icon button, an auto-growing textarea (`field-sizing: content`, max 10rem) and a solid ink "Enviar". Enter sends, Shift+Enter adds a line (hint shown at `lg`). When blocked, a pass-white notice with the reason and optional action sits above it; errors use a live region.
 
 ### Logo / Wordmark
-`Wordmark` renders the lockup SVG (`public/brand/`): `tone="dark"` on the ink rail, `tone="light"` on pass-white. EVENT in pass-white (on ink) or ink (on light), PRO in magenta. Always imported from `src/shared/ui/Wordmark.tsx`; 36px tall in the shell.
+`Wordmark` (`src/shared/ui/Wordmark.tsx`) is the only entry point. `tone="light"` renders the transparent lockup `public/brand/eventpro-logo-transparent.png` (1086 x 344), for light backgrounds only because its navy "Event" disappears on dark. `tone="dark"` (ink rail) renders the transparent mark plus live text: "Event" in pass-white, "Pro" in bright magenta. Mark is 36px tall in the shell; the light lockup is 40px tall.
 
 ## Do's and Don'ts
 
@@ -290,7 +292,8 @@ A pass-white shell (1px strong hairline, 12px radius, magenta focus-within outli
 - **Don't** add shadows, glows or gradient fills to panels, bubbles or buttons.
 - **Don't** show holder or status by colour alone.
 - **Don't** set body text, buttons or sentences in the condensed caps.
-- **Don't** use `#e5177a` for text.
+- **Don't** use `#e3106f` for text.
+- **Don't** use violet as a state color or as text on dark surfaces; **don't** place the transparent lockup on dark backgrounds.
 - **Don't** mix legacy tokens (violet, zinc, Geist, `--brand`) with `--ep-*` on one surface; migrate the surface whole.
 - **Don't** replace the standing column band with stacked pill badges on rows.
 - **Don't** animate history: the entrance plays only for live incoming messages.

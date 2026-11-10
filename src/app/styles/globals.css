@@ -37,18 +37,21 @@
   --ep-line-strong: #cfccd9;
   --ep-mute: #5e5a70;
   --ep-body: #3f3b52;
-  --ep-magenta: #cc1170;
-  --ep-magenta-bright: #e5177a;
+  --ep-magenta: #c9035c;
+  --ep-magenta-bright: #e3106f;
   --ep-cobalt: #2446e0;
-  --ep-signal: #ff5a1f;
+  --ep-signal: #fd6c01;
   /* State fields: low-chroma tints of the band colors, used behind text that stays ink or the band hue. */
-  --ep-magenta-field: #fbe7f1;
+  --ep-magenta-field: #fce6ef;
   --ep-cobalt-field: #e9edfc;
   --ep-cobalt-line: #c9d2f6;
-  --ep-signal-field: #ffede4;
-  --ep-signal-line: #ffc9b0;
+  --ep-signal-field: #fff0e2;
+  --ep-signal-line: #ffcf9e;
   --ep-neutral-field: #ebeaf0;
   --ep-danger: #b4232c;
+  /* Brand accent from the logo (deep violet). Never a state color, never body text on dark. */
+  --ep-violet: #210151;
+  --ep-brand-gradient: linear-gradient(135deg, #c9035c, #210151); /* reserved for login/landing, not applied yet */
 }
 
 @theme inline {
@@ -86,6 +89,7 @@
   --color-ep-signal-line: var(--ep-signal-line);
   --color-ep-neutral-field: var(--ep-neutral-field);
   --color-ep-danger: var(--ep-danger);
+  --color-ep-violet: var(--ep-violet);
 
   --font-sans: var(--font-geist-sans);
   --font-ep: var(--font-archivo), system-ui, sans-serif;
