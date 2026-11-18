@@ -3,7 +3,7 @@
 import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import Link from "next/link";
 import {
-  CalendarDays, ChartLine, Inbox, Layers, MessagesSquare, Package, ReceiptText, ScrollText, Users, Wallet, type LucideIcon,
+  CalendarDays, ChartLine, FileText, Inbox, Layers, MessagesSquare, Package, ReceiptText, ScrollText, Users, Wallet, type LucideIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -17,6 +17,7 @@ const links: { href: string; label: string; icon: LucideIcon; visible: (role: st
   { href: "/panel/sobrecupo", label: "Sobrecupo", icon: Layers, visible: () => true },
   { href: "/panel/cronograma", label: "Cronograma", icon: CalendarDays, visible: () => true },
   { href: "/panel/pagos", label: "Pagos", icon: Wallet, visible: () => true },
+  { href: "/panel/contratos", label: "Contratos", icon: FileText, visible: () => true },
   { href: "/panel/finanzas", label: "Finanzas", icon: ChartLine, visible: () => true },
   { href: "/panel/usuarios", label: "Usuarios", icon: Users, visible: (role: string) => role === "SUPERADMIN" },
   { href: "/panel/auditoria", label: "Auditoría", icon: ScrollText, visible: () => true },
