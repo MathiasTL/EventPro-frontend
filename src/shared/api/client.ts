@@ -17,6 +17,7 @@ export class ApiRequestError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: unknown;
+  headers?: Record<string, string>;
   /** Skip the 401 -> refresh -> retry flow (login and similar credential calls). */
   skipRefresh?: boolean;
   /** Public routes authenticate independently of the administrative session. */
@@ -34,7 +35,10 @@ function problemCode(problemType: string | undefined): string {
 async function apiFetchInner<T>(path: string, options: RequestOptions, retried: boolean): Promise<T> {
   const token = options.publicAccess ? null : getToken();
   const multipart = options.body instanceof FormData;
-  const headers: Record<string, string> = multipart ? {} : { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    ...(multipart ? {} : { "Content-Type": "application/json" }),
+    ...options.headers,
+  };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }

@@ -20,7 +20,11 @@ export function ContractsPage() {
 
   return (
     <Page>
-      <PageHeader title="Contratos" />
+      <PageHeader title="Contratos" actions={
+        <Link href="/panel/contratos/nuevo" className="inline-flex min-h-11 items-center rounded-lg bg-ep-ink px-3.5 text-sm font-semibold text-white hover:bg-ep-ink-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta">
+          Nuevo contrato manual
+        </Link>
+      } />
       <FilterBar>
         <Field label="Estado">
           <Select value={filters.status} onChange={(event) => setFilters({ ...filters, status: event.target.value as ContractFilters["status"], page: 1 })}>
