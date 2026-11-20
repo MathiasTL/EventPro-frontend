@@ -1,43 +1,20 @@
-import { ButtonLink } from "@/shared/ui/button-link";
-import { LOGIN_URL, buildWhatsAppUrl } from "@/shared/config";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 
-interface IngresarActionProps {
-  variant?: "primary" | "inverse";
-  className?: string;
-}
+import { buildWhatsAppUrl } from "@/shared/config";
 
-export function IngresarAction({
-  variant = "primary",
-  className,
-}: IngresarActionProps) {
-  return (
-    <ButtonLink href={LOGIN_URL} variant={variant} className={className}>
-      Ingresar al panel
-    </ButtonLink>
-  );
-}
+const WHATSAPP_MESSAGE = "Hola La Tremenda, quiero cotizar mi evento.";
 
-export function WhatsAppAction({ className }: { className?: string }) {
-  const url = buildWhatsAppUrl();
+export function WhatsAppAction({ className = "" }: { className?: string }) {
+  const url = buildWhatsAppUrl(WHATSAPP_MESSAGE);
+  const content = <><MessageCircle aria-hidden="true" size={22} strokeWidth={2.2} /><span>Cotiza por WhatsApp</span><ArrowUpRight aria-hidden="true" size={20} /></>;
 
-  // Sin número configurado el CTA queda inerte en vez de apuntar a un enlace roto.
   if (!url) {
-    return (
-      <ButtonLink variant="whatsapp" disabled className={className}>
-        Cotizar por WhatsApp
-      </ButtonLink>
-    );
+    return <button type="button" disabled className={`promoter-whatsapp-action ${className}`}>{content}</button>;
   }
 
-  return (
-    <ButtonLink
-      href={url}
-      variant="whatsapp"
-      target="_blank"
-      rel="noreferrer"
-      className={className}
-    >
-      Cotizar por WhatsApp
-    </ButtonLink>
-  );
+  return <a href={url} target="_blank" rel="noreferrer" className={`promoter-whatsapp-action ${className}`}>{content}</a>;
+}
+
+export function StickyWhatsAppAction() {
+  return <div className="promoter-sticky-action"><WhatsAppAction /></div>;
 }

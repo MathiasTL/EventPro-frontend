@@ -1,36 +1,29 @@
-import { ChatThread } from "./chat-thread";
-import { IngresarAction, WhatsAppAction } from "./actions";
+import { ArrowDownRight } from "lucide-react";
+
+import { WhatsAppAction } from "./actions";
 
 export function Hero() {
   return (
-    <section className="mx-auto w-full max-w-6xl px-5 pb-16 pt-12 sm:px-8 lg:pb-24 lg:pt-20">
-      <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-        <div className="max-w-xl">
-          <p className="font-mono text-eyebrow text-brand uppercase">
-            Lima, Perú · Eventos sociales y corporativos
-          </p>
-          <h1 className="mt-5 font-semibold text-hero text-ink">
-            Tu evento empieza con un mensaje.
-          </h1>
-          <p className="mt-6 text-lead text-muted">
-            Escribe a EventPro por WhatsApp, elige paquete, temática y extras, y
-            recibe la cotización con la movilidad ya calculada. El contrato
-            llega a tu chat para firmarlo desde el celular.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <IngresarAction />
+    <section className="promoter-hero" aria-labelledby="promoter-title">
+      <div className="promoter-hero-inner">
+        <div className="promoter-hero-copy">
+          <h1 id="promoter-title">Que tu evento se sienta <em>en grande.</em></h1>
+          <p>Shows, música y detalles para cumpleaños, baby showers, fiestas infantiles y eventos corporativos en Lima.</p>
+          <div className="promoter-hero-actions">
             <WhatsAppAction />
+            <span>Cotización en el chat, con movilidad incluida.</span>
           </div>
-
-          <p className="mt-4 text-sm text-muted">
-            Cotizar por WhatsApp no requiere registro; el panel es para
-            encargados y operadores del equipo.
-          </p>
         </div>
-
-        <ChatThread />
+        <div className="promoter-hero-art" aria-hidden="true">
+          <div className="promoter-hero-circle"><span>¡A<br />celebrar!</span></div>
+          <div className="promoter-hero-spark promoter-hero-spark-one" />
+          <div className="promoter-hero-spark promoter-hero-spark-two" />
+          <div className="promoter-hero-art-note"><span>SHOWS</span><span>MÚSICA</span><span>AMBIENTACIÓN</span></div>
+          <span className="promoter-hero-loop promoter-hero-loop-one" />
+          <span className="promoter-hero-loop promoter-hero-loop-two" />
+        </div>
       </div>
+      <a href="#servicios" className="promoter-hero-next">Descubre los servicios <ArrowDownRight aria-hidden="true" size={20} /></a>
     </section>
   );
 }

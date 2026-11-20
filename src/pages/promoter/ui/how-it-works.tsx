@@ -1,50 +1,27 @@
-const STEPS = [
-  {
-    number: "01",
-    title: "Escribes por WhatsApp",
-    body: "El bot te saluda, te muestra los paquetes, temáticas y extras, y te pide fecha, hora y ubicación del evento.",
-  },
-  {
-    number: "02",
-    title: "Recibes la cotización",
-    body: "EventPro calcula servicios, movilidad con Google Maps y el adelanto del 10 %, y te lo resume en el mismo chat.",
-  },
-  {
-    number: "03",
-    title: "Firmas desde el celular",
-    body: "El contrato en PDF llega a tu WhatsApp: lo revisas, firmas con tu código OTP y el evento entra en el cronograma.",
-  },
-];
+import { ChatThread } from "./chat-thread";
+
+const steps = [
+  { title: "Cuéntanos tu idea", body: "Escríbenos por WhatsApp y dinos qué celebras, cuándo y dónde." },
+  { title: "Recibe tu cotización", body: "Elige paquete y extras; te mostramos el importe con la movilidad incluida en el chat." },
+  { title: "Reserva y firma", body: "Envía el adelanto, revisa el contrato digital y fírmalo desde tu celular." },
+] as const;
 
 export function HowItWorks() {
   return (
-    <section
-      id="como-funciona"
-      className="border-t border-line bg-white"
-    >
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-        <p className="font-mono text-eyebrow text-brand uppercase">
-          Cómo funciona
-        </p>
-        <h2 className="mt-4 max-w-2xl font-semibold text-title text-ink">
-          De un mensaje a un contrato firmado
-        </h2>
-
-        <ol className="mt-10 grid gap-8 sm:grid-cols-3 sm:gap-10">
-          {STEPS.map((step) => (
-            <li key={step.number} className="border-t border-line pt-5">
-              <span className="font-mono text-sm text-brand">
-                {step.number}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold text-ink">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                {step.body}
-              </p>
-            </li>
-          ))}
-        </ol>
+    <section id="como-funciona" className="promoter-how" aria-labelledby="promoter-how-title">
+      <div className="promoter-container promoter-how-layout">
+        <div className="promoter-how-copy">
+          <h2 id="promoter-how-title">Así empieza la fiesta.</h2>
+          <ol className="promoter-how-steps">
+            {steps.map((step, index) => (
+              <li key={step.title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div><h3>{step.title}</h3><p>{step.body}</p></div>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <ChatThread />
       </div>
     </section>
   );

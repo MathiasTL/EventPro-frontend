@@ -2,7 +2,7 @@
 
 /*
  * Two visual lines live here during the brand migration (see DESIGN.md):
- * - Legacy line (the operator agenda and promoter site only): violet-700 accent, zinc neutrals, Geist.
+ * - Legacy line (the operator agenda only): violet-700 accent, zinc neutrals, Geist.
  *   Tokens: --brand, --ink, --muted, --line, --surface.
  * - "Credencial backstage" brand system (the whole panel): the --ep-* tokens below,
  *   Archivo via .ep-panel. New work uses --ep-* only; legacy tokens go away once every surface migrates.
@@ -1060,6 +1060,9 @@ body {
 }
 
 .showcase-control { border-bottom: 1px solid var(--ep-line); }
+.showcase-control-heading { display: block; max-width: 68rem; margin-inline: auto; text-align: center; }
+.showcase-control-heading h2 { max-width: 18ch; margin-inline: auto; }
+.showcase-control-heading p { max-width: 48ch; margin: 1.5rem auto 0; }
 
 .showcase-handoff {
   display: grid;
@@ -1143,7 +1146,9 @@ body {
 }
 
 .showcase-architecture { border-bottom: 1px solid var(--ep-line); }
-.showcase-architecture-heading h2 { max-width: 15ch; }
+.showcase-architecture-heading { display: block; }
+.showcase-architecture-heading h2 { max-width: 19ch; }
+.showcase-architecture-heading p { max-width: 55ch; margin-top: 1.5rem; }
 .showcase-architecture-diagram { padding: clamp(1.5rem, 3vw, 3rem); border: 1px solid var(--ep-line-strong); border-radius: 8px; background: var(--ep-wash); }
 .showcase-architecture-pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.75rem; padding: 0; margin: 0; list-style: none; }
 .showcase-architecture-pipeline li { position: relative; min-width: 0; }
@@ -1176,19 +1181,30 @@ body {
 .showcase-impact-list h3 { font-size: clamp(1.375rem, 1.7vw, 1.8rem); font-weight: 800; }
 .showcase-impact-list p { color: var(--ep-body); font-size: clamp(1.125rem, 1.35vw, 1.4rem); line-height: 1.45; }
 .showcase-team { border-top: 1px solid var(--ep-line); }
-.showcase-team-heading h2 { max-width: 13ch; }
-.showcase-team-heading p { margin-top: 2rem; }
+.showcase-team .showcase-section-inner { display: block; }
+.showcase-team .showcase-team-heading { margin-bottom: 3.5rem; }
+.showcase-team-heading h2 { max-width: none; }
+.showcase-team-heading p { max-width: 56ch; margin-top: 1.25rem; }
+.showcase-team-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 6vw, 8rem); }
 .showcase-team-list > div { padding: 1.5rem 0; border-bottom: 1px solid var(--ep-line); }
 .showcase-team-list h3 { font-size: clamp(1.5rem, 2vw, 2.25rem); line-height: 1.1; }
 .showcase-team-list p { margin-top: 0.5rem; color: var(--ep-body); font-size: clamp(1.125rem, 1.25vw, 1.3125rem); }
 
 .showcase-closing { color: var(--ep-pass); background: var(--ep-ink); }
 .showcase-closing-inner { width: min(100% - 5rem, 1600px); margin: auto; padding: 6rem 0; }
-.showcase-closing-band { padding: clamp(3rem, 6vw, 6rem); border-radius: 8px; background-image: var(--ep-brand-gradient); }
+.showcase-closing-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr); align-items: center; gap: clamp(3rem, 5vw, 6rem); padding: clamp(3rem, 6vw, 6rem); border-radius: 8px; background-image: var(--ep-brand-gradient); }
 .showcase-closing-band h2 { max-width: 13ch; font-size: clamp(3.25rem, 5.3vw, 6rem); font-weight: 800; line-height: 1; letter-spacing: -0.035em; text-wrap: balance; }
 .showcase-closing-band p { max-width: 32ch; margin-top: 1.5rem; font-size: clamp(1.125rem, 1.5vw, 1.5rem); line-height: 1.4; }
 .showcase-closing-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
 .showcase-closing-actions a { min-height: 3.25rem; padding-inline: 1.25rem; }
+.showcase-closing-recap { min-width: 0; padding: clamp(1.5rem, 2vw, 2.5rem); border: 1px solid var(--ep-ink-line); border-radius: 6px; background: var(--ep-ink); transform: rotate(2deg); }
+.showcase-closing-recap-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--ep-ink-line); }
+.showcase-closing-recap-head > span { color: var(--ep-rail-text); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.07em; text-align: right; }
+.showcase-closing-recap ol { padding: 0; margin: 1rem 0 0; list-style: none; }
+.showcase-closing-recap li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: center; gap: 0.75rem; min-height: 3.5rem; border-bottom: 1px solid var(--ep-ink-line); }
+.showcase-closing-recap li:last-child { border-bottom: 0; }
+.showcase-closing-recap li span { color: var(--ep-rail-text); font-size: 0.875rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.showcase-closing-recap li strong { font-size: clamp(1.125rem, 1.4vw, 1.5rem); font-weight: 800; }
 
 @media (max-width: 1023px) {
   .showcase-product,
@@ -1213,6 +1229,9 @@ body {
   .showcase-architecture-connections { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .showcase-impact .showcase-section-inner,
   .showcase-team .showcase-section-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .showcase-team-list { grid-template-columns: 1fr; }
+  .showcase-closing-band { grid-template-columns: 1fr; }
+  .showcase-closing-recap { transform: none; }
 }
 
 @media (max-width: 600px) {
@@ -1240,6 +1259,8 @@ body {
   .showcase-closing-band { padding: 2rem 1.5rem; }
   .showcase-closing-band h2 { font-size: clamp(2.75rem, 11vw, 4rem); }
   .showcase-closing-actions a { width: 100%; }
+  .showcase-closing-recap-head { display: block; }
+  .showcase-closing-recap-head > span { display: block; margin-top: 1rem; text-align: left; }
 }
 
 /* The login is the backstage pass into the operating panel. */

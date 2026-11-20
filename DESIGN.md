@@ -149,7 +149,7 @@ components:
 
 # Design System: EventPro
 
-> Scope note. This file records the EventPro BRAND system as built. The whole panel is migrated: the shell (ink rail, phone drawer, section icons), Conversaciones, every panel page (Solicitudes, Catálogo, Sobrecupo, Cronograma, Pagos, Finanzas, Usuarios, Auditoría, Cotizaciones) and the shared UI in `src/shared/ui` (Page, PageHeader, FilterBar, Panel, Notice, LoadingState, Button, fields, Badge, Table, Modal, EmptyState). Login, landing, the operator agenda and `button-link` still use the legacy violet / zinc / Geist line; its tokens (`--brand`, `--ink`, `--line`, `--surface`, `--muted`, Geist faces) remain in `globals.css` until those surfaces migrate. Light theme only. Do not mix legacy tokens with `--ep-*` on one surface.
+> Scope note. This file records the EventPro BRAND system as built. The panel shell and pages, the showcase at `/`, login at `/login`, and the shared UI including `button-link` use `--ep-*` tokens and Archivo. The showcase and login extend the brand into dark and gradient moments; the operational panel remains light and flat. Legacy violet / zinc / Geist tokens (`--brand`, `--ink`, `--line`, `--surface`, `--muted`) remain only for the operator agenda. The client-facing `/la-tremenda` site has a separate scoped brand in `src/pages/promoter/promoter.css`: midnight teal `#12383c`, marigold `#ffda58`, coral `#ec6038`, and cream `#fff8e9`, with Bricolage Grotesque for display and DM Sans for body text. Do not mix the EventPro tokens with the promoter palette or legacy tokens on one surface.
 
 ## Overview
 
@@ -176,7 +176,7 @@ A violet-tinted neutral set (all greys lean toward hue 280) carrying four satura
 ### Primary
 - **Access Magenta** (`#c9035c`): "tú", the brand, the active nav icon, own-message bubbles, caret and text selection, focus outlines. The text-safe magenta; white text on it passes.
 - **Access Magenta Bright** (`#e3106f`): non-text fills only. Never set text in it.
-- **Logo Violet** (`#210151`, `--ep-violet`): brand accent taken from the logo gradient. Never a state color and never body text on dark (it has no contrast on ink). Reserved for brand moments (login, landing) through `--ep-brand-gradient` (`linear-gradient(135deg, #c9035c, #210151)`), not applied anywhere yet. The no-gradient rule for panels still holds.
+- **Logo Violet** (`#210151`, `--ep-violet`): brand accent taken from the logo gradient. Never a state color and never body text on dark (it has no contrast on ink). The `--ep-brand-gradient` (`linear-gradient(135deg, #c9035c, #210151)`) appears only on the showcase hero accent, showcase final CTA and login brand panel. The no-gradient rule for operational panels still holds.
 
 ### Secondary
 - **Bot Cobalt** (`#2446e0`): the bot. The 24px band, the "Atiende el bot" holder block, bot bubble label text.
@@ -311,4 +311,4 @@ A pass-white shell (1px strong hairline, 12px radius, magenta focus-within outli
 
 ## Not canonized (defects the build carries)
 
-None in the panel. The earlier composer "✕" glyph and the legacy shared Modal are migrated (lucide `X` icon, flat ep Modal). Outside the panel, the operator agenda still uses text-glyph arrows and the legacy line; migrate it with login and landing.
+None in the panel. The earlier composer "✕" glyph and the legacy shared Modal are migrated (lucide `X` icon, flat ep Modal). Outside the panel, the operator agenda still uses text-glyph arrows and the legacy line; its migration is separate.
