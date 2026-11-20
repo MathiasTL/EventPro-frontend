@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 
-export { LandingPage as default } from "@/pages/landing";
+export { ShowcasePage as default } from "@/pages/showcase";
 
 export const metadata: Metadata = {
-  title: "EventPro · Cotiza tu evento por WhatsApp",
+  title: "EventPro · Software Innovation Awards 2026",
   description:
-    "EventPro automatiza el ciclo de tu evento en Lima: cotiza por WhatsApp con catálogo, temáticas y extras, calcula la movilidad y firma el contrato digital desde el celular. Panel para encargados y agenda para elencos.",
+    "EventPro conecta la atención por WhatsApp, la cotización, la firma digital y la operación de eventos con automatización y control humano.",
   openGraph: {
-    title: "EventPro · Cotiza tu evento por WhatsApp",
+    title: "EventPro · Software Innovation Awards 2026",
     description:
-      "Cotiza, firma tu contrato y gestiona tu evento en un solo lugar.",
+      "Del primer mensaje al contrato firmado, con control humano en cada decisión importante.",
     locale: "es_PE",
     type: "website",
   },

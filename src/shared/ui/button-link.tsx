@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import Link from "next/link";
 
-type LinkVariant = "primary" | "ghost" | "whatsapp" | "inverse";
+type LinkVariant = "primary" | "ghost" | "whatsapp" | "inverse" | "gradient" | "ghost-inverse";
 
 interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   variant?: LinkVariant;
@@ -9,16 +9,16 @@ interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;
 }
 
-// Mismas proporciones y estados que `Button` de shared/ui, para que los CTA de
-// la landing y los botones del panel se vean como una sola familia.
 const BASE_STYLES =
-  "inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ep-magenta";
 
 const VARIANT_STYLES: Record<LinkVariant, string> = {
-  primary: "bg-violet-700 text-white hover:bg-violet-800",
-  ghost: "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50",
-  whatsapp: "bg-whatsapp text-whatsapp-ink hover:brightness-95",
-  inverse: "bg-white text-violet-800 hover:bg-violet-50",
+  primary: "bg-ep-magenta text-ep-pass hover:bg-ep-violet",
+  ghost: "border border-ep-line-strong bg-ep-pass text-ep-ink hover:bg-ep-wash",
+  whatsapp: "bg-ep-whatsapp text-ep-whatsapp-ink hover:brightness-95",
+  inverse: "bg-ep-pass text-ep-ink hover:bg-ep-wash",
+  gradient: "bg-[image:var(--ep-brand-gradient)] text-ep-pass hover:brightness-110",
+  "ghost-inverse": "border border-ep-rail-text bg-transparent text-ep-pass hover:bg-ep-ink-2",
 };
 
 export function ButtonLink({

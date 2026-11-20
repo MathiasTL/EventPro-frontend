@@ -5,7 +5,7 @@ import { HowItWorks } from "./ui/how-it-works";
 import { SiteFooter } from "./ui/site-footer";
 import { SiteHeader } from "./ui/site-header";
 
-export function LandingPage() {
+export function PromoterPage() {
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-white">
       <SiteHeader />
