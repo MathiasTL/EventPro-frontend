@@ -1,5 +1,5 @@
 import { apiFetch } from "@/shared/api/client";
-import type { FinancialPnl, PeriodType } from "./types";
+import type { FinancialCollections, FinancialPnl, PeriodType } from "./types";
 
 export type FinancialPnlQuery = {
   period_type: PeriodType;
@@ -8,10 +8,18 @@ export type FinancialPnlQuery = {
   week?: number;
 };
 
-/** GET /reports/financial/pnl — US-21: consolida eventos SETTLED por mes o semana ISO. */
-export function getFinancialPnl(query: FinancialPnlQuery): Promise<FinancialPnl> {
+function financialPeriodParams(query: FinancialPnlQuery): URLSearchParams {
   const params = new URLSearchParams({ period_type: query.period_type, year: String(query.year) });
   if (query.period_type === "MONTHLY" && query.month) params.set("month", String(query.month));
   if (query.period_type === "WEEKLY" && query.week) params.set("week", String(query.week));
-  return apiFetch<FinancialPnl>(`/reports/financial/pnl?${params.toString()}`);
+  return params;
+}
+
+/** GET /reports/financial/pnl — US-21: consolida eventos SETTLED por mes o semana ISO. */
+export function getFinancialPnl(query: FinancialPnlQuery): Promise<FinancialPnl> {
+  return apiFetch<FinancialPnl>(`/reports/financial/pnl?${financialPeriodParams(query).toString()}`);
+}
+
+export function getFinancialCollections(query: FinancialPnlQuery): Promise<FinancialCollections> {
+  return apiFetch<FinancialCollections>(`/reports/financial/collections?${financialPeriodParams(query).toString()}`);
 }

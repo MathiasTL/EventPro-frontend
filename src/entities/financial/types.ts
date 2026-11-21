@@ -16,3 +16,17 @@ export type FinancialPnl = {
   net_profit: number;
   profit_margin_percentage: number;
 };
+
+export type FinancialCollections = {
+  period: string;
+  collected: {
+    advance: number;
+    balance: number;
+    extension: number;
+    total: number;
+    payments_count: number;
+  };
+  pending_verification: { amount: number; payments_count: number };
+  refunds: { refund_pending: number; refunded: number };
+  receivable: { amount: number; events_count: number };
+};
