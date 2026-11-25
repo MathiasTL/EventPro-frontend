@@ -17,8 +17,11 @@ export class ApiRequestError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: unknown;
+  headers?: Record<string, string>;
   /** Skip the 401 -> refresh -> retry flow (login and similar credential calls). */
   skipRefresh?: boolean;
+  /** Public routes authenticate independently of the administrative session. */
+  publicAccess?: boolean;
   /** Read a successful response as binary instead of JSON (attachments). Errors stay JSON problems. */
   responseType?: "json" | "blob";
 };
@@ -30,9 +33,12 @@ function problemCode(problemType: string | undefined): string {
 }
 
 async function apiFetchInner<T>(path: string, options: RequestOptions, retried: boolean): Promise<T> {
-  const token = getToken();
+  const token = options.publicAccess ? null : getToken();
   const multipart = options.body instanceof FormData;
-  const headers: Record<string, string> = multipart ? {} : { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    ...(multipart ? {} : { "Content-Type": "application/json" }),
+    ...options.headers,
+  };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -43,6 +49,7 @@ async function apiFetchInner<T>(path: string, options: RequestOptions, retried: 
     headers,
     body: multipart ? options.body as FormData : options.body === undefined ? undefined : JSON.stringify(options.body),
     cache: "no-store",
+    ...(options.publicAccess ? { credentials: "omit", referrerPolicy: "no-referrer" } : {}),
   }); } catch { throw new ApiRequestError(0, "No se pudo conectar con EventPro. Comprueba que el backend esté disponible.", "network-error"); }
 
   if (response.status === 204) {
@@ -59,7 +66,7 @@ async function apiFetchInner<T>(path: string, options: RequestOptions, retried: 
 
   if (!response.ok) {
     const problem = (data ?? {}) as { detail?: string | { msg: string; loc: string[] }[]; type?: string };
-    if (response.status === 401) {
+    if (response.status === 401 && !options.publicAccess) {
       // A transient refresh failure (network, 5xx) keeps the session so the user can retry.
       let keepSession = false;
       if (token && !retried && !options.skipRefresh) {
