@@ -259,7 +259,10 @@ function ManualContractForm({ packages, extras }: { packages: Resource[]; extras
         <Panel className="space-y-4">
           <h2 className="text-lg font-semibold text-ep-ink">Condiciones del contrato</h2>
           <Field label="Observaciones (opcional)"><Textarea name="client_observations" rows={3} maxLength={5000} /></Field>
-          <Field label="Cláusulas particulares (opcional)"><Textarea name="custom_clauses" rows={4} maxLength={10000} /></Field>
+          <div className="space-y-1.5">
+            <Field label="Cláusulas particulares (opcional)"><Textarea name="custom_clauses" rows={4} maxLength={10000} /></Field>
+            <p className="text-xs text-ep-mute">Complementan en lo específico las cláusulas generales inamovibles del contrato.</p>
+          </div>
         </Panel>
       </fieldset>
       <ErrorBanner message={error} />
