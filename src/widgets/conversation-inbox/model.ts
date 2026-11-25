@@ -5,6 +5,7 @@ export const handoffReasonLabels: Record<HandoffReason, string> = {
   BOT_NOT_UNDERSTOOD: "El bot no entendió la consulta",
   MANUAL_TAKEOVER: "Toma manual",
   BOT_ERROR: "El bot tuvo un error",
+  PAYMENT_RECEIPT: "Comprobante recibido",
 };
 
 /** Single-select quick filter: each option maps to the `mode` / `assigned` query params. */
