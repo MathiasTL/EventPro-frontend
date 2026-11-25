@@ -107,7 +107,8 @@ export function MessageList({ conversationId, ownName, canRetry, entries, hasOld
         const el = event.currentTarget;
         nearBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM_PX;
       }}
-      className="ep-scroll ep-fade-top min-h-0 flex-1 overflow-y-auto bg-ep-wash px-4 py-4 lg:px-7"
+      // Keep absolutely positioned screen reader labels inside the scroll container.
+      className="ep-scroll ep-fade-top relative min-h-0 flex-1 overflow-y-auto overscroll-y-contain bg-ep-wash px-4 py-4 lg:px-7"
     >
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement && <span key={seenKey}>{announcement}</span>}
