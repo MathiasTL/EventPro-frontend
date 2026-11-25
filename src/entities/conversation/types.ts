@@ -5,7 +5,7 @@ export type ConversationMode = "BOT" | "HUMAN";
 export type ConversationLifecycle = "pending" | "open" | "resolved";
 export type LeadStatus = "QUOTING" | "QUOTE_SENT" | "PAYMENT_STARTED" | "CONVERTED" | "QUOTE_CLOSED" | "EVENT_DONE";
 export type QuoteStatus = "SENT" | "PAYMENT_STARTED" | "CONVERTED" | "EXPIRED" | "CANCELLED";
-export type HandoffReason = "CLIENT_REQUEST" | "BOT_NOT_UNDERSTOOD" | "MANUAL_TAKEOVER" | "BOT_ERROR";
+export type HandoffReason = "CLIENT_REQUEST" | "BOT_NOT_UNDERSTOOD" | "MANUAL_TAKEOVER" | "BOT_ERROR" | "PAYMENT_RECEIPT";
 export type AssignedFilter = "me" | "unassigned";
 
 export type ConversationClient = {

@@ -1,6 +1,6 @@
 /** Enums mirror `app/domain/entities/payment.py` in the backend. */
 export type PaymentConcept = "ADVANCE" | "BALANCE" | "EXTENSION";
-export type PaymentMethod = "YAPE" | "PLIN" | "BANK_TRANSFER" | "CASH";
+export type PaymentMethod = "YAPE" | "PLIN" | "BANK_TRANSFER" | "CASH" | "UNSPECIFIED";
 export type PaymentValidationStatus =
   | "PENDING_VERIFICATION"
   | "REQUIRES_MANUAL_APPROVAL"
@@ -10,7 +10,8 @@ export type PaymentValidationStatus =
   | "REFUNDED";
 export type PaymentAuditStatus = "UNREVIEWED" | "REVIEWED" | "FLAGGED";
 
-export const PAYMENT_METHODS: PaymentMethod[] = ["YAPE", "PLIN", "BANK_TRANSFER", "CASH"];
+/** Methods staff can pick manually; `UNSPECIFIED` only comes from the bot and is display-only. */
+export const PAYMENT_METHODS: Exclude<PaymentMethod, "UNSPECIFIED">[] = ["YAPE", "PLIN", "BANK_TRANSFER", "CASH"];
 export const PAYMENT_VALIDATION_STATUSES: PaymentValidationStatus[] = [
   "PENDING_VERIFICATION",
   "REQUIRES_MANUAL_APPROVAL",
@@ -27,6 +28,7 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   PLIN: "Plin",
   BANK_TRANSFER: "Transferencia bancaria",
   CASH: "Efectivo",
+  UNSPECIFIED: "Por confirmar",
 };
 
 /** Exact shape of `PaymentReadResponse` (GET /payments, GET /payments/{id}). `amount` is a Decimal serialized as a string. */

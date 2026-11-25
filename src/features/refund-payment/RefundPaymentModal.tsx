@@ -25,7 +25,7 @@ export function RefundPaymentModal({ payment, onClose, onDone }: Props) {
 
 function RefundPaymentForm({ payment, onClose, onDone }: Props & { payment: PaymentRead }) {
   const queryClient = useQueryClient();
-  const [method, setMethod] = useState<PaymentMethod>(payment.payment_method);
+  const [method, setMethod] = useState<PaymentMethod>(payment.payment_method === "UNSPECIFIED" ? PAYMENT_METHODS[0] : payment.payment_method);
   const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
 
