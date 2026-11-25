@@ -13,14 +13,28 @@ import { SignaturePad } from "./SignaturePad";
 
 type Summary = Awaited<ReturnType<typeof getPublicContract>>;
 
+const LINK_UNAVAILABLE =
+  "El enlace ya no está disponible. Si acabas de firmar, consulta tu chat de WhatsApp. Si necesitas ayuda, escribe a EventPro.";
+
+// The backend reports every 409 with the same `invalid-contract-state` code; the detail tells the reasons apart.
+const CONTRACT_STATE_MESSAGES: Record<string, string> = {
+  "El evento ya comenzó":
+    "El evento ya comenzó, por lo que el contrato ya no puede firmarse en línea. Si necesitas ayuda, escribe a EventPro.",
+  "Adelanto verificado insuficiente":
+    "Todavía no se puede firmar porque el adelanto aún no está verificado. Escribe a EventPro por WhatsApp para revisarlo.",
+  "PDF no disponible":
+    "El contrato todavía no está listo para firmar. Inténtalo más tarde o escribe a EventPro por WhatsApp.",
+};
+
 function unavailable(error: unknown) {
   if (!(error instanceof ApiRequestError)) return null;
   if (error.code === "signature-token-expired") {
     return "El enlace venció. Pide a EventPro un nuevo enlace por WhatsApp.";
   }
-  if (error.status === 404 || error.code === "invalid-contract-state") {
-    return "El enlace ya no está disponible. Si acabas de firmar, consulta tu chat de WhatsApp. Si necesitas ayuda, escribe a EventPro.";
+  if (error.code === "invalid-contract-state") {
+    return CONTRACT_STATE_MESSAGES[error.message] ?? LINK_UNAVAILABLE;
   }
+  if (error.status === 404) return LINK_UNAVAILABLE;
   return null;
 }
 
