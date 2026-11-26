@@ -224,9 +224,14 @@ function SigningForm({ token, summary }: { token: string; summary: Summary }) {
             <p className="mt-1 whitespace-pre-wrap break-words text-ep-body">{event.client_observations}</p>
           </div>
         )}
-        <a href={publicPdfUrl(token)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ep-line-strong px-3.5 text-sm font-semibold text-ep-ink hover:bg-white focus-visible:outline-2 focus-visible:outline-ep-magenta">
-          <FileText size={16} aria-hidden="true" /> Abrir contrato PDF
-        </a>
+        <div className="space-y-2">
+          <a href={publicPdfUrl(token)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ep-line-strong px-3.5 text-sm font-semibold text-ep-ink hover:bg-white focus-visible:outline-2 focus-visible:outline-ep-magenta">
+            <FileText size={16} aria-hidden="true" /> Abrir contrato PDF
+          </a>
+          <p className="text-xs text-ep-mute">
+            Revisa las condiciones particulares y las cláusulas generales del documento completo antes de firmar.
+          </p>
+        </div>
       </Panel>
       <Panel className="space-y-4">
         <h2 className="text-lg font-semibold text-ep-ink">{proof ? "Completa tu firma" : "Confirma tu número de WhatsApp"}</h2>
