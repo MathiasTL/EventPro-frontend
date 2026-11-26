@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { paymentActionErrorMessage, paymentKeys, verifyPayment, type PaymentRead } from "@/entities/payment";
+import { getQuote } from "@/entities/quote/api";
 import { Button, ErrorBanner, Field, Input, Modal, Textarea } from "@/shared/ui";
 import { isUuid, UUID_PATTERN } from "./model";
 
@@ -27,19 +28,31 @@ export function VerifyPaymentModal({ payment, action, onClose, onDone }: Props) 
 function VerifyPaymentForm({ payment, action, onClose, onDone }: Props & { payment: PaymentRead }) {
   const queryClient = useQueryClient();
   const approving = action === "VERIFIED";
-  // An unresolved ADVANCE has no event_id, so the prefill is normally empty; the encargado links the event awaiting signature.
-  const [eventId, setEventId] = useState(payment.event_id ?? "");
+  // The quote decides the event: existing event -> prefilled read-only; none -> backend creates it on verify.
+  const quoteQuery = useQuery({ queryKey: ["quotes", "detail", payment.quote_id], queryFn: () => getQuote(payment.quote_id), enabled: approving });
+  const quoteEventId = quoteQuery.data?.event_id ?? payment.event_id ?? null;
+  const quoteResolved = quoteQuery.isSuccess;
+  const [typedEventId, setTypedEventId] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+  // Fallback: if the quote cannot be loaded, keep the manual UUID input so verification is not blocked.
+  const manualEntry = approving && quoteQuery.isError && !quoteEventId;
+  const eventId = quoteEventId ?? typedEventId;
   const [reason, setReason] = useState("");
   const [validation, setValidation] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: () =>
-      verifyPayment(payment.payment_id, approving ? { status: "VERIFIED", event_id: eventId.trim() } : { status: "REJECTED", rejection_reason: reason.trim() }),
-    onSuccess: async () => {
+      verifyPayment(payment.payment_id, approving ? { status: "VERIFIED", ...(eventId.trim() ? { event_id: eventId.trim() } : {}) } : { status: "REJECTED", rejection_reason: reason.trim() }),
+    onSuccess: async result => {
       await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["quotes"] }),
         queryClient.invalidateQueries({ queryKey: paymentKeys.lists() }),
         queryClient.invalidateQueries({ queryKey: paymentKeys.detail(payment.payment_id) }),
       ]);
+      if (approving && result.validation_status === "REQUIRES_MANUAL_APPROVAL") {
+        setNotice("No hay cupo para esa fecha: el adelanto pasó a Sobrecupo para aprobación manual.");
+        return;
+      }
       onDone?.(approving ? "Adelanto verificado. El contrato fue emitido." : "Pago rechazado.");
       onClose();
     },
@@ -47,24 +60,46 @@ function VerifyPaymentForm({ payment, action, onClose, onDone }: Props & { payme
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (approving && !isUuid(eventId)) { setValidation("Ingresa un ID de evento válido (UUID)."); return; }
+    if (approving && !quoteResolved && !manualEntry) return;
+    if (manualEntry && !isUuid(eventId)) { setValidation("Ingresa un ID de evento válido (UUID)."); return; }
     if (!approving && !reason.trim()) { setValidation("El motivo del rechazo es obligatorio."); return; }
     setValidation(null);
     mutation.mutate();
   }
 
   const busy = mutation.isPending;
+  if (notice) {
+    return (
+      <div className="space-y-4">
+        <p role="status" className="text-sm text-ep-body">{notice}</p>
+        <div className="flex justify-end"><Button onClick={onClose}>Cerrar</Button></div>
+      </div>
+    );
+  }
   return (
     <form onSubmit={submit} className="space-y-4">
       <fieldset disabled={busy} className="space-y-4 disabled:opacity-60">
         {approving ? (
           <>
-            <p className="text-sm text-ep-body">
-              Vincula el adelanto al evento pendiente de firma de la misma cotización ({payment.quote_id.slice(0, 8)}). Al verificar se emite el contrato.
-            </p>
-            <Field label="ID del evento">
-              <Input value={eventId} onChange={e => setEventId(e.target.value)} required pattern={UUID_PATTERN} placeholder="UUID del evento" />
-            </Field>
+            {quoteQuery.isPending ? (
+              <p className="text-sm text-ep-mute">Cargando cotización…</p>
+            ) : quoteEventId ? (
+              <>
+                <p className="text-sm text-ep-body">El adelanto se vinculará al evento de la cotización ({payment.quote_id.slice(0, 8)}). Al verificar se emite el contrato.</p>
+                <Field label="ID del evento">
+                  <Input value={quoteEventId} readOnly />
+                </Field>
+              </>
+            ) : manualEntry ? (
+              <>
+                <p className="text-sm text-ep-body">No se pudo cargar la cotización. Vincula el adelanto al evento pendiente de firma de la misma cotización ({payment.quote_id.slice(0, 8)}).</p>
+                <Field label="ID del evento">
+                  <Input value={typedEventId} onChange={e => setTypedEventId(e.target.value)} required pattern={UUID_PATTERN} placeholder="UUID del evento" />
+                </Field>
+              </>
+            ) : (
+              <p className="text-sm text-ep-body">Al verificar se creará el evento de la cotización y se emitirá el contrato.</p>
+            )}
           </>
         ) : (
           <Field label="Motivo del rechazo">
@@ -75,7 +110,7 @@ function VerifyPaymentForm({ payment, action, onClose, onDone }: Props & { payme
       <ErrorBanner message={validation ?? (mutation.isError ? paymentActionErrorMessage(mutation.error) : null)} />
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" disabled={busy} onClick={onClose}>Cancelar</Button>
-        <Button variant={approving ? "primary" : "danger"} disabled={busy}>{busy ? "Procesando…" : approving ? "Verificar adelanto" : "Rechazar pago"}</Button>
+        <Button variant={approving ? "primary" : "danger"} disabled={busy || (approving && quoteQuery.isPending)}>{busy ? "Procesando…" : approving ? "Verificar adelanto" : "Rechazar pago"}</Button>
       </div>
     </form>
   );

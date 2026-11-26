@@ -65,7 +65,7 @@ export type PaymentFilters = {
   page_size?: number;
 };
 
-/** PATCH /payments/{id}/verify. VERIFIED needs `event_id` (ADVANCE only); REJECTED needs `rejection_reason`. */
+/** PATCH /payments/{id}/verify. VERIFIED may omit `event_id` for an ADVANCE whose quote has no event yet (the backend creates it); REJECTED needs `rejection_reason`. */
 export type VerifyPaymentInput = {
   status: "VERIFIED" | "REJECTED";
   rejection_reason?: string;
@@ -76,6 +76,8 @@ export type VerifyPaymentResponse = {
   payment_id: string;
   validation_status: PaymentValidationStatus;
   rejection_reason: string | null;
+  /** Null when rejected or when there was no capacity (REQUIRES_MANUAL_APPROVAL). */
+  event_id: string | null;
 };
 
 /** PATCH /payments/{id}/audit. Only BALANCE/EXTENSION payments; FLAGGED needs `audit_notes`. */
